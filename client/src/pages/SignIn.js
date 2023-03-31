@@ -7,7 +7,7 @@ function SignIn() {
       <p>This is where you can find information about our company.</p>
       <nav>
         <ul>
-          <li><Link to="/Home">About</Link></li>
+          <li><Link to="/">About</Link></li>
           <li><Link to="/contact">Contact</Link></li>
         </ul>
       </nav>
