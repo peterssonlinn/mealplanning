@@ -11,6 +11,23 @@ function Home() {
           <li><Link to="/contact">Contact</Link></li>
         </ul>
       </nav>
+
+
+    <Link to="/SignIn">
+      <button type="button">
+            Click Me!
+      </button>
+      </Link>
+
+
+      <Link 
+      className="btn btn-pink"
+      role="button"
+      to="/SignIn"
+      > 
+      Button1
+      </Link>
+
     </div>
   );
 }
