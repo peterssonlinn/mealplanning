@@ -5,46 +5,151 @@
   width: auto;
   font-size: calc(10px + 2vmin);
   font-family: 'Times New Roman', Times, serif;
+  margin: 0px;
+
+  background: #00b5ff url(./images/background.png) no-repeat;
+  background-size: cover;
+  margin-top: -35px;
+  margin-bottom: 0px;
+
+
 }
 
+.backgroundApp{
+
+  background-color:white;
+  min-height: 100vh;
+  width: auto;
+  font-size: calc(10px + 2vmin);
+  font-family: 'Times New Roman', Times, serif;
+  margin: 0px;
+
+  background: #00b5ff url(./images/background.png) no-repeat;
+  background-size: cover;
+  
+}
+
+
 .headerSignAvaliable{
-  display: 'flex';
+ /* display: 'flex';
   flex-direction: 'row';
   align-content: center;
   align-items:center;
+  
+  */
+
+  
 }
 
 
 .header{
- 
+ margin-left: 522px;
+ color:gray;
+  
+}
+
+.search{
+  font-size: calc(40px + 2v);
+  font-family:'Times New Roman', Times, serif;
+  color: black;
+  height: 29px;
+  width: 200px;
+  margin-right: 3px;
+  border: 1px groove black;
+  
+}
+.registerBtn{
+  width: 35%;
+}
+
+.login-btn {
+  width: 35%;
+  margin-right: 2%;
+}
+
+.searchTextBtn{
+  display: flex;  
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  margin-left: 560px;
+}
+
+.signUpClassName{
+  margin-top: 20px;
+  float: right;
+  size: 200px;
+}
+
+.show{
+  display: block;
+  transition: 800ms;
+  opacity: 1;
+  background-color: #E4EDDB;
+  border-color: #144D53;
+  border-style: solid;
+  position: fixed;
+  top: 200px;
+  left: 530px;
+  width: 300px;
+  padding-bottom: 1%;
+  padding-top: 1%;
+
+}
+.formLogin {
+  margin-left: 70px;
+  margin-top: -30px;
+}
+
+.show.active{
+  opacity: 0;
+  transform: translateY(100px) scale(0) rotateY(180deg);
+}
+
+.loginBox {
+  width: 70%;
+}
+.dehazeClass{
+ margin-top: 20px;
+ display: flex !important;
+ justify-content: right !important;
+ float: right;
+
+}
+
+.headerRegister{
+  text-align: center;
   color:gray;
-
 }
-.App-link {
+ 
+.registerForm{
+  position: fixed;
+  top: 200px;
+  left: 530px;
+  width: 200px;
+  border-color: #144D53;
+  border-style: solid;
+  padding-bottom: 1%;
+  padding-top: 1%;
+  padding-left: 4%;
+}
+
+.boxDropdown{
+  background-color: white;
+}
+
+
+/*.App-link {
   color: #61dafb;
-}
+}*/
 
-@keyframes App-logo-spin {
+/*@keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
-}
+}*/
 
 
-.search{
-  font-size: calc(20px + 2v);
-  font-family:'Times New Roman', Times, serif;
-  color: black;
-
-}
-.searchTextBtn{
-  display: flex;
-  
-}
-
-.btnSignin{
-  background-color: black;
-}
