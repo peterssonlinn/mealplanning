@@ -17,12 +17,7 @@
 
 .backgroundApp{
 
-  background-color:white;
-  min-height: 100vh;
-  width: auto;
-  font-size: calc(10px + 2vmin);
-  font-family: 'Times New Roman', Times, serif;
-  margin: 0px;
+  
 
   background: #00b5ff url(./images/background.png) no-repeat;
   background-size: cover;

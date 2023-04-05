@@ -8,6 +8,8 @@ function Register() {
 
   return (
 
+    <div className='App'>
+        
     <div className='backgroundApp'>
     <div>
       <h1 className='headerRegister'>Create Account on Mealplanner</h1>
@@ -30,6 +32,8 @@ function Register() {
         </form>
       </div>
     </div>
+    </div>
+
     </div>
   );
 }

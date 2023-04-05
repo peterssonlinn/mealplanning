@@ -57,6 +57,7 @@ function Calender() {
         },
       })
   return (
+    <div className='App'>
     <div className='backgroundApp'>
 
         <div className = 'dehazeClass'>
@@ -121,6 +122,7 @@ function Calender() {
         eventContent={renderEventContent}
       />
         </div>
+    </div>
     </div>
   );
 }

@@ -19,6 +19,7 @@ import HomeIcon from '@mui/icons-material/Home';
 
 import Diversity1Icon from '@mui/icons-material/Diversity1';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import axios from 'axios'
 
 
 
@@ -27,22 +28,39 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 function Home() {
 
-  const [inputValue, setInputValue] = useState('');
+  const [searchFor, setSearchFor] = useState('');
 
   const[showLogin, setShowLogin] = useState(false);
+
+  const[userLogin , setUserInputs] = useState({});
+
+
+  const handleLogin = (event) =>{
+    event.preventDefault();
+    window.alert(`entered, ${userLogin.username}`);
+    window.alert(`entered, ${userLogin.password}`);
+   
+
+  }
+
+  const handleChangeLogin = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setUserInputs(values => ({...values, [name]:value}))
+  }
 
   const btnLogIn = () =>{
     setShowLogin((showLogin) => !showLogin);
   }
   
-  const handleClick = () => {
-    console.log(inputValue);
-    setInputValue("");
+  const handleClickSearch = () => {
+    console.log(searchFor);
+    setSearchFor("");
 
   };
 
   const handleInputChange = (event) => {
-    setInputValue(event.target.value);
+    setSearchFor(event.target.value);
   };
 
   const selectRef = React.useRef();
@@ -54,6 +72,8 @@ function Home() {
     }
 
   }
+
+  
 
   const [open, setOpen] = React.useState(false);
 
@@ -84,7 +104,6 @@ function Home() {
     },
   });
   
-
   return (
     <div className='App'>
     <div className='backgroundApp'>
@@ -100,20 +119,19 @@ function Home() {
           </ThemeProvider>
          <div>
             <div  className={`${!showLogin ? "active" : ""} show`}>
-              <div className='formLogin'>
-                <form>
+              <div className='divLoginRegister'>
+                <form onSubmit={handleLogin}>
                   <h1> Sign in</h1>
                   <label> Username</label> <br />
-                  <input type="text" name='username' className='loginBox'/> <br />
+                  <input type="text" name='username' className='loginBox' value={userLogin.username || ""} onChange={handleChangeLogin}/> <br />
                   <label> Password</label>  <br />
-                  <input type='password' name='password'  className='loginBox'/>  <br />
+                  <input type='password' name='password' value={userLogin.password || ""} onChange={handleChangeLogin} className='loginBox'/>  <br />
                   <input type="submit" value="Log in" className='login-btn'/> 
-                  <Link to="/register">
-                  <button  className='registerBtn'>Register</button>
-                </Link>
+                 
                 </form>
-               
-              
+                <Link to="/register">
+                    <button  className='registerBtn'>Register</button>
+                 </Link>
               </div>
             </div>
           </div>
@@ -176,13 +194,14 @@ function Home() {
       <h1 className='header'>Mealplanner</h1>
       
       <div className='searchTextBtn'>
-        <input className='search' type="text" value={inputValue} onChange={handleInputChange} />
+        <input className='search' type="text" value={searchFor} onChange={handleInputChange} />
 
         <ThemeProvider theme={theme}>
-          <Button onClick={handleClick} size='15px' color="primary" variant="contained" startIcon={<SearchIcon />} />
+          <Button onClick={handleClickSearch} size='15px' color="primary" variant="contained" startIcon={<SearchIcon />} />
         </ThemeProvider>
 
       </div>
+
 
       
      
