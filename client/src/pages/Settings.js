@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import React from "react"
+import axios from "axios";
+
 
 
 function Settings() {
@@ -7,10 +9,16 @@ function Settings() {
     const[data, setData] = React.useState(null);
 
     React.useEffect(() => {
-      fetch("/api")
-      .then((res) =>res.json())
-      .then((data) => setData(data.message));
+      axios
+      .get("/api/recipes/?search=italienskt")
+      .then(({ data }) => {
+        setData(data);
+      })
+      
+     
+      
     }, []);
+
 
     return (
       <div className='App'>
@@ -18,6 +26,7 @@ function Settings() {
               <div>
               <h1>Welcome to the Settings page!</h1>
               <p>{!data ? "LOADING...":data}</p>
+              
               </div>
           </div>
       </div>

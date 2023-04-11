@@ -10,4 +10,4 @@ And the user will also be able to search for other users and get inspiration fro
 
 ## Technical
 
-We will do the client-side in React and the server-side in Django. We will use a public database for recipes, [Edmam](https://developer.edamam.com/edamam-recipe-api).
+We will do the client-side in React and the server-side in Node.js and Express.js. We will use a public database for recipes, [Edmam](https://developer.edamam.com/edamam-recipe-api).

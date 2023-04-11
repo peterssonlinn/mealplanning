@@ -1,4 +1,4 @@
-#!/home/rebli574/tddd27_2023_mealplanning/venv/bin/python3
+#!/Users/linnpetersson/Desktop/tddd27_2023_mealplanning/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

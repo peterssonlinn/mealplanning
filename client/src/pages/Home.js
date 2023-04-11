@@ -29,10 +29,10 @@ import axios from 'axios'
 function Home() {
 
   const [searchFor, setSearchFor] = useState('');
-
   const[showLogin, setShowLogin] = useState(false);
-
   const[userLogin , setUserInputs] = useState({});
+  const [open, setOpen] = React.useState(false);
+
 
 
   const handleLogin = (event) =>{
@@ -40,7 +40,6 @@ function Home() {
     window.alert(`entered, ${userLogin.username}`);
     window.alert(`entered, ${userLogin.password}`);
    
-
   }
 
   const handleChangeLogin = (event) => {
@@ -53,9 +52,26 @@ function Home() {
     setShowLogin((showLogin) => !showLogin);
   }
   
+  const[data, setData] = React.useState(null);
+  
   const handleClickSearch = () => {
-    console.log(searchFor);
-    setSearchFor("");
+    if(searchFor != ""){
+      axios
+      .get("/api/recipes/?search="+searchFor)
+      .then((res) => {
+        if (res.status=== 200){
+          setData(res.data)
+        }
+      }
+
+      ) 
+      console.log(searchFor);
+      
+      setSearchFor("");
+
+    } 
+   
+  
 
   };
 
@@ -75,7 +91,6 @@ function Home() {
 
   
 
-  const [open, setOpen] = React.useState(false);
 
   const clickDropdown = () => {
     setOpen((prev) => !prev);
@@ -107,6 +122,7 @@ function Home() {
   return (
     <div className='App'>
     <div className='backgroundApp'>
+   
 
    
       <div className='headerSignAvaliable'> 
@@ -199,10 +215,10 @@ function Home() {
         <ThemeProvider theme={theme}>
           <Button onClick={handleClickSearch} size='15px' color="primary" variant="contained" startIcon={<SearchIcon />} />
         </ThemeProvider>
-
+        
       </div>
 
-
+      <p>{!data ? "LOADING...":data}</p>
       
      
        
