@@ -19,8 +19,6 @@ import HomeIcon from '@mui/icons-material/Home';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import axios from 'axios'
-import { Auth0Provider } from '@auth0/auth0-react';
-import { useAuth0 } from '@auth0/auth0-react';
 
 
 function Home() {
@@ -57,7 +55,11 @@ function Home() {
       .get("/api/recipes/?search="+searchFor)
       .then((res) => {
         if (res.status === 200){
-          setData(res.data)
+          console.log(res.statusText);
+         
+          window.alert(res.statusText);
+          setData(res.statusText);
+          //setData(res.data)
         }
       }
 
@@ -129,12 +131,14 @@ const login = async () => {
     auth0.logout({
       returnTo: window.location.origin
     });
-  };*/
+  };
+  
+  */
   
   return (
 
     <div className='App'>
-    <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
+  
     <div className='backgroundApp'>
 
       <div className='headerSignAvaliable'> 
