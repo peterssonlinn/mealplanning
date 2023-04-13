@@ -32,44 +32,60 @@ app.use((req, res, next) => {
 
 app.get('/api/testing', (req, res, next) => {
     try{
-        let temp= req.query.temp; 
-        console.log(temp);
-        res.status(200).json(temp);
+        
+        res.status(200).json({message:"good"})
     }
     catch{
         res.status(400).json({message:"error"});
     }
-})
+});
+
 app.get('/api/recipes' , (req, res,next) => {
     try{
+        let returnData =[]
         if (req.query.search != undefined){
             search = req.query.search;
-            console.log("inne i server," +search);
-
-            // TODO, implement the external API to search for recipies! 
-            
+           
             if(search != undefined){
+               
                 let url = "https://api.edamam.com/api/recipes/v2?type=public&q="+search+"&app_id=388e1e79&app_key=%2033bf2f3c0efef80e1df276c6ef485756"
                 console.log(url)
                 axios.get(url)
                 .then(response => {
-                    console.log("making call")
-                    console.log(response.data)
                     if(response.data.hits.length){
+
+                        for(let t in response.data.hits){
+                            individualData = []
+                            label = response.data.hits[t]['recipe']['label'];
+                            ingredients = response.data.hits[t]['recipe']['ingredientLines'];
+                            time = response.data.hits[t]['recipe']['totalTime'];
+                            orginalUrl = response.data.hits[t]['recipe']['url'];
+                            individualData.push('name:')
+                            individualData.push(label);
+                            // individualData.push('ingidients:')
+                            // individualData.push(ingredients);
+                            // individualData.push('time:')
+                            // individualData.push(time);
+                            individualData.push('url:')
+                            individualData.push(orginalUrl);
+                            returnData.push(individualData);
+                           
+                            
+                        }
+                        console.log(returnData)
                         
-                        res.status(200).json(response.data.hits);
-                        
+                        res.status(200).send(returnData);
+                       
                     }else{
-                        res.status(200).json({message:"No such recipes"})
+                        res.status(400).json({data:"No such recipes"})
                     }
                     
                 })
-                .catch(error => res.status(400).json({message:"error!"}))
-                
+                .catch(error => res.status(400).json({data:"error!"}))
                 
             }
             else{
-                res.status(400).json({message:"empty search"})
+                res.status(400).json({data:"empty search"})
             }
 
            

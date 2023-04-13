@@ -16,9 +16,6 @@
 }
 
 .backgroundApp{
-
-  
-
   background: #00b5ff url(./images/background.png) no-repeat;
   background-size: cover;
   
@@ -43,16 +40,7 @@
   
 }
 
-.search{
-  font-size: calc(40px + 2v);
-  font-family:'Times New Roman', Times, serif;
-  color: black;
-  height: 29px;
-  width: 200px;
-  margin-right: 3px;
-  border: 1px groove black;
-  
-}
+
 .registerBtn{
   width: 35%;
 }
@@ -62,13 +50,7 @@
   margin-right: 2%;
 }
 
-.searchTextBtn{
-  display: flex;  
-  justify-content: center;
-  align-items: center;
-  width: 200px;
-  margin-left: 560px;
-}
+
 
 .signUpClassName{
   margin-top: 20px;
@@ -131,10 +113,61 @@
 
 .boxDropdown{
   background-color: white;
+  
 }
 
+.list-group{
+  background-color: #144d53; 
+  border-radius: 1%;
+   
+}
+
+.searchTextBtn{
+  justify-content: center !important;
+  align-items:'center';
+
+ 
+}
+
+.search{
+  font-size: calc(40px + 2v);
+  font-family:'Times New Roman', Times, serif;
+  color: black;
+  height: 29px;
+  width: 200px;
+  margin-right: 3px;
+  border: 1px groove black;
+  
+}
+.info{
+  position: absolute;
+  justify-content: center !important;
+  align-items:'center';
+  height: fit-content;
+  width: fit-content;
+  margin: auto;
+  top: auto;
+  bottom: auto ;
+  left: 0;
+  right: 0;
+ 
+}
+.listOfItems{
+  color: inherit;
+  flex:auto;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+.theInfo{
+  flex:auto;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
 
 /*.App-link {
+   border-radius:5%;
   color: #61dafb;
 }*/
 

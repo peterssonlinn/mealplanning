@@ -26,6 +26,8 @@ import LogoutButton from './LogoutButton';
 import AuthButton from './AuthButton';
 import AuthNav from './AuthNav';
 
+import FavoriteIcon from '@mui/icons-material/Favorite';
+
 
 
 function Home() {
@@ -34,6 +36,9 @@ function Home() {
   const[showLogin, setShowLogin] = useState(false);
   const[userLogin , setUserInputs] = useState({});
   const [open, setOpen] = React.useState(false);
+  const [items, setItems] = useState([]);
+  const [errorText, setErrorText] = useState('');
+  const [headerInfoSearch, setHeaderInfoSearch] = useState('');
 
   const isAuthenticated = false;
 
@@ -55,28 +60,37 @@ function Home() {
     setShowLogin((showLogin) => !showLogin);
   }
   
-  const[data, setData] = React.useState(null);
+  const handleLikedButton = (theClickenItem) =>{
+    window.alert(theClickenItem);
+    
+
+  }
   
   const handleClickSearch = () => {
     if(searchFor != ""){
-      axios
-      .get("/api/recipes/?search="+searchFor)
-      .then((res) => {
+      setItems([]);
+      setHeaderInfoSearch('');
+      axios.get("/api/recipes/?search="+searchFor)
+      .then((res) =>  {
         if (res.status === 200){
-          setData(res.data)
+          setErrorText("");
+          console.log(res.data);
+          setHeaderInfoSearch('result for: '+searchFor);
+          setItems(res.data);
+          //setData(res.data)
+          
         }
-      }
-
-      ) 
-      console.log(searchFor);
+      })
+      .catch((error) => {
+        console.log(error);
+        setErrorText("this did not work :(");
+      })
       
-      setSearchFor("");
-
-    } 
-   
   
-
+      setSearchFor("");
+    } 
   };
+  
 
   const handleInputChange = (event) => {
     setSearchFor(event.target.value);
@@ -105,11 +119,11 @@ function Home() {
     palette: {
       primary: {
         // Purple and green play nicely together.
-        main: indigo[500],
+        main: '#307672',
       },
       secondary: {
         // This is green.A700 as hex.
-        main: '#11cb5f',
+        main: '#1a3c40',
       },
       
 
@@ -120,6 +134,7 @@ function Home() {
   return (
 
     <div className='App'>
+  
     <div className='backgroundApp'>
       <div className='headerSignAvaliable'> 
         <div className='signUpClassName'>
@@ -204,6 +219,9 @@ function Home() {
         </ThemeProvider>
         </div>
       <h1 className='header'>Mealplanner</h1>
+      
+      <div className='info'>
+
      
       <div className='searchTextBtn'>
         <input className='search' type="text" value={searchFor} onChange={handleInputChange} />
@@ -211,8 +229,41 @@ function Home() {
         <ThemeProvider theme={theme}>
           <Button onClick={handleClickSearch} size='15px' color="primary" variant="contained" startIcon={<SearchIcon />} />
         </ThemeProvider>
-        
+       
+       <div className="list-group">
+        <h1 > {headerInfoSearch}</h1>
+       
+        {items.map((item, index) => (
+          <a href={item[3]}  className="listOfItems" key={index}>
+            <div className="theInfo"> 
+            
+              <h5 className="mb-1">{item[1]}</h5>
+              <small>{item[5]}</small>
+              
+              <ThemeProvider theme={theme}>
+                <Button onClick={(event) => { 
+                event.preventDefault() 
+                handleLikedButton(item[3])
+                  }} size='15px' color="primary" startIcon={<FavoriteIcon />} >
+                </Button>
+              </ThemeProvider>
+            </div>
+  
+          </a>
+        ))}
+    
+
+        </div>
+      <div className='fillEmptySearch'>
+        <p>
+          {errorText}
+        </p>
+      
+    </div>
       </div>
+      </div>
+
+
       <div>
       {/* Render the LoginButton component */}
       <LoginButton />
@@ -236,12 +287,9 @@ function Home() {
       {/* Render the AuthNav component with the isAuthenticated prop */}
       <AuthNav isAuthenticated={isAuthenticated} />
     </div>
-
-
-      <p>{!data ? "LOADING...":data}</p>
       
-     
-       
+
+
     </div>
     </div>
   );
