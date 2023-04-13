@@ -30,6 +30,8 @@ function Home() {
   const [open, setOpen] = React.useState(false);
   const [items, setItems] = useState([]);
   const [errorText, setErrorText] = useState('');
+  const [headerInfoSearch, setHeaderInfoSearch] = useState('');
+
 
 
   const handleLogin = (event) =>{
@@ -53,12 +55,14 @@ function Home() {
   const handleClickSearch = () => {
     if(searchFor != ""){
       setItems([]);
+      setHeaderInfoSearch('');
       axios.get("/api/recipes/?search="+searchFor)
       .then((res) =>  {
         if (res.status === 200){
           setErrorText("");
           console.log(res.data);
-          items = setItems(res.data);
+          setHeaderInfoSearch('result for: '+searchFor);
+          setItems(res.data);
           //setData(res.data)
           
         }
@@ -101,11 +105,11 @@ function Home() {
     palette: {
       primary: {
         // Purple and green play nicely together.
-        main: indigo[500],
+        main: '#307672',
       },
       secondary: {
         // This is green.A700 as hex.
-        main: '#11cb5f',
+        main: '#1a3c40',
       },
       
 
@@ -222,17 +226,17 @@ const login = async () => {
         </div>
       <h1 className='header'>Mealplanner</h1>
       
+      <div className='info'>
+
       <div className='searchTextBtn'>
         <input className='search' type="text" value={searchFor} onChange={handleInputChange} />
 
         <ThemeProvider theme={theme}>
           <Button onClick={handleClickSearch} size='15px' color="primary" variant="contained" startIcon={<SearchIcon />} />
         </ThemeProvider>
-      </div>
-
-
-
-      <div className="list-group">
+       
+       <div className="list-group">
+        <h1 > {headerInfoSearch}</h1>
         {items.map((item, index) => (
           <a href={item[3]} className="list-group-item list-group-item-action" key={index}>
             <div className="d-flex w-100 justify-content-between">
@@ -248,6 +252,12 @@ const login = async () => {
         </p>
       
     </div>
+      </div>
+      </div>
+
+
+
+      
 
 
     </div>
