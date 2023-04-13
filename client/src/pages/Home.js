@@ -21,13 +21,15 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import axios from 'axios'
 
 
+
 function Home() {
 
   const [searchFor, setSearchFor] = useState('');
   const[showLogin, setShowLogin] = useState(false);
   const[userLogin , setUserInputs] = useState({});
   const [open, setOpen] = React.useState(false);
-
+  const [items, setItems] = useState([]);
+  const [errorText, setErrorText] = useState('');
 
 
   const handleLogin = (event) =>{
@@ -47,32 +49,30 @@ function Home() {
     setShowLogin((showLogin) => !showLogin);
   }
   
-  const[data, setData] = React.useState(null);
   
   const handleClickSearch = () => {
     if(searchFor != ""){
-      axios
-      .get("/api/recipes/?search="+searchFor)
-      .then((res) => {
+      setItems([]);
+      axios.get("/api/recipes/?search="+searchFor)
+      .then((res) =>  {
         if (res.status === 200){
-          console.log(res.statusText);
-         
-          window.alert(res.statusText);
-          setData(res.statusText);
+          setErrorText("");
+          console.log(res.data);
+          items = setItems(res.data);
           //setData(res.data)
+          
         }
-      }
-
-      ) 
-      console.log(searchFor);
+      })
+      .catch((error) => {
+        console.log(error);
+        setErrorText("this did not work :(");
+      })
       
-      setSearchFor("");
-
-    } 
-   
   
-
+      setSearchFor("");
+    } 
   };
+  
 
   const handleInputChange = (event) => {
     setSearchFor(event.target.value);
@@ -87,9 +87,6 @@ function Home() {
     }
 
   }
-
-  
-
 
   const clickDropdown = () => {
     setOpen((prev) => !prev);
@@ -231,13 +228,28 @@ const login = async () => {
         <ThemeProvider theme={theme}>
           <Button onClick={handleClickSearch} size='15px' color="primary" variant="contained" startIcon={<SearchIcon />} />
         </ThemeProvider>
-        
       </div>
 
-      <p>{!data ? "LOADING...":data}</p>
+
+
+      <div className="list-group">
+        {items.map((item, index) => (
+          <a href={item[3]} className="list-group-item list-group-item-action" key={index}>
+            <div className="d-flex w-100 justify-content-between">
+              <h5 className="mb-1">{item[1]}</h5>
+              <small>{item[5]}</small>
+            </div>
+          </a>
+        ))}
+        </div>
+      <div className='fillEmptySearch'>
+        <p>
+          {errorText}
+        </p>
       
-     
-       
+    </div>
+
+
     </div>
     </div>
   );
