@@ -23,9 +23,6 @@ function App() {
         <Route path="/friends" element={<Friends/>}> </Route>
         <Route path="/profile" element={<Profile/>}> </Route>
         <Route path="/settings" element={<Settings/>}> </Route>
-
-       
-       
       </Routes>
     </BrowserRouter>
   );

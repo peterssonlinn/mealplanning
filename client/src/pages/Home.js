@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, Route, withRouter} from 'react-router-dom';
 import React, {useState} from 'react';
 import '../../src/App.css';
 import Button from '@mui/material/Button';
@@ -19,8 +19,13 @@ import HomeIcon from '@mui/icons-material/Home';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import axios from 'axios'
-import { Auth0Provider } from '@auth0/auth0-react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { Switch } from '@mui/material';
+import LoginButton from './LoginButton';
+import SignupButton from './SignupButton';
+import LogoutButton from './LogoutButton';
+import AuthButton from './AuthButton';
+import AuthNav from './AuthNav';
+
 
 
 function Home() {
@@ -30,6 +35,7 @@ function Home() {
   const[userLogin , setUserInputs] = useState({});
   const [open, setOpen] = React.useState(false);
 
+  const isAuthenticated = false;
 
 
   const handleLogin = (event) =>{
@@ -86,9 +92,6 @@ function Home() {
 
   }
 
-  
-
-
   const clickDropdown = () => {
     setOpen((prev) => !prev);
   };
@@ -113,30 +116,11 @@ function Home() {
     },
   });
 
-  /*const configureClient = async () => {
-    auth0 = await createAuth0Client({
-      domain: "dev-fs27qqhb2a2171p5.eu.auth0.com",
-      client_id: "LbJM3Nckyt467aKYkezEesLkJoYLowqa",
-      audience: "https://dev-fs27qqhb2a2171p5.eu.auth0.com/api/v2/" // The backend api id
-    });
-  }
-const login = async () => {
-    await auth0.loginWithRedirect({
-      redirect_uri: "http://localhost:3000"
-    });
-  };
-  const logout = () => {
-    auth0.logout({
-      returnTo: window.location.origin
-    });
-  };*/
-  
+ 
   return (
 
     <div className='App'>
-    <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
     <div className='backgroundApp'>
-
       <div className='headerSignAvaliable'> 
         <div className='signUpClassName'>
           <ThemeProvider theme={theme}>
@@ -220,7 +204,7 @@ const login = async () => {
         </ThemeProvider>
         </div>
       <h1 className='header'>Mealplanner</h1>
-      
+     
       <div className='searchTextBtn'>
         <input className='search' type="text" value={searchFor} onChange={handleInputChange} />
 
@@ -229,6 +213,30 @@ const login = async () => {
         </ThemeProvider>
         
       </div>
+      <div>
+      {/* Render the LoginButton component */}
+      <LoginButton />
+    </div>
+    <div>
+      {/* Render the SignupButton component */}
+      <SignupButton/>
+    </div>
+  
+    <div>
+      {/* Render the LogoutButton component */}
+      <LogoutButton />
+    </div>
+
+    <div>
+      {/* Render the AuthenticationButton component with the isAuthenticated prop */}
+      <AuthButton isAuthenticated={isAuthenticated} />
+    </div>
+
+    <div>
+      {/* Render the AuthNav component with the isAuthenticated prop */}
+      <AuthNav isAuthenticated={isAuthenticated} />
+    </div>
+
 
       <p>{!data ? "LOADING...":data}</p>
       
