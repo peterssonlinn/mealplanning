@@ -19,6 +19,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import axios from 'axios'
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 
 
@@ -51,6 +52,11 @@ function Home() {
     setShowLogin((showLogin) => !showLogin);
   }
   
+  const handleLikedButton = (theClickenItem) =>{
+    window.alert(theClickenItem);
+    
+
+  }
   
   const handleClickSearch = () => {
     if(searchFor != ""){
@@ -237,14 +243,27 @@ const login = async () => {
        
        <div className="list-group">
         <h1 > {headerInfoSearch}</h1>
+       
         {items.map((item, index) => (
-          <a href={item[3]} className="list-group-item list-group-item-action" key={index}>
-            <div className="d-flex w-100 justify-content-between">
+          <a href={item[3]}  className="listOfItems" key={index}>
+            <div className="theInfo"> 
+            
               <h5 className="mb-1">{item[1]}</h5>
               <small>{item[5]}</small>
+              
+              <ThemeProvider theme={theme}>
+                <Button onClick={(event) => { 
+                event.preventDefault() 
+                handleLikedButton(item[3])
+                  }} size='15px' color="primary" startIcon={<FavoriteIcon />} >
+                </Button>
+              </ThemeProvider>
             </div>
+  
           </a>
         ))}
+    
+
         </div>
       <div className='fillEmptySearch'>
         <p>

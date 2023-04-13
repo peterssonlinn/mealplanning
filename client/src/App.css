@@ -151,8 +151,19 @@
   left: 0;
   right: 0;
  
-
-
+}
+.listOfItems{
+  color: inherit;
+  flex:auto;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+.theInfo{
+  flex:auto;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 /*.App-link {
