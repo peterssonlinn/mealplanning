@@ -21,6 +21,7 @@ import Diversity1Icon from '@mui/icons-material/Diversity1';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import NavBar from './NavBar';
 
 function Calender() {
 
@@ -30,18 +31,6 @@ function Calender() {
 
       const [open, setOpen] = React.useState(false);
 
-      const clickDropdown = () => {
-        setOpen((prev) => !prev);
-      };
-    
-      const clickDropdownAway = () => {
-        setOpen(false);
-      };
-    
-     
-    
-     
-    
       const theme = createTheme({
         palette: {
           primary: {
@@ -57,71 +46,26 @@ function Calender() {
         },
       })
   return (
+
+    
+
     <div className='App'>
     <div className='backgroundApp'>
 
-        <div className = 'dehazeClass'>
-          <ThemeProvider theme={theme}>
-            <ClickAwayListener onClickAway={clickDropdownAway}>
-            <Box sx={{ position: 'relative' }} className='boxDropdown'>
-            <Button size='15px' color="primary" onClick={clickDropdown} variant="contained" startIcon={<DehazeIcon />} />
-              {open ? (
-                <Box className='boxDropdown'>
-                  <FormControl fullWidth>
-                  <MenuItem  component={Link} to="/">
-                    <ListItemIcon>
-                      <HomeIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Home</ListItemText>
-                    </MenuItem>
-
-                  <MenuItem  component={Link} to="/profile">
-                    <ListItemIcon>
-                      <PersonIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Profile</ListItemText>
-                  </MenuItem>
-
-                  <MenuItem  component={Link} to="/calender">
-                    <ListItemIcon>
-                      <CalendarMonthIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Calender</ListItemText>
-                  </MenuItem>
-
-                  <MenuItem  component={Link} to="/friends">
-                    <ListItemIcon>
-                      <Diversity1Icon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Friends</ListItemText>
-                  </MenuItem>
-
-                  <MenuItem  component={Link} to="/settings">
-                    <ListItemIcon>
-                      <ManageAccountsIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Settings</ListItemText>
-                  </MenuItem>
-
-                  
-                  </FormControl>
-                </Box>
-              ) : null}
-            </Box>
-          </ClickAwayListener>
-        </ThemeProvider>
-        </div>
-        
-        
-        <div>
+        <div className='calenderTest'>
         <FullCalendar
         plugins={[dayGridPlugin]}
-        initialView='dayGridWeek'
+        initialView='dayGridMonth'
         weekends={true}
         events={events}
         eventContent={renderEventContent}
       />
-        </div>
+      </div>
+      <div>
+      {/* Render the LogoutButton component */}
+      <NavBar />
+    </div>
+        
     </div>
     </div>
   );

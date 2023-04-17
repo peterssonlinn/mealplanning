@@ -25,6 +25,7 @@ import SignupButton from './SignupButton';
 import LogoutButton from './LogoutButton';
 import AuthButton from './AuthButton';
 import AuthNav from './AuthNav';
+import NavBar from './NavBar';
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
@@ -139,7 +140,6 @@ function Home() {
       <div className='headerSignAvaliable'> 
         <div className='signUpClassName'>
           <ThemeProvider theme={theme}>
-
             <Button onClick={btnLogIn} size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />}>
               Sign In
             </Button>
@@ -167,57 +167,10 @@ function Home() {
       <div>
 
       </div>
-      <div className = 'dehazeClass'>
-          <ThemeProvider theme={theme}>
-            <ClickAwayListener onClickAway={clickDropdownAway}>
-            <Box sx={{ position: 'relative' }} className='boxDropdown'>
-            <Button size='15px' color="primary" onClick={clickDropdown} variant="contained" startIcon={<DehazeIcon />} />
-              {open ? (
-                <Box className='boxDropdown'>
-                  <FormControl fullWidth>
-                  <MenuItem  component={Link} to="/">
-                    <ListItemIcon>
-                      <HomeIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Home</ListItemText>
-                    </MenuItem>
-
-                  <MenuItem  component={Link} to="/profile">
-                    <ListItemIcon>
-                      <PersonIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Profile</ListItemText>
-                  </MenuItem>
-
-                  <MenuItem  component={Link} to="/calender">
-                    <ListItemIcon>
-                      <CalendarMonthIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Calender</ListItemText>
-                  </MenuItem>
-
-                  <MenuItem  component={Link} to="/friends">
-                    <ListItemIcon>
-                      <Diversity1Icon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Friends</ListItemText>
-                  </MenuItem>
-
-                  <MenuItem  component={Link} to="/settings">
-                    <ListItemIcon>
-                      <ManageAccountsIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Settings</ListItemText>
-                  </MenuItem>
-
-                  
-                  </FormControl>
-                </Box>
-              ) : null}
-            </Box>
-          </ClickAwayListener>
-        </ThemeProvider>
-        </div>
+      <div>
+      {/* Render the NAvBar component */}
+      <NavBar />
+    </div> 
       <h1 className='header'>Mealplanner</h1>
       
       <div className='info'>
@@ -264,7 +217,7 @@ function Home() {
       </div>
 
 
-      <div>
+    <div>
       {/* Render the LoginButton component */}
       <LoginButton />
     </div>
