@@ -10,21 +10,27 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 
 import React, { useState } from 'react';
+import TestCal from './pages/TestCal';
+
+
 
 
 function App() {
   return (
+   
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home/>}> </Route>
         <Route path="/signIn" element={<SignIn/>}> </Route>
         <Route path="/register" element={<Register/>}> </Route>
-        <Route path="/calender" element={<Calender/>}> </Route>
+        <Route path="/calender" element={<Calender/>}></Route>
         <Route path="/friends" element={<Friends/>}> </Route>
         <Route path="/profile" element={<Profile/>}> </Route>
         <Route path="/settings" element={<Settings/>}> </Route>
+        <Route path="/test" element={<TestCal/>}> </Route>
       </Routes>
     </BrowserRouter>
+    
   );
 }
 
