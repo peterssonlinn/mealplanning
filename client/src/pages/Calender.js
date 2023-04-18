@@ -22,13 +22,20 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import NavBar from './NavBar';
+import { Interaction } from '@fullcalendar/core/internal';
+import interactionPlugin from '@fullcalendar/interaction'
 
 function Calender() {
 
     const events = [
-        { title: 'recipe'}
+        { title: 'recipe', 
+          date: '2019-04-01' 
+      }
       ]
-
+      const handleDateClick = (arg) => {
+        alert(arg.dateStr);
+      }
+  
       const [open, setOpen] = React.useState(false);
 
       const theme = createTheme({
@@ -51,21 +58,26 @@ function Calender() {
 
     <div className='App'>
     <div className='backgroundApp'>
-
-        <div className='calenderTest'>
-        <FullCalendar
-        plugins={[dayGridPlugin]}
-        initialView='dayGridMonth'
-        weekends={true}
-        events={events}
-        eventContent={renderEventContent}
-      />
-      </div>
-      <div>
-      {/* Render the LogoutButton component */}
+    <div>
+      {/* Render the NavBar component */}
       <NavBar />
     </div>
-        
+        <div className='calenderTest'>
+        <FullCalendar
+        plugins={[dayGridPlugin, interactionPlugin]}
+        initialView='dayGridWeek'
+        weekends={true}
+        events={events}
+        dateClick={handleDateClick}
+        eventContent={renderEventContent}
+
+      />
+      </div>  
+      <div className='favRecipies'>
+      <textbox>
+      Here the hearted recipes will be!! 
+      </textbox>
+    </div>
     </div>
     </div>
   );
