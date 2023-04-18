@@ -1,29 +1,104 @@
 
 .App {
-  background-color:white;
-  min-height: 100vh;
-  width: auto;
   font-size: calc(10px + 2vmin);
   font-family: 'Times New Roman', Times, serif;
-  margin: 0px;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  
+  
+}
 
-  background: #00b5ff url(./images/background.png) no-repeat;
-  background-size: cover;
-  margin-top: -30px;
-  margin-bottom: 0px;
+.topHome{
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 10px;
+  align-content: flex-start;
+  flex-direction: column;
+ 
+}
+.loginButton{
+  margin: auto;
+  align-content: center;
+}
+.navbar{
+  margin: auto;
+  
+}
+.header{
+  margin: auto;
+  color: #1A3C40;
+}
+.overlayHomePage{
+  
+  max-width: 160vh; 
+  align-items: center;
+  align-content: center;
+  padding: 0.5%;
+  justify-content: center !important;
+  flex-direction: column;
+  margin: auto;
+
+
+  background-color: #307672;
+  
+}
+.backgroundApp{
+  height: 100vh;
+  width: 100vw;
+
+  background: #E4EDDB;
+  
+
+  
+}
+.searchTextMain{
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  width: 90%;
+  margin: auto;
+
+  
+}
+
+.autoFillWithContent{
+
+  display: grid;
+  grid-template-columns: repeat(5,minmax(0,1fr));
+  gap: 5px;
+  align-content: center;
+  flex-direction: column;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 0.5%;
 
 
 }
+.buttonSearch{
+  margin: auto;
+  margin-top: 0.5%;
+  margin-bottom: 1%;
+}
 
-.backgroundApp{
-  background: #00b5ff url(./images/background.png) no-repeat;
-  background-size: cover;
+.searchInput{
+  width: 99%;
+  float: left;
+ 
+  padding: 0;
+  margin: auto;
+  margin-top: 0.5%;
+  margin-bottom: 1%;
+ 
+  justify-content: center !important;
+  
+  align-items:'center';
+  height: 25px;
   
 }
 
 
 .header{
- margin-left: 522px;
  color:gray;
   
 }
@@ -40,11 +115,6 @@
 
 
 
-.signUpClassName{
-  margin-top: 20px;
-  float: right;
-  size: 200px;
-}
 
 .show{
   display: block;
@@ -76,7 +146,7 @@
 }
 
 .dehazeClass{
- margin-top: 20px;
+ 
  display: flex !important;
  justify-content: right !important;
  float: right;
@@ -84,7 +154,7 @@
 }
 
 .headerRegister{
-  text-align: center;
+ 
   color:gray;
 }
  
@@ -104,10 +174,21 @@
   background-color: white;
   
 }
+.imgRecipe{
+  border-radius: 2%;
+  
+  
+  
+  
+}
 
 .list-group{
-  background-color: #144d53; 
-  border-radius: 1%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 15px;
+  margin-left: 5%;
+  margin-right: 5%;
+ 
    
 }
 
@@ -141,20 +222,44 @@
   right: 0;
  
 }
+
+.fillEmptySearch{
+  background-color: #efeddb;
+  margin-left: 5%;
+  margin-right: 5%;
+  align-items:'center';
+  justify-content: center;
+  flex:auto;
+  text-align: center;
+
+}
+
+.allInfo{
+  margin-top: 1%;
+  
+}
 .listOfItems{
   color: inherit;
   flex:auto;
-  width: 100%;
+ 
   justify-content: center;
   align-items: center;
 }
 .theInfo{
-  flex:auto;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  background-color: #efeddb;
 }
 
+.headingInfo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+.small{
+  margin: 0;
+}
 .calenderTest {
   width: 800px;
   float: right;

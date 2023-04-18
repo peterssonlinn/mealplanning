@@ -19,14 +19,23 @@ import HomeIcon from '@mui/icons-material/Home';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import axios from 'axios'
-import { Switch } from '@mui/material';
 import LoginButton from './LoginButton';
 import SignupButton from './SignupButton';
 import LogoutButton from './LogoutButton';
 import AuthButton from './AuthButton';
 import AuthNav from './AuthNav';
 import NavBar from './NavBar';
-
+import Grid from '@mui/material/Grid';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import LunchDiningIcon from '@mui/icons-material/LunchDining';
+import EggIcon from '@mui/icons-material/Egg';
+import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
+import RamenDiningIcon from '@mui/icons-material/RamenDining';
+import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
+import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
 
@@ -44,27 +53,33 @@ function Home() {
   const isAuthenticated = false;
 
 
-  const handleLogin = (event) =>{
-    event.preventDefault();
-    window.alert(`entered, ${userLogin.username}`);
-    window.alert(`entered, ${userLogin.password}`);
-   
-  }
 
-  const handleChangeLogin = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setUserInputs(values => ({...values, [name]:value}))
-  }
+  const isItemLiked = (url) => likedItems.includes(url);
+
+  const [likedItems, setLikedItems] = useState([]);
+
+  const handleLikedButton = (url) => {
+    window.alert(url)
+
+    if (likedItems.includes(url)) {
+      setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== url));
+     
+    } else {
+      setLikedItems((prevLikedItems) => [...prevLikedItems, url]);
+    }
+  };
+
+
 
   const btnLogIn = () =>{
     setShowLogin((showLogin) => !showLogin);
   }
   
-  const handleLikedButton = (theClickenItem) =>{
-    window.alert(theClickenItem);
-    
+ 
 
+  const btnAutoFill = (event) =>{
+    setSearchFor(searchFor + " " + event.target.textContent)
+    
   }
   
   const handleClickSearch = () => {
@@ -85,10 +100,11 @@ function Home() {
       .catch((error) => {
         console.log(error);
         setErrorText("this did not work :(");
+        setSearchFor("");
       })
       
   
-      setSearchFor("");
+      
     } 
   };
   
@@ -99,22 +115,7 @@ function Home() {
 
   const selectRef = React.useRef();
 
-  const openSelect = () =>{
-    if (selectRef.current) {
-
-      selectRef.current.focus();
-    }
-
-  }
-
-  const clickDropdown = () => {
-    setOpen((prev) => !prev);
-  };
-
-  const clickDropdownAway = () => {
-    setOpen(false);
-  };
-
+  
 
   const theme = createTheme({
     palette: {
@@ -133,115 +134,108 @@ function Home() {
 
  
   return (
-
+    
     <div className='App'>
   
     <div className='backgroundApp'>
-      <div className='headerSignAvaliable'> 
-        <div className='signUpClassName'>
-          <ThemeProvider theme={theme}>
+
+     
+      <div className='topHome'> 
+      
+      <div className='loginButton'>
+        <ThemeProvider theme={theme}>
             <Button onClick={btnLogIn} size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />}>
               Sign In
             </Button>
           </ThemeProvider>
-         <div>
-            <div  className={`${!showLogin ? "active" : ""} show`}>
-              <div className='divLoginRegister'>
-                <form onSubmit={handleLogin}>
-                  <h1> Sign in</h1>
-                  <label> Username</label> <br />
-                  <input type="text" name='username' className='loginBox' value={userLogin.username || ""} onChange={handleChangeLogin}/> <br />
-                  <label> Password</label>  <br />
-                  <input type='password' name='password' value={userLogin.password || ""} onChange={handleChangeLogin} className='loginBox'/>  <br />
-                  <input type="submit" value="Log in" className='login-btn'/> 
-                 
-                </form>
-                <Link to="/register">
-                    <button  className='registerBtn'>Register</button>
-                 </Link>
-              </div>
+        </div>
+        
+        <div className='header'>
+        <h1 >Mealplanner</h1>
+        </div>
+       
+
+      
+        <div className='navbar'>
+          {/* Render the NAvBar component */}
+          <NavBar />
+        </div>
+        </div>
+
+        <div className='overlayHomePage'>
+          <div className='searchTextMain'>
+          
+          <div className='searchInput'>
+          <input className='searchInput' type="text" value={searchFor} onChange={handleInputChange} />
+          </div>
+
+
+          <div className='buttonSearch'>
+          <ThemeProvider theme={theme}>
+          
+          <Button onClick={handleClickSearch} size='15px' color="primary" variant="contained" startIcon={<SearchIcon />} />
+          </ThemeProvider>
+          </div>
+          </div>
+
+          <div className='autoFillWithContent'>
+          <ThemeProvider theme={theme}>
+            
+
+            <Button onClick={btnAutoFill} size ='15px' color="primary" variant="contained" startIcon={<RamenDiningIcon />}>
+              Ramen
+            </Button>
+
+            <Button onClick={btnAutoFill} size ='15px' color="primary" variant="contained" startIcon={<LunchDiningIcon />}>
+              Burger
+            </Button>
+            <Button onClick={btnAutoFill} size ='15px' color="primary" variant="contained" startIcon={<BakeryDiningIcon />}>
+              Crossant
+            </Button>
+
+            <Button onClick={btnAutoFill} size ='15px' color="primary" variant="contained" startIcon={<EggIcon />}>
+              Egg
+            </Button>
+            <Button onClick={btnAutoFill} size ='15px' color="primary" variant="contained" startIcon={<LocalPizzaIcon />}>
+              Pizza
+            </Button>
+
+          </ThemeProvider>
+          </div>   
+
+          <div className='allInfo'>
+            <div className="list-group">
+             
+              
+              {items.map((item, index) => (
+                 <div className="theInfo"> 
+                <a href={item[3]}  className="listOfItems" key={index}>
+                <h5 className="headingInfo">{item[1]}</h5>
+                </a>
+               
+                    <small className='small'>{item[6]}</small>
+                    
+                    <ThemeProvider theme={theme}>
+                      
+                      <Button onClick={(event) => { 
+                      event.preventDefault() 
+                      handleLikedButton(item[3])
+                        }} size='15px' color="primary"  startIcon={isItemLiked(item[3]) ? <FavoriteIcon /> : <FavoriteBorderIcon />}>
+                      </Button>
+                    </ThemeProvider>
+                    <img className='imgRecipe' src={item[5]}/> 
+                   
+                 </div>
+                ))}
             </div>
+            <div className='fillEmptySearch'>
+              <p>
+                {errorText}
+              </p>
+            </div>
+
           </div>
         </div>
-      </div>
-      <div>
-
-      </div>
-      <div>
-      {/* Render the NAvBar component */}
-      <NavBar />
-    </div> 
-      <h1 className='header'>Mealplanner</h1>
-      
-      <div className='info'>
-
-     
-      <div className='searchTextBtn'>
-        <input className='search' type="text" value={searchFor} onChange={handleInputChange} />
-
-        <ThemeProvider theme={theme}>
-          <Button onClick={handleClickSearch} size='15px' color="primary" variant="contained" startIcon={<SearchIcon />} />
-        </ThemeProvider>
-       
-       <div className="list-group">
-        <h1 > {headerInfoSearch}</h1>
-       
-        {items.map((item, index) => (
-          <a href={item[3]}  className="listOfItems" key={index}>
-            <div className="theInfo"> 
-            
-              <h5 className="mb-1">{item[1]}</h5>
-              <small>{item[5]}</small>
-              
-              <ThemeProvider theme={theme}>
-                <Button onClick={(event) => { 
-                event.preventDefault() 
-                handleLikedButton(item[3])
-                  }} size='15px' color="primary" startIcon={<FavoriteIcon />} >
-                </Button>
-              </ThemeProvider>
-            </div>
-  
-          </a>
-        ))}
-    
-
-        </div>
-      <div className='fillEmptySearch'>
-        <p>
-          {errorText}
-        </p>
-      
-    </div>
-      </div>
-      </div>
-
-
-    <div>
-      {/* Render the LoginButton component */}
-      <LoginButton />
-    </div>
-    <div>
-      {/* Render the SignupButton component */}
-      <SignupButton/>
-    </div>
-  
-    <div>
-      {/* Render the LogoutButton component */}
-      <LogoutButton />
-    </div>
-
-    <div>
-      {/* Render the AuthenticationButton component with the isAuthenticated prop */}
-      <AuthButton isAuthenticated={isAuthenticated} />
-    </div>
-
-    <div>
-      {/* Render the AuthNav component with the isAuthenticated prop */}
-      <AuthNav isAuthenticated={isAuthenticated} />
-    </div>
-      
-
 
     </div>
     </div>
