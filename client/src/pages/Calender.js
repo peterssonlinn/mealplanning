@@ -113,14 +113,22 @@ function Calender() {
   return (
     <div className='App'>
     <div className='backgroundApp'>
-      <div>
-        {/* Render the NavBar component */}
-        <NavBar />
-      </div>
-        <div>
-        {/* Render the Calender and drag items  component */}
-        <TestCal />
-      </div>
+    <div className='topHome'> 
+    <div className='loginButton'>
+       
+        </div>
+        <div className='header'>
+        <h1 >Mealplanner</h1>
+        </div>
+        <div className='navbar'>
+          {/* Render the NAvBar component */}
+          <NavBar />
+        </div>
+        </div>
+        <div className='testCal'>
+          {/* Render the NAvBar component */}
+          <TestCal />
+        </div>
     </div>
     
     </div>
