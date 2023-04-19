@@ -170,6 +170,20 @@
   padding-left: 4%;
 }
 
+.overlayAboutMe{
+  background-color: wheat;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+.aboutMeHeader{
+  color: #307672;
+  margin: auto;
+  justify-content: center !important;
+  
+  align-items:'center';
+
+}
+
 .boxDropdown{
   background-color: white;
   border-color: #144D53;
