@@ -172,7 +172,11 @@
 
 .boxDropdown{
   background-color: white;
-  
+  border-color: #144D53;
+  z-index: 9999;
+  top: 100%;
+  left: 0;
+  position: absolute;
 }
 .imgRecipe{
   border-radius: 2%;
