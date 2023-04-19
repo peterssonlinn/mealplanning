@@ -281,26 +281,46 @@
   z-index: 2;
   top: 20px;
   left: 20px;
-  width: 300px;
+  width: 400px;
   padding: 0 10px;
   border: 1px solid #ccc;
-  background: #eee;
+  background: beige;
   overflow-y: scroll;
-  height: 500px;
-  margin-left: 20px;
+  height: 600px;
+  margin-left: 55px;
+  color: rgb(48, 47, 47)
 }
 
 #saved_recepies .fc-event {
-  cursor: move;
+  cursor: grab;
   margin: 3px 0;
+  background-color: #307672;
+  color :rgb(48, 47, 47);
+  text-transform: capitalize;
+  text-align: left;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  fallback: inherit;
 }
 
 #calendar-container {
   z-index: 1;
-  margin-left: 50px;
   width: 800px;
   float: right;
   background-color: beige;
   font-size: 20px !important;
-  margin-right: 15px;
+  margin-right: 55px;
+  color :rgb(48, 47, 47)
+}
+.list-container {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.list {
+  display: flex;
+  flex-direction: column;
 }

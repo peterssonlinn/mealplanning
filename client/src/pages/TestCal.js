@@ -44,6 +44,7 @@ function TestCal() {
     calendar.setOption('droppable', true);
     calendar.setOption('weekends', true)
     calendar.setOption('events', events)
+    calendar.setOption('height', 600);    
     calendar.setOption('drop', function(info) {
       if (checkbox.checked) {
         info.draggedEl.parentNode.removeChild(info.draggedEl);
@@ -62,68 +63,71 @@ function TestCal() {
         <p>
           <strong>Saved Recepies: </strong>
         </p>
-
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
-        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
-        </div>
         <p>
           <input type='checkbox' id='drop-remove' ref={checkboxRef} />
           <label htmlFor='drop-remove'>Remove after added to calendar?</label>
         </p>
+        <div className='list-container'>
+          <div className='list'>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepiesfdjgfdlkgj l fdjfsld  spfjdlfk j eoiedfjos ijd lkldfnlkfnd</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+          <div className='fc-event-main'>Will be saved recepies</div>
+        </div>
+        </div>
+        </div>
       </div>
 
       <div id='calendar-container'>
