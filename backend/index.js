@@ -49,17 +49,19 @@ app.get('/api/recipes' , (req, res,next) => {
             if(search != undefined){
                
                 let url = "https://api.edamam.com/api/recipes/v2?type=public&q="+search+"&app_id=388e1e79&app_key=%2033bf2f3c0efef80e1df276c6ef485756"
-                console.log(url)
+             
                 axios.get(url)
                 .then(response => {
                     if(response.data.hits.length){
 
                         for(let t in response.data.hits){
                             individualData = []
+                            console.log(response.data.hits[t]);
                             label = response.data.hits[t]['recipe']['label'];
                             ingredients = response.data.hits[t]['recipe']['ingredientLines'];
                             time = response.data.hits[t]['recipe']['totalTime'];
                             orginalUrl = response.data.hits[t]['recipe']['url'];
+                            imgLink = response.data.hits[t]['recipe']['image'];
                             individualData.push('name:')
                             individualData.push(label);
                             // individualData.push('ingidients:')
@@ -68,7 +70,12 @@ app.get('/api/recipes' , (req, res,next) => {
                             // individualData.push(time);
                             individualData.push('url:')
                             individualData.push(orginalUrl);
+                            individualData.push('imgLink:');
+                            individualData.push(imgLink);
+                          
+
                             returnData.push(individualData);
+                           
                            
                             
                         }
