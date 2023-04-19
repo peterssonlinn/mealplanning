@@ -47,54 +47,7 @@ function Calender() {
     const [open, setOpen] = React.useState(false);
 
     
-    /*const Event = ({ title }) => {
-      const [{isDragging}, drag] = useDrag({
-        type: 'events',
-        item: () => ({id: title}),
-        collect: monitor => ({
-          isDragging: !!monitor.isDragging()
-        })
-      });
-    
-    return(
-      <div ref={drag} style={{opacity : isDragging ? 0.5 : 1}}>
-        {title}
-      </div>
-    );
-    };
-
-    const Drop = () => {
-      const calendarRef = useRef(null);
-      const [selectDate, setSelectedDate] = useState(null); 
-      const [{canDrop, isOver}, drop] = useDrop({
-        accept: 'events',
-        drop: (item, monitor) => {
-          const calendarApi = calendarRef.current.getApi();
-          const dropDate = monitor.date || new Date();
-          console.log(dropDate)
-          if(dropDate){
-          const hasTime = dropDate.getHours() !== 0 || dropDate.getMinutes() !== 0 || dropDate.getSeconds() !== 0;
-          calendarApi.addEvent({
-            title: item.title,
-            start: dropDate,
-            allDay: !hasTime
-          });
-        }
-          // if (!hasTime){
-         // dropDate.setHours(23, 59, 59);
-        //}
-        
-          setSelectedDate(null);
-        },
-        collect: monitor => ({
-          canDrop: monitor.canDrop(),
-          isOver: monitor.isOver()
-        })
-      });
-      const handleDateSelect = info => {
-        setSelectedDate(info.start);
-      }
-
+    /*
       return (
         <div ref={drop} className={canDrop && isOver ? 'drop-hover' : ''}>
           DRAG and drop here
@@ -165,7 +118,7 @@ function Calender() {
         <NavBar />
       </div>
         <div>
-        {/* Render the NavBar component */}
+        {/* Render the Calender and drag items  component */}
         <TestCal />
       </div>
     </div>

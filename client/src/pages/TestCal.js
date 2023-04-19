@@ -16,7 +16,8 @@ const TestCal = () => {
           itemSelector: '.fc-event',
           eventData: function(eventEl){
             return {
-              title: eventEl.innerText
+              title: eventEl.innerText,
+              id: Date.now()
             };
           }
         });
@@ -43,20 +44,20 @@ const TestCal = () => {
     <strong>Draggable Events</strong>
   </p>
 
-  <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-    <div class='fc-event-main'>My Event 1</div>
+  <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+    <div className='fc-event-main'>My Event 1</div>
   </div>
-  <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-    <div class='fc-event-main'>My Event 2</div>
+  <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+    <div className='fc-event-main'>My Event 2</div>
   </div>
-  <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-    <div class='fc-event-main'>My Event 3</div>
+  <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+    <div className='fc-event-main'>My Event 3</div>
   </div>
-  <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-    <div class='fc-event-main'>My Event 4</div>
+  <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+    <div className='fc-event-main'>My Event 4</div>
   </div>
-  <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-    <div class='fc-event-main'>My Event 5</div>
+  <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+    <div className='fc-event-main'>My Event 5</div>
   </div>
 </div>
 
