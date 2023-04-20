@@ -57,6 +57,7 @@ function Profile() {
     const [errorText, setErrorText] = useState('');
     const [headerInfoSearch, setHeaderInfoSearch] = useState('');
     const [showUpdateText, setUpdateTextView] = useState(false);
+    const [showChangeAvatar, setChangeAvatar] = useState(false);
     const [textAboutMe, setAboutMe] = useState();
     const [newTextAboutMe, setTextAboutMe] = useState('');
     const [avatar, setAvatar] = useState('');
@@ -84,12 +85,31 @@ function Profile() {
   
   }
 
-  const btnChooseAvatar = () => {
-    window.alert("new")
+  const btnChooseAvatar = (event) => {
+    
+    if(event.target.src){
+
+      let orgString = event.target.src;
+      let checkAgainst = orgString.split("http://localhost:3000").pop();
+      if(checkAgainst === avatarImage1){
+        setAvatar(avatarImage1);
+      }
+      else if(checkAgainst === avatarImage2){
+        setAvatar(avatarImage2);
+      }
+      else if(checkAgainst === avatarImage3){
+        setAvatar(avatarImage3);
+      }
+      else if(checkAgainst === avatarImage4){
+        setAvatar(avatarImage4);
+      }
+  }
+    
   }
 
   const newAvatarPic = () => {
-    window.alert("should change avatar");
+    setChangeAvatar(!showChangeAvatar);
+    
 
   }
 
@@ -179,7 +199,6 @@ function Profile() {
 
      
       <div className='topHome'> 
-      
       <div className='loginButton'>
         <ThemeProvider theme={theme}>
             <Button onClick={btnLogIn} size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />}>
@@ -192,74 +211,15 @@ function Profile() {
         <h1 >Mealplanner</h1>
         </div>
        
-
-      
         <div className='navbar'>
           {/* Render the NAvBar component */}
           <NavBar />
         </div>
         </div>
 
-        <div className='overlayAboutMe'>
-          <div >
-            <h5 className='aboutMeHeader'>
-             About me
-            </h5>
-          </div>
-         
-          <div>
-            <p >
-            {!loadingDefault && textAboutMe}
-            </p>
-          </div>
+        <div className='searchAboutField'>
 
-          <div>
-          <ThemeProvider theme={theme}>
-          <Button onClick={handleUpdateText} size='15px' color="primary" variant="contained" startIcon={<EditIcon />} >
-            Edit text
-          </Button>
-          </ThemeProvider>
-         { showUpdateText &&  
-         <form>
-            <input onChange = {(e) => setTextAboutMe(e.target.value)} value = {newTextAboutMe}></input>
-            <ThemeProvider theme={theme}>
-          <Button onClick={newTextButton} size='15px' color="primary" variant="contained" startIcon={<CheckIcon />} >
-            New Text
-          </Button>
-          </ThemeProvider>
-           
-         </form> }
-          </div>
-          <div>
-            <Avatar alt="Profial picture" src={avatar}/>
-            <ThemeProvider theme={theme}>
-            <Button onClick={newAvatarPic} size='15px' color="primary" variant="contained" startIcon={<EditIcon />} >
-              Change Avatar
-            </Button>
-            </ThemeProvider>
-          </div>
-
-          <div>
-          <ThemeProvider theme={theme}>
-            <Button onClick={btnChooseAvatar} size ='15px' color="primary" variant="outlined" startIcon={<Avatar src={avatarImage1}/>} />
-             
-            
-
-            <Button onClick={btnChooseAvatar} size ='15px' color="primary" variant="outlined" startIcon={<Avatar src={avatarImage2}/>}/>
-             
-            
-            <Button onClick={btnChooseAvatar} size ='15px' color="primary" variant="outlined" startIcon={<Avatar src={avatarImage3}/>}/>
-              
-
-            <Button onClick={btnChooseAvatar} size ='15px' color="primary" variant="outlined" startIcon={<Avatar src={avatarImage4}/>}/>
-             
-
-          </ThemeProvider>
-          </div>
-
-        </div>
-
-        <div className='overlayHomePage'>
+          <div className='searchField'>
           <div className='searchTextMain'>
           
           <div className='searchInput'>
@@ -330,6 +290,79 @@ function Profile() {
             </div>
 
           </div>
+
+          </div>
+
+
+
+          <div className='aboutMeField'>
+            <div className='aboutMeHeader'>
+              <h5 className='headerAboutMe'>
+              About me
+              </h5>
+              <p className='textAboutMe' >
+              {!loadingDefault && textAboutMe}
+              </p>
+            </div>  
+            <div className='avatar'>
+               <Avatar sx={{width: 80, height: 80}} alt="Profial picture" src={avatar} />
+              </div>
+          
+          <div className='editText'>
+          <ThemeProvider theme={theme}>
+          <Button onClick={handleUpdateText} size='15px' color="primary" variant="contained" startIcon={<EditIcon />} >
+            Edit text
+          </Button>
+          </ThemeProvider>
+          </div>
+
+         { showUpdateText &&  
+          <div> 
+              <input onChange = {(e) => setTextAboutMe(e.target.value)} value = {newTextAboutMe}></input>
+              <ThemeProvider theme={theme}>
+            <Button onClick={newTextButton} size='15px' color="primary" variant="contained" startIcon={<CheckIcon />} >
+            </Button>
+            </ThemeProvider>
+            </div>
+         }  
+         {!showUpdateText && 
+         <div>
+         
+         <p>
+          </p>
+          </div>
+          }
+         
+          <div className='changeAvatar'>
+             
+              <ThemeProvider theme={theme}>
+              <Button onClick={newAvatarPic} size='15px' color="primary" variant="contained" startIcon={<EditIcon />} >
+                Change Avatar
+              </Button>
+              </ThemeProvider>
+            
+
+            </div>
+
+            <div>
+              {showChangeAvatar &&
+            <ThemeProvider theme={theme}>
+              <Button onClick={btnChooseAvatar} size ='15px' color="primary" variant="outlined" startIcon={<Avatar src={avatarImage1}/>} />
+              <Button onClick={btnChooseAvatar} size ='15px' color="primary" variant="outlined" startIcon={<Avatar src={avatarImage2}/>}/>
+              <Button onClick={btnChooseAvatar} size ='15px' color="primary" variant="outlined" startIcon={<Avatar src={avatarImage3}/>}/>
+              <Button onClick={btnChooseAvatar} size ='15px' color="primary" variant="outlined" startIcon={<Avatar src={avatarImage4}/>}/>
+            </ThemeProvider>
+            }
+            </div>
+          </div>   
+          
+           
+
+               
+        </div>
+
+        <div className='overlayHomePage'>
+         
         </div>
 
     </div>

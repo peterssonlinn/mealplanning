@@ -25,7 +25,6 @@ import LogoutButton from './LogoutButton';
 import AuthButton from './AuthButton';
 import AuthNav from './AuthNav';
 import NavBar from './NavBar';
-import Grid from '@mui/material/Grid';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
