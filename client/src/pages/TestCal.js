@@ -10,9 +10,11 @@ function TestCal() {
   const checkboxRef = useRef(null);
 
   const events = [ 
-    {title : 'Chicken stew',
+    { id : 'a',
+      title : 'Chicken stew',
     date: '2023-04-20T12:00:00'                
   },{
+    id : 'b',
     title: 'Korvstroganoff',
     date: '2023-04-22T17:30:00'
   }
@@ -22,6 +24,9 @@ function TestCal() {
     const containerEl = savedRecepiesRef.current;
     const calendarEl = calendarRef.current;
     const checkbox = checkboxRef.current;
+    const calendarApi = calendarRef.current.getApi();
+    const calendar = calendarEl.getApi();
+
 
     const draggable = new Draggable(containerEl, {
       itemSelector: '.fc-event',
@@ -31,9 +36,9 @@ function TestCal() {
         };
       }
     });
-
-    const calendar = calendarEl.getApi();
-
+ 
+    
+  
     calendar.setOption('plugins', [dayGridPlugin, timeGridPlugin, interactionPlugin]);
     calendar.setOption('headerToolbar', {
       left: 'prev,next today',
@@ -42,9 +47,26 @@ function TestCal() {
     });
     calendar.setOption('editable', true);
     calendar.setOption('droppable', true);
-    calendar.setOption('weekends', true)
-    calendar.setOption('events', events)
+    calendar.setOption('weekends', true);
+    calendar.setOption('events', events);
     calendar.setOption('height', 600);    
+    calendar.setOption('eventClick', function handleKeyDown(info){
+      if (info.key === "Backspace"){
+        console.log("TETSETESTE");
+        console.log(calendarApi.view.events.selection)
+      if (calendarApi.view.selection) {
+        const eventId = calendarApi.view.selection.id;
+        console.log(eventId);
+        const event = calendarApi.getEventById(eventId);
+        //const selectedEvent = calendarApi.view.calendar.getEventById(calendarApi.view.selection.id);
+        if (event){
+          event.remove();
+        }
+      }
+    }
+    });
+    window.addEventListener("keydown", handleKeyDown);
+
     calendar.setOption('drop', function(info) {
       if (checkbox.checked) {
         info.draggedEl.parentNode.removeChild(info.draggedEl);
@@ -54,8 +76,9 @@ function TestCal() {
     return () => {
       draggable.destroy();
       calendar.destroy();
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  });
 
   return (
     <div>
@@ -103,7 +126,7 @@ function TestCal() {
           <div className='fc-event-main'>Will be saved recepies</div>
         </div>
         <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Will be saved recepies</div>
+          <div className='fc-event-main'>calendar.events</div>
         </div>
         <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
           <div className='fc-event-main'>Will be saved recepies</div>
@@ -130,7 +153,7 @@ function TestCal() {
         </div>
       </div>
 
-      <div id='calendar-container'>
+      <div id='calendar'>
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

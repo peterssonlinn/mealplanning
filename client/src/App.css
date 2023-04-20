@@ -306,7 +306,7 @@
   fallback: inherit;
 }
 
-#calendar-container {
+#calendar {
   z-index: 1;
   width: 800px;
   float: right;
