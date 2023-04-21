@@ -52,6 +52,13 @@
 
   
 }
+
+.searchField{
+  padding-top: 8%;
+  justify-content: center;
+  align-items: center;
+}
+
 .searchTextMain{
   display: flex;
   flex-direction: row;
@@ -238,6 +245,8 @@
   margin: auto;
 
 }
+
+.searchAboutFieldAboutMe{}
 
 .avatar{
   margin: auto;

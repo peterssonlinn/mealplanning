@@ -226,13 +226,12 @@ function Profile() {
           <input className='searchInput' type="text" value={searchFor} onChange={handleInputChange} />
           </div>
 
-
           <div className='buttonSearch'>
           <ThemeProvider theme={theme}>
-          
           <Button onClick={handleClickSearch} size='15px' color="primary" variant="contained" startIcon={<SearchIcon />} />
           </ThemeProvider>
           </div>
+
           </div>
 
           <div className='autoFillWithContent'>
@@ -257,39 +256,6 @@ function Profile() {
 
           </ThemeProvider>
           </div>   
-
-          <div className='allInfo'>
-            <div className="list-group">
-             
-              
-              {items.map((item, index) => (
-                 <div className="theInfo"> 
-                <a href={item[3]}  className="listOfItems" key={index}>
-                <h5 className="headingInfo">{item[1]}</h5>
-                </a>
-               
-                    <small className='small'>{item[6]}</small>
-                    
-                    <ThemeProvider theme={theme}>
-                      
-                      <Button onClick={(event) => { 
-                      event.preventDefault() 
-                      handleLikedButton(item[3])
-                        }} size='15px' color="primary"  startIcon={isItemLiked(item[3]) ? <FavoriteIcon /> : <FavoriteBorderIcon />}>
-                      </Button>
-                    </ThemeProvider>
-                    <img className='imgRecipe' src={item[5]}/> 
-                   
-                 </div>
-                ))}
-            </div>
-            <div className='fillEmptySearch'>
-              <p>
-                {errorText}
-              </p>
-            </div>
-
-          </div>
 
           </div>
 
