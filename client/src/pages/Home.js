@@ -207,7 +207,7 @@ function Home() {
              
               
               {items.map((item, index) => (
-                 <div className="theInfo"> 
+                 <div className="theInfoCarousel"> 
                 <a href={item[3]}  className="listOfItems" key={index}>
                 <h5 className="headingInfo">{item[1]}</h5>
                 </a>

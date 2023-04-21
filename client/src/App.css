@@ -34,14 +34,12 @@
   max-width: 160vh; 
   align-items: center;
   align-content: center;
-  padding: 0.5%;
+  padding: 1%;
   justify-content: center !important;
   flex-direction: column;
   margin: auto;
-
-
   background-color: #307672;
-  
+  padding-bottom: 0.5%;
 }
 .backgroundApp{
   height: 100vh;
@@ -102,6 +100,57 @@
   align-items:'center';
   height: 25px;
   
+}
+
+.imgRecipeCarousel{
+  border-radius: 2%;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.headingInCarousel{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.listOfItemsCarousel{
+  color: inherit;
+  
+
+}
+.theInfoCarousel{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  background-color: #E4EDDB;
+  margin-left: 30%;
+  margin-right: 30%;
+  border-radius: 2%;
+
+}
+
+
+
+.carousel{
+  justify-content: center;
+  align-content: flex-start;
+  align-items:'center';
+  margin: auto;
+  
+}
+
+.recipesImages{
+  justify-content: center;
+  align-content: flex-start;
+  align-items:'center';
+  margin: auto;
+  padding-left: 25%;
 }
 
 

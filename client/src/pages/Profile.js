@@ -1,51 +1,27 @@
-import { Link, Route, withRouter} from 'react-router-dom';
 import React, {useEffect, useState} from 'react';
 import avatarImage1 from '../images/icons/1.jpeg';
 import avatarImage2 from '../images/icons/2.jpeg';
 import avatarImage3 from '../images/icons/3.jpeg';
 import avatarImage4 from '../images/icons/4.jpeg';
-
 import '../../src/App.css';
+import AliceCarousel from 'react-alice-carousel';
+import 'react-alice-carousel/lib/alice-carousel.css';
 import Button from '@mui/material/Button';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { indigo } from '@mui/material/colors';
-import DehazeIcon from '@mui/icons-material/Dehaze';
 import SearchIcon from '@mui/icons-material/Search';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Box from '@mui/material/Box';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import PersonIcon from '@mui/icons-material/Person';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import HomeIcon from '@mui/icons-material/Home';
-import Diversity1Icon from '@mui/icons-material/Diversity1';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import axios from 'axios'
-import LoginButton from './LoginButton';
-import SignupButton from './SignupButton';
-import LogoutButton from './LogoutButton';
-import AuthButton from './AuthButton';
-import AuthNav from './AuthNav';
 import NavBar from './NavBar';
-import Grid from '@mui/material/Grid';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import LunchDiningIcon from '@mui/icons-material/LunchDining';
 import EggIcon from '@mui/icons-material/Egg';
-import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import RamenDiningIcon from '@mui/icons-material/RamenDining';
 import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
 import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import TextField from '@mui/material/TextField';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import Avatar from '@mui/material/Avatar';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 
 function Profile() {
@@ -61,111 +37,120 @@ function Profile() {
     const [textAboutMe, setAboutMe] = useState();
     const [newTextAboutMe, setTextAboutMe] = useState('');
     const [avatar, setAvatar] = useState('');
+    const [carouselData, setCarouselData] = useState([]);
+    let [orginalData, setOrginalData] = useState([]);
 
-    
+
+    const handleDragStart = (e) => e.preventDefault();
 
     const[loadingDefault, setLoadingDefault] = useState(true);
-    
-   
-  useEffect(() => {
-
-    setAboutMe("I really like carrots");
-    setAvatar(avatarImage3);
-    setLoadingDefault(false);
-
-  }, []);
-
-  const newTextButton = () => {
-    if(newTextAboutMe) {
-      setAboutMe(newTextAboutMe);
-      setTextAboutMe("");
-      setUpdateTextView(!showUpdateText);
-      
-    }
-  
-  }
-
-  const btnChooseAvatar = (event) => {
-    
-    if(event.target.src){
-
-      let orgString = event.target.src;
-      let checkAgainst = orgString.split("http://localhost:3000").pop();
-      if(checkAgainst === avatarImage1){
-        setAvatar(avatarImage1);
-      }
-      else if(checkAgainst === avatarImage2){
-        setAvatar(avatarImage2);
-      }
-      else if(checkAgainst === avatarImage3){
-        setAvatar(avatarImage3);
-      }
-      else if(checkAgainst === avatarImage4){
-        setAvatar(avatarImage4);
-      }
-  }
-    
-  }
-
-  const newAvatarPic = () => {
-    setChangeAvatar(!showChangeAvatar);
-    
-
-  }
-
     const isItemLiked = (url) => likedItems.includes(url);
-
     const [likedItems, setLikedItems] = useState([]);
 
     const handleLikedButton = (url) => {
       window.alert(url)
-
+  
       if (likedItems.includes(url)) {
         setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== url));
-      
+       
       } else {
         setLikedItems((prevLikedItems) => [...prevLikedItems, url]);
       }
     };
 
+    
+   
+    useEffect(() => {
+      setAboutMe("I really like carrots");
+      setAvatar(avatarImage3);
+      setLoadingDefault(false);
+    }, []);
 
+    useEffect(() => {
+      axios.get("/api/recipes/?search="+"egg")
+        .then(response => {
+          setCarouselData(response.data) ;
+          setOrginalData(response.data);
+        })
+        .catch(error => console.error(error));
 
-    const btnLogIn = () =>{
-      setShowLogin((showLogin) => !showLogin);
+    }, []);
+
+    
+
+    const newTextButton = () => {
+      if(newTextAboutMe) {
+        setAboutMe(newTextAboutMe);
+        setTextAboutMe("");
+        setUpdateTextView(!showUpdateText);
+        
+      }
+
     }
     
-  
+    const btnChooseAvatar = (event) => {
+      
+      if(event.target.src){
+
+        let orgString = event.target.src;
+        let checkAgainst = orgString.split("http://localhost:3000").pop();
+        if(checkAgainst === avatarImage1){
+          setAvatar(avatarImage1);
+        }
+        else if(checkAgainst === avatarImage2){
+          setAvatar(avatarImage2);
+        }
+        else if(checkAgainst === avatarImage3){
+          setAvatar(avatarImage3);
+        }
+        else if(checkAgainst === avatarImage4){
+          setAvatar(avatarImage4);
+        }
+    }
+      
+    }
+
+    const newAvatarPic = () => {
+      setChangeAvatar(!showChangeAvatar);
+    }
 
     const btnAutoFill = (event) =>{
       setSearchFor(searchFor + " " + event.target.textContent);
       
     }
-    
+      
     const handleClickSearch = () => {
+      let search = searchFor.toLowerCase();
+      
       if(searchFor != ""){
-        setItems([]);
-        setHeaderInfoSearch('');
-        axios.get("/api/recipes/?search="+searchFor)
-        .then((res) =>  {
-          if (res.status === 200){
-            setErrorText("");
-            console.log(res.data);
-            setHeaderInfoSearch('result for: '+searchFor);
-            setItems(res.data);
-            
+        let newData = []
+       
+        for(let element in carouselData){
+          
+          
+          let name = carouselData[element]; 
+          name = name[1];
+          
+          name = name.toLowerCase();
+          
+          if(name.includes(search) ){
+            newData.push( carouselData[element])
+          
           }
-        })
-        .catch((error) => {
-          console.log(error);
-          setErrorText("this did not work :(");
-          setSearchFor("");
-        })
-        
-    
-        
+
+        }
+        console.log(newData)
+        setCarouselData(newData)
+
+  
       } 
+      else{
+        setSearchFor('')
+        console.log(orginalData)
+        setCarouselData(orginalData);
+      }
     };
-    
+      
     const handleUpdateText = () =>{
       setUpdateTextView(!showUpdateText);
     };
@@ -173,9 +158,6 @@ function Profile() {
     const handleInputChange = (event) => {
       setSearchFor(event.target.value);
     };
-
-
-    
 
     const theme = createTheme({
       palette: {
@@ -201,7 +183,7 @@ function Profile() {
       <div className='topHome'> 
       <div className='loginButton'>
         <ThemeProvider theme={theme}>
-            <Button onClick={btnLogIn} size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />}>
+            <Button size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />}>
               Sign In
             </Button>
           </ThemeProvider>
@@ -328,11 +310,40 @@ function Profile() {
         </div>
 
         <div className='overlayHomePage'>
-         
+          <div className='carousel'>
+          <AliceCarousel touchMoveDefaultEvents={true} 
+          mouseTracking >
+            {carouselData.map((item, index) => (
+              <div className="theInfoCarousel"> 
+              <a target='_blank' href={item[3]}  className="listOfItemsCarousel" key={index}>
+              <h5 className="headingInfoCarousel">{item[1]}</h5>
+              </a>
+             
+                  <small className='small'>{item[6]}</small>
+                  
+                  <ThemeProvider theme={theme}>
+                    
+                    <Button onClick={(event) => { 
+                    event.preventDefault() 
+                    handleLikedButton(item[3])
+                      }} size='15px' color="primary"  startIcon={isItemLiked(item[3]) ? <FavoriteBorderIcon />  : <FavoriteIcon />}>
+                    </Button>
+                  </ThemeProvider>
+                  <img className='imgRecipeCarousel' src={item[5]}/> 
+                 
+               </div>
+              ))}
+          </AliceCarousel>
+
+          
+
+        </div>
+          
         </div>
 
     </div>
-    </div>
+  
+  </div>
   );
 }
 
