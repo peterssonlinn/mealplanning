@@ -8,6 +8,7 @@ function TestCal() {
   const savedRecepiesRef = useRef(null);
   const calendarRef = useRef(null);
   const checkboxRef = useRef(null);
+  const checkboxDelRef = useRef(null);
 
   const events = [ 
     { id : 'a',
@@ -24,7 +25,6 @@ function TestCal() {
     const containerEl = savedRecepiesRef.current;
     const calendarEl = calendarRef.current;
     const checkbox = checkboxRef.current;
-    const calendarApi = calendarRef.current.getApi();
     const calendar = calendarEl.getApi();
 
 
@@ -36,9 +36,7 @@ function TestCal() {
         };
       }
     });
- 
-    
-  
+
     calendar.setOption('plugins', [dayGridPlugin, timeGridPlugin, interactionPlugin]);
     calendar.setOption('headerToolbar', {
       left: 'prev,next today',
@@ -50,33 +48,22 @@ function TestCal() {
     calendar.setOption('weekends', true);
     calendar.setOption('events', events);
     calendar.setOption('height', 600);    
-    calendar.setOption('eventClick', function handleKeyDown(info){
-      if (info.key === "Backspace"){
-        console.log("TETSETESTE");
-        console.log(calendarApi.view.events.selection)
-      if (calendarApi.view.selection) {
-        const eventId = calendarApi.view.selection.id;
-        console.log(eventId);
-        const event = calendarApi.getEventById(eventId);
-        //const selectedEvent = calendarApi.view.calendar.getEventById(calendarApi.view.selection.id);
-        if (event){
-          event.remove();
-        }
-      }
-    }
-    });
-    window.addEventListener("keydown", handleKeyDown);
-
+  
     calendar.setOption('drop', function(info) {
       if (checkbox.checked) {
         info.draggedEl.parentNode.removeChild(info.draggedEl);
       }
     });
 
+    calendar.setOption('eventClick', function(info){
+      if (checkboxDelRef.current.checked){
+        info.event.remove()
+      }
+      
+    });
     return () => {
       draggable.destroy();
       calendar.destroy();
-      window.removeEventListener("keydown", handleKeyDown);
     };
   });
 
@@ -152,7 +139,12 @@ function TestCal() {
         </div>
         </div>
       </div>
-
+      <div>
+      <p>
+          <input type='checkbox' id='event-remove' ref={checkboxDelRef} />
+          <label htmlFor='event-remove'>Remove from calendar?</label>
+        </p>
+      </div>
       <div id='calendar'>
         <FullCalendar
           ref={calendarRef}
