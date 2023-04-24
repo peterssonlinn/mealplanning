@@ -50,6 +50,7 @@ function TestCal() {
     calendar.setOption('events', events);
     calendar.setOption('eventBackgroundColor', '#307672');
     calendar.setOption('height', 580);    
+    calendar.setOption('firstDay', 1)
     calendar.setOption('eventTimeFormat', 
        { hour: '2-digit',
         minute: '2-digit',
