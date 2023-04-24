@@ -226,7 +226,7 @@ function Profile() {
               Burger
             </Button>
             <Button onClick={btnAutoFill} size ='15px' color="primary" variant="contained" startIcon={<BakeryDiningIcon />}>
-              Crossant
+              Croissant
             </Button>
 
             <Button onClick={btnAutoFill} size ='15px' color="primary" variant="contained" startIcon={<EggIcon />}>

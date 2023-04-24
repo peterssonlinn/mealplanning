@@ -84,7 +84,7 @@ function TestCal() {
     <div>
       <div id='saved_recepies' ref={savedRecepiesRef}>
         <p>
-          <strong>Saved Recepies: </strong>
+          <strong>Saved Recipes: </strong>
         </p>
         <p>
           <input type='checkbox' id='drop-remove' ref={checkboxRef} />
@@ -93,13 +93,13 @@ function TestCal() {
         <div className='list-container'>
           <div className='list'>
         <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Recepie 1</div>
+          <div className='fc-event-main'>Recipe 1</div>
         </div>
         <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Recepie 2</div>
+          <div className='fc-event-main'>Recipe 2</div>
         </div>
         <div className='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div className='fc-event-main'>Recepie 3</div>
+          <div className='fc-event-main'>Recipe 3</div>
         </div>
         </div>
         </div>

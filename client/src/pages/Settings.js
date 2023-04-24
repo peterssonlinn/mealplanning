@@ -147,7 +147,7 @@ function Settings() {
                     <input onChange={handleChangeTetx} type='text'></input>
                     <ThemeProvider theme={theme}>
                     <Button onClick={SubmitRemoveAccount} size ='15px' color="primary" variant="contained" startIcon={<CheckIcon />}>
-                     Sumbit
+                     Submit
                     </Button>
                     </ThemeProvider>
                     </div>
@@ -181,7 +181,7 @@ function Settings() {
                     <input  onChange={handleChangeEmailText} type='text'></input>
                     <ThemeProvider theme={theme}>
                     <Button onClick={sumbitAccessInformation} size ='15px' color="primary" variant="contained" startIcon={<CheckIcon />}>
-                     Sumbit
+                     Submit
                     </Button>
                     </ThemeProvider>
                     </div>
