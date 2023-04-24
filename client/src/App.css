@@ -284,11 +284,11 @@
   width: 400px;
   padding: 0 10px;
   border: 1px solid #ccc;
-  background: beige;
+  background:  #D2E1D1;
   overflow-y: scroll;
-  height: 600px;
-  margin-left: 55px;
-  color: rgb(48, 47, 47)
+  height: 580px;
+  color: rgb(48, 47, 47);
+  margin-left: 40px;
 }
 
 #saved_recepies .fc-event {
@@ -310,10 +310,10 @@
   z-index: 1;
   width: 800px;
   float: right;
-  background-color: beige;
+  margin-right: 40px;
+  background-color:#D2E1D1;
   font-size: 20px !important;
-  margin-right: 55px;
-  color :rgb(48, 47, 47)
+  color :rgb(48, 47, 47);
 }
 .list-container {
   display: inline-flex;
@@ -323,4 +323,12 @@
 .list {
   display: flex;
   flex-direction: column;
+}
+
+.removeEvent {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-right: 40px;
+    color: rgb(48, 47, 47);
 }
