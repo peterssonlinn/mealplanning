@@ -134,6 +134,33 @@
   border-radius: 2%;
 
 }
+.submitForm{
+  display: flex;
+  align-items: center;
+}
+.textForm{
+  margin-right: 10px;
+}
+.btnSettings{
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 20px;
+  padding: 2%;
+
+}
+
+.fillerParagrah::before{
+  content: "";
+  display: block;
+  border-top: 1px solid #E4EDDB;
+  margin-bottom: 10px;
+}
+
+.textSettings{
+  color: white;
+  padding-left: 5%;
+  padding-right: 5%;
+}
 
 
 
