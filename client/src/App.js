@@ -8,9 +8,12 @@ import Calender from './pages/Calender';
 import Friends from './pages/Friends';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import Login from './pages/Login';
+import Reset from './pages/Reset';
+
 
 import React, { useState } from 'react';
-import TestCal from './pages/TestCal';
+
 
 
 
@@ -21,12 +24,13 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home/>}> </Route>
-        <Route path="/signIn" element={<SignIn/>}> </Route>
         <Route path="/register" element={<Register/>}> </Route>
         <Route path="/calender" element={<Calender/>}></Route>
         <Route path="/friends" element={<Friends/>}> </Route>
         <Route path="/profile" element={<Profile/>}> </Route>
         <Route path="/settings" element={<Settings/>}> </Route>
+        <Route path="/login" element={<Login/>}> </Route>
+        <Route path="/reset" element={<Reset/>}> </Route>
       </Routes>
     </BrowserRouter>
     

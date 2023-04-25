@@ -4,9 +4,10 @@ import '../../src/App.css';
 import Button from '@mui/material/Button';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { indigo } from '@mui/material/colors';
-import DehazeIcon from '@mui/icons-material/Dehaze';
 import SearchIcon from '@mui/icons-material/Search';
+/*import { indigo } from '@mui/material/colors';
+import DehazeIcon from '@mui/icons-material/Dehaze';
+
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Box from '@mui/material/Box';
@@ -17,20 +18,20 @@ import PersonIcon from '@mui/icons-material/Person';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import HomeIcon from '@mui/icons-material/Home';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';*/
 import axios from 'axios'
-import LoginButton from './LoginButton';
+/*import LoginButton from './LoginButton';
 import SignupButton from './SignupButton';
 import LogoutButton from './LogoutButton';
 import AuthButton from './AuthButton';
 import AuthNav from './AuthNav';
-import NavBar from './NavBar';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import DinnerDiningIcon from '@mui/icons-material/DinnerDining';*/
+import NavBar from './NavBar';
 import LunchDiningIcon from '@mui/icons-material/LunchDining';
 import EggIcon from '@mui/icons-material/Egg';
-import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import RamenDiningIcon from '@mui/icons-material/RamenDining';
 import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
 import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
@@ -49,7 +50,7 @@ function Home() {
   const [errorText, setErrorText] = useState('');
   const [headerInfoSearch, setHeaderInfoSearch] = useState('');
 
-  const isAuthenticated = false;
+  //const isAuthenticated = false;
 
 
 
@@ -70,10 +71,10 @@ function Home() {
 
 
 
-  const btnLogIn = () =>{
+ /* const btnLogIn = () =>{
     setShowLogin((showLogin) => !showLogin);
   }
-  
+  */
  
 
   const btnAutoFill = (event) =>{
@@ -143,7 +144,7 @@ function Home() {
       
       <div className='loginButton'>
         <ThemeProvider theme={theme}>
-            <Button onClick={btnLogIn} size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />}>
+            <Button component={Link} to="/login" size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />} >
               Sign In
             </Button>
           </ThemeProvider>
@@ -152,8 +153,6 @@ function Home() {
         <div className='header'>
         <h1 >Mealplanner</h1>
         </div>
-       
-
       
         <div className='navbar'>
           {/* Render the NAvBar component */}
