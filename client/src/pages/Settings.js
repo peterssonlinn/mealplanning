@@ -105,7 +105,7 @@ function Settings() {
               </div>
               
               <div className='header'>
-              <h1 >Mealplanner</h1>
+              <h1 >MealMate</h1>
               </div>
             
 

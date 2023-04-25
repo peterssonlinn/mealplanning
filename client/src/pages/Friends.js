@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import avatarImage1 from '../images/icons/1.jpeg';
 import avatarImage2 from '../images/icons/2.jpeg';
 import avatarImage3 from '../images/icons/3.jpeg';
@@ -21,6 +21,10 @@ import Avatar from '@mui/material/Avatar';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CheckIcon from '@mui/icons-material/Check';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 
 function Friends() {
@@ -37,7 +41,10 @@ function Friends() {
     const [showValidUser, setShowValidUser] = useState(false);
     const[loadingDefault, setLoadingDefault] = useState(true);
     const [likedItems, setLikedItems] = useState([]);
-    const [searchUser, setSearchUser] = useState('');
+    const [friendsToUser, setFriendsToUser] = useState([]);
+    const [selectedFriend, setSelectedFriend] = useState('');
+    const refToAutoComplete = useRef(null);
+
 
 
     let [orginalData, setOrginalData] = useState([]);
@@ -46,9 +53,38 @@ function Friends() {
 
     const handleDragStart = (e) => e.preventDefault();
 
-    const handleChangeText = (event) => {
-      setSearchUser(event.target.value);
+  
+
+    const handleChangeOption = (event, value) =>{
+      setSelectedFriend(value);
+     
       
+    };
+
+   
+    const btnRemoveFriend = () =>{
+      if( selectedFriend && friendsToUser.includes(selectedFriend)){
+        let index = friendsToUser.indexOf(selectedFriend);
+        if (index > -1) {
+          friendsToUser.splice(index, 1);
+         
+          setFriendsToUser(friendsToUser);
+        }
+      }
+
+     
+
+    }
+    const btnAddFriend = () =>{
+      if(selectedFriend && !friendsToUser.includes(selectedFriend)){
+        friendsToUser.push(selectedFriend);
+        setFriendsToUser(friendsToUser);
+      
+    
+      }
+      
+      
+     
     };
 
     const isItemLiked = (url) => likedItems.includes(url);
@@ -64,14 +100,20 @@ function Friends() {
       }
     };
 
-    
+    useEffect(() => {
+      let friends = []
+      friends.push('benny');
+      friends.push("anna")
+      setFriendsToUser(friends)
+    }, []);
 
     
     const btnSearchUser = (event) => {
       
+      console.log(selectedFriend);
 
       //check the the searched user is valid and then set all information!
-      if (searchUser != ""){
+      if (selectedFriend){
         setShowValidUser(!showValidUser);
         setAboutUser("I really like carrots");
         setAvatar(avatarImage2);
@@ -173,7 +215,7 @@ function Friends() {
         </div>
         
         <div className='header'>
-        <h1 >Mealplanner</h1>
+        <h1 >MealMate</h1>
         </div>
        
         <div className='navbar'>
@@ -185,14 +227,39 @@ function Friends() {
         <div className='overlaySearchUser'>
           <form  onSubmit={handleSubmit}>
             <div className='submitFormFriends'>
-
-                 
               <label className='textFormFriends' > Search user:  </label>
-              <input onChange={handleChangeText} type='text' className='inputSearchFriends'></input>
               <ThemeProvider theme={theme}>
-              <Button onClick={btnSearchUser} size ='15px' color="primary" variant="contained" startIcon={<SearchIcon />}>
-                Search
+              <Autocomplete
+                onChange={handleChangeOption}
+                color='primary'
+                 sx={{ width: 700 }}
+                  freeSolo
+                 
+                  options={friendsToUser.map((option) => option)}
+                  renderInput={(params) => (
+                    <TextField
+                    color='secondary'
+                      {...params}
+                      InputProps={{
+                        ...params.InputProps,
+                        type: 'search',
+                      }}
+                    />
+                  )}
+                  ref={refToAutoComplete}
+                />
+
+             
+              <Button onClick={btnAddFriend} size ='15px' color="primary" variant="contained" startIcon={<PersonAddIcon />}>
+               Add friend
               </Button>
+              <Button onClick={btnRemoveFriend} size ='15px' color="primary" variant="contained" startIcon={<PersonRemoveIcon />}>
+              Remove friend
+              </Button>
+              <Button onClick={btnSearchUser} size ='15px' color="primary" variant="contained" startIcon={<SearchIcon />}>
+                Search on friend
+              </Button>
+
               </ThemeProvider>
               </div>
           </form>
