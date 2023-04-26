@@ -25,7 +25,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-
+import ForwardIcon from '@mui/icons-material/Forward';
 
 function Friends() {
     const [searchFor, setSearchFor] = useState('');
@@ -103,8 +103,9 @@ function Friends() {
     useEffect(() => {
       let friends = []
       friends.push('benny');
-      friends.push("anna")
-      setFriendsToUser(friends)
+      friends.push("anna");
+     
+      setFriendsToUser(friends);
     }, []);
 
     
@@ -119,7 +120,7 @@ function Friends() {
         setAvatar(avatarImage2);
         setLoadingDefault(false);
 
-        axios.get("/api/recipes/?search="+"egg")
+        axios.get("/api/recipes/?search="+"fish")
         .then(response => {
           setCarouselData(response.data) ;
           setOrginalData(response.data);
@@ -238,11 +239,16 @@ function Friends() {
                   options={friendsToUser.map((option) => option)}
                   renderInput={(params) => (
                     <TextField
-                    color='secondary'
+                    
                       {...params}
                       InputProps={{
                         ...params.InputProps,
                         type: 'search',
+                        style: {
+                          color: 'white',
+                          font: 'inherit'
+                         
+                        }
                       }}
                     />
                   )}
@@ -331,12 +337,21 @@ function Friends() {
           </div>  
 
         </div> 
-
-       
+        
         <div className='overlayHomePage'>
           <div className='carousel'>
           <AliceCarousel touchMoveDefaultEvents={true} 
-          mouseTracking >
+          mouseTracking
+          infinite={true}
+          renderNextButton={() => {
+            return   <Button   startIcon={<ForwardIcon  sx={{ color: '#E4EDDB' }} />}> </Button>
+          }}
+          
+          renderPrevButton={() => {
+            return  <Button  startIcon={<ForwardIcon  sx={{ transform:"rotate(180deg)", color: '#E4EDDB' }} />}> </Button>
+          }}
+
+          >
             {carouselData.map((item, index) => (
               <div className="theInfoCarousel"> 
               <a target='_blank' href={item[3]}  className="listOfItemsCarousel" key={index}>

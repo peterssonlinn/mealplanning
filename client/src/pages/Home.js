@@ -58,7 +58,7 @@ function Home() {
   const [likedItems, setLikedItems] = useState([]);
 
   const handleLikedButton = (url) => {
-    window.alert(url)
+    //window.alert(url)
 
     if (likedItems.includes(url)) {
       setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== url));
@@ -208,7 +208,7 @@ function Home() {
               
               {items.map((item, index) => (
                  <div className="theInfoCarousel"> 
-                <a href={item[3]}  className="listOfItems" key={index}>
+                <a  target='_blank' href={item[3]}  className="listOfItems" key={index}>
                 <h5 className="headingInfo">{item[1]}</h5>
                 </a>
                

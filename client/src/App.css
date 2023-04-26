@@ -400,6 +400,26 @@
  
 }
 
+.alice-carousel__dots-item.__active{
+  background: #E4EDDB !important;
+}
+
+.alice-carousel__dots-item {
+  background: #1a3c40 !important;
+}
+.aliceCarousel-prev{
+  background-color: #1A3C40;
+}
+
+.aliceCarousel-next{
+  background-color: #1A3C40;
+}
+
+
+
+
+
+
 .search{
   font-size: calc(40px + 2v);
   font-family:'Times New Roman', Times, serif;

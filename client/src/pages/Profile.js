@@ -22,6 +22,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import Avatar from '@mui/material/Avatar';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import ForwardIcon from '@mui/icons-material/Forward';
 
 
 function Profile() {
@@ -312,7 +314,14 @@ function Profile() {
         <div className='overlayHomePage'>
           <div className='carousel'>
           <AliceCarousel touchMoveDefaultEvents={true} 
-          mouseTracking >
+          mouseTracking 
+          renderNextButton={() => {
+            return   <Button   startIcon={<ForwardIcon  sx={{ color: '#E4EDDB' }} />}> </Button>
+          }}
+          
+          renderPrevButton={() => {
+            return  <Button  startIcon={<ForwardIcon  sx={{ transform:"rotate(180deg)", color: '#E4EDDB' }} />}> </Button>
+          }}>
             {carouselData.map((item, index) => (
               <div className="theInfoCarousel"> 
               <a target='_blank' href={item[3]}  className="listOfItemsCarousel" key={index}>
