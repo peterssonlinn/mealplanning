@@ -2,7 +2,8 @@
 .App {
   font-size: calc(10px + 2vmin);
   font-family: 'Times New Roman', Times, serif;
-  height: 100vh;
+  height: fit-content;
+  
   width: 100vw;
   margin: 0;
   
@@ -42,9 +43,9 @@
   padding-bottom: 0.5%;
 }
 .backgroundApp{
-  height: 100vh;
-  width: 100vw;
-
+  min-height: 100vh;
+  /*width: 100vw;
+*/
   background: #E4EDDB;
   
 
@@ -465,7 +466,6 @@
 }
 
 #calendar {
-  z-index: 1;
   width: 800px;
   float: right;
   margin-right: 40px;

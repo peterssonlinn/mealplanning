@@ -1,5 +1,5 @@
 import { Link, Route, withRouter} from 'react-router-dom';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import '../../src/App.css';
 import Button from '@mui/material/Button';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -37,6 +37,10 @@ import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
 import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate} from 'react-router-dom';
+import {auth, db, logout} from "../firebase";
+import {query, collection, getDocs, where} from "firebase/firestore"
 
 
 
@@ -49,10 +53,40 @@ function Home() {
   const [items, setItems] = useState([]);
   const [errorText, setErrorText] = useState('');
   const [headerInfoSearch, setHeaderInfoSearch] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [user, loading, error] = useAuthState(auth);
+  const [name, setName] = useState("");
+  const navigate = useNavigate();
 
-  //const isAuthenticated = false;
 
+  const fetchUserName = async () => {
+    try {
+      setLoggedIn(true);
+      const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
+      const doc = await getDocs(q);
+      const data = doc.docs[0].data();
+      setName(data.name);
+    }catch(err) {
+      console.error(err);
+      alert("An error occured while fetching user data");
+    }
+  };
+  useEffect(() => {
+    if (loading) return;
+    if (!user) return navigate ("/");
+    fetchUserName();
+  }, [user, loading]);
 
+  const changeLogOut = async () => {
+    try {
+      logout();
+      setLoggedIn(false); // set loggedIn to false when user logs out
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred while logging out");
+    }
+  };
 
   const isItemLiked = (url) => likedItems.includes(url);
 
@@ -144,9 +178,18 @@ function Home() {
       
       <div className='loginButton'>
         <ThemeProvider theme={theme}>
-            <Button component={Link} to="/login" size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />} >
-              Sign In
-            </Button>
+        <div>
+      {loggedIn ? (
+        <Button onClick={changeLogOut} size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />} >
+        Log Out
+      </Button>
+      ) : (
+      <Button component={Link} to="/login" size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />} >
+      Sign In
+    </Button>
+      )}
+    </div>
+            
           </ThemeProvider>
         </div>
         

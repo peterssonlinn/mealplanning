@@ -14,7 +14,7 @@ function Login() {
         if(loading) {
             return;
         }
-        if (user) navigate("/profile");
+        if (user) navigate("/");
 
     }, [user, loading]);
 
