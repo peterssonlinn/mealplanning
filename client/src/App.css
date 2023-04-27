@@ -2,7 +2,8 @@
 .App {
   font-size: calc(10px + 2vmin);
   font-family: 'Times New Roman', Times, serif;
-  height: 100vh;
+  height: fit-content;
+  
   width: 100vw;
   margin: 0;
   
@@ -42,9 +43,9 @@
   padding-bottom: 0.5%;
 }
 .backgroundApp{
-  height: 100vh;
-  width: 100vw;
-
+  min-height: 100vh;
+  /*width: 100vw;
+*/
   background: #E4EDDB;
   
 
@@ -491,7 +492,7 @@
   text-align: center;
 }
 
-
+/*CALENDAR page*/
 #saved_recepies {
   float: left;
   z-index: 2;
@@ -523,7 +524,6 @@
 }
 
 #calendar {
-  z-index: 1;
   width: 800px;
   float: right;
   margin-right: 40px;
@@ -547,4 +547,127 @@
     right: 0;
     margin-right: 40px;
     color: rgb(48, 47, 47);
+}
+
+/*LOGin firebase*/
+
+.login {
+  margin-top: 100px;
+  margin-left: 5px;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.login__container{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  background-color: #E4EDDB;
+  padding: 30px;
+}
+.login__textBox {
+  padding: 10px;
+  font-size: 18px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
+}
+.login__btn {
+  padding: 10px;
+  font-size: 18px;
+  margin-bottom: 10px;
+  border: none;
+  color: white;
+  background-color: #307672;
+  border-radius: 5px;
+}
+.login__google {
+  background-color: #144d53;
+}
+.login div {
+  margin-top: 7px;
+}
+
+/*REGISTER*/
+.register {
+  margin-top: 100px;
+  margin-left: 5px;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.register__container {
+  display:flex;
+  flex-direction: column;
+  text-align: center;
+  background-color: #E4EDDB;
+  padding: 30px;
+}
+.register__textBox {
+  padding: 10px;
+  font-size: 18px;
+  margin-left: 10px;
+  border-radius: 5px;
+  border: none;
+  margin-bottom: 10px;
+}
+.register__btn{
+  padding: 10px;
+  margin-left: 10px;
+  font-size: 18px;
+  margin-bottom: 10px;
+  border: none;
+  color: white;
+  background-color: #307672;
+  border-radius: 5px;
+}
+.register__google {
+  background-color: #144d53;
+}
+.register div {
+  margin-top: 7px;
+}
+
+/*RESET*/
+.reset {
+  margin-top: 100px;
+  margin-left: 5px;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reset__container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  background-color: #e4eddb;
+  padding: 30px;
+}
+
+.reset__textBox {
+  padding: 10px;
+  font-size: 18px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
+  margin-bottom: 10px;
+}
+
+.reset__btn {
+  padding: 10px;
+  font-size: 18px;
+  margin-bottom: 10px;
+  border: none;
+  color: white;
+  background-color: #307672;
+  border-radius: 5px;
+}
+
+.reset div {
+  margin-top: 7px;
 }

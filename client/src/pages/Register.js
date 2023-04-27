@@ -1,41 +1,71 @@
-import { Link } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import '../../src/App.css';
-import background from "../images/background.png";
+import React, {useEffect, useState} from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import {Link, useNavigate} from "react-router-dom";
+import { auth, registerWithEmailAndPassword, signInWithGoogle} from "../firebase";
+import "../App.css";
 
 function Register() {
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [user, loading, error] = useAuthState(auth);
+  const navigate = useNavigate();
+  const register = () => {
+    if(!name) alert("Please enter name");
+    registerWithEmailAndPassword(name, email,password);
+  };
+  useEffect(() => {
+    if(loading) return;
+    if(user) navigate("/profile");
+  }, [user, loading]);
   return (
-
     <div className='App'>
-        
-    <div className='backgroundApp'>
-    <div>
-      <h1 className='headerRegister'>Create Account on Mealplanner</h1>
-      <div className='returnButtonRegister'>
-        <Link to="/">
-            <Button size='15px' variant="contained" startIcon={<ArrowBackIcon />} />
-        </Link>
+      <div className='backgroundApp'> 
+          <div className='topHome'> 
+              <div className='loginButton'>
+              </div>
+              <div className='header'>
+                  <h1 >Mealplanner</h1>
+              </div>
+              <div className='navbar'>
+              </div>
+          </div>
+        <div className="register">
+          <div className="register__container">
+            <input
+              type="text"
+              className="register__textBox"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Full Name"
+            />
+            <input
+              type="email"
+              className="register__textBox"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email Address"
+            />  
+              <input
+              type="password"
+              className="register__textBox"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+            /> 
+            <button className="register__btn" onClick={register}>
+              Register
+            </button>
+            <button className="register__btn register__google" onClick={signInWithGoogle}>
+              Register with Google
+            </button>
+            <div>
+              Already have an account? <Link to="/login">Login</Link> now.
+            </div>
+          </div>
+        </div>
       </div>
-      
-      
-     <div className='registerForm'>
-        <form>
-        <label> Username</label> <br />
-        <input type="text" name='username' className='createBox'/> <br />
-        <label> Password</label>  <br />
-        <input type='password' name='password'  className='createBox'/>  <br />
-        <label> Password</label>  <br />
-        <input type='password' name='password' className='createBox'/> <br />
-        <input type="submit" value="Create account" className='createaccount-btn'/>  <br />
-        </form>
-      </div>
-    </div>
-    </div>
-
     </div>
   );
 }
-
 export default Register;

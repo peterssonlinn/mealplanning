@@ -16,6 +16,8 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import HomeIcon from '@mui/icons-material/Home';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { logout } from '../firebase';
 
 
 function NavBar() {
@@ -90,8 +92,6 @@ return (
           </ListItemIcon>
           <ListItemText>Settings</ListItemText>
         </MenuItem>
-
-        
         </FormControl>
       </Box>
     ) : null}

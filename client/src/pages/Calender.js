@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useEffect ,useState} from 'react';
 import { Link } from 'react-router-dom';
 import '../../src/App.css';
 import Button from '@mui/material/Button';
@@ -28,6 +28,10 @@ import { useDrag, useDrop} from 'react-dnd';
 import { Calendar } from '@fullcalendar/core';
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate} from 'react-router-dom';
+import {auth, db, logout} from "../firebase";
+import {query, collection, getDocs, where} from "firebase/firestore"
 import TestCal from './TestCal';
 
 
@@ -37,67 +41,69 @@ import TestCal from './TestCal';
 
 function Calender() {
   
-    const calendarRef = useRef(null);
+  const calendarRef = useRef(null);
+  const [open, setOpen] = React.useState(false);
 
-    const events = [ 
-      {title : 'ecipipe',
-      date: ''
-                    
-    }];
-    const [open, setOpen] = React.useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [user, error] = useAuthState(auth);
+  const [isLoading, setIsLoading] = useState(true);
+  const [name, setName] = useState("");
+  const navigate = useNavigate();
 
-    
-    /*
-      return (
-        <div ref={drop} className={canDrop && isOver ? 'drop-hover' : ''}>
-          DRAG and drop here
-          <div className='calenderTest'>
-          <FullCalendar
-          ref={calendarRef}
-          plugins={[timeGridPlugin, interactionPlugin]}
-          initialView='timeGridWeek'
-          weekends={true}
-          events={events}
-          dateClick={handleDateClick}
-          eventContent={renderEventContent}
-          headerToolbar={{ // Customize header toolbar
-            left: 'prev,next today',
-            center: 'title',
-            right: 'timeGridWeek,timeGridDay' // Add timeGridWeek and timeGridDay as options
-          }}
-          editable={true}
-          droppable={true}
-          eventStartEditable={true}
-          select={handleDateSelect}
-        />
-        </div>
-        <div className='favRecipies'>
-          <textbox>
-            Hearted recepies here !! 
-          </textbox>
-        </div> 
-        </div>
-      );
-    };*/
 
-    const handleDateClick = (arg) => {
-      alert(arg.dateStr);
+  const fetchUserName = async () => {
+    try {
+      setLoggedIn(true);
+      const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
+      const doc = await getDocs(q);
+      const data = doc.docs[0].data();
+      setName(data.name);
+    }catch(err) {
+      console.error(err);
+      alert("An error occured while fetching user data");
     }
+  };
+  useEffect(() => {
+    if (!user) return navigate ("/");
+    if(user) {
+      setIsLoading(false);
+      fetchUserName();
+    }
+  }, [user]);
 
-    const theme = createTheme({
-      palette: {
-        primary: {
-          // Purple and green play nicely together.
-          main: indigo[500],
-        },
-        secondary: {
-          // This is green.A700 as hex.
-          main: '#11cb5f',
-        },
-        
-  
+  if (isLoading || !name) {
+    return <div>Loading...</div>;
+  }
+
+  const changeLogOut = async () => {
+    try {
+      logout();
+      setLoggedIn(false); // set loggedIn to false when user logs out
+      navigate("/calender");
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred while logging out");
+    }
+  };
+
+  const handleDateClick = (arg) => {
+    alert(arg.dateStr);
+  };
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        // Purple and green play nicely together.
+        main: '#307672',
       },
-    })
+      secondary: {
+        // This is green.A700 as hex.
+        main: '#1a3c40',
+      },
+      
+
+    },
+  });
 
   function renderEventContent(eventInfo) {
     return (
@@ -108,29 +114,41 @@ function Calender() {
     );
   }
 
-
-
   return (
     <div className='App'>
-    <div className='backgroundApp'>
-    <div className='topHome'> 
-    <div className='loginButton'>
-       
+      <div className='backgroundApp'>
+      <div className='topHome'> 
+      <div className='loginButton'>
+        <ThemeProvider theme={theme}>
+        <div>
+      {loggedIn ? (
+        <Button onClick={changeLogOut} size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />} >
+        Log Out
+      </Button>
+      ) : (
+      <Button component={Link} to="/login" size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />} >
+      Sign In
+    </Button>
+      )}
+    </div>
+            
+          </ThemeProvider>
         </div>
+          
         <div className='header'>
         <h1 >MealMate</h1>
         </div>
+        
         <div className='navbar'>
           {/* Render the NAvBar component */}
           <NavBar />
         </div>
-        </div>
-        <div className='testCal'>
-          {/* Render the NAvBar component */}
+      </div>
+      <div className='testCal'>
+          {/* Render the calendar component */}
           <TestCal />
-        </div>
-    </div>
-    
+        </div>  
+      </div>
     </div>
   );
 }

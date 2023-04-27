@@ -22,9 +22,10 @@ import CheckIcon from '@mui/icons-material/Check';
 import Avatar from '@mui/material/Avatar';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import ForwardIcon from '@mui/icons-material/Forward';
-
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate} from 'react-router-dom';
+import {auth, db, logout} from "../firebase";
+import {query, collection, getDocs, where} from "firebase/firestore"
 
 function Profile() {
     const [searchFor, setSearchFor] = useState('');
@@ -40,6 +41,28 @@ function Profile() {
     const [newTextAboutMe, setTextAboutMe] = useState('');
     const [avatar, setAvatar] = useState('');
     const [carouselData, setCarouselData] = useState([]);
+    const [user, loading, error] = useAuthState(auth);
+    const [name, setName] = useState("");
+    const navigate = useNavigate();
+
+
+    const fetchUserName = async () => {
+      try {
+        const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
+        const doc = await getDocs(q);
+        const data = doc.docs[0].data();
+        setName(data.name);
+      }catch(err) {
+        console.error(err);
+        alert("An error occured while fetching user data");
+      }
+    };
+    useEffect(() => {
+      if (loading) return;
+      if (!user) return navigate ("/");
+      fetchUserName();
+    }, [user, loading]);
+
     let [orginalData, setOrginalData] = useState([]);
 
 
@@ -180,28 +203,26 @@ function Profile() {
     <div className='App'>
   
     <div className='backgroundApp'>
-
-     
       <div className='topHome'> 
-      <div className='loginButton'>
-        <ThemeProvider theme={theme}>
-            <Button size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />}>
-              Sign In
-            </Button>
-          </ThemeProvider>
+        <div className='loginButton'>
+          <ThemeProvider theme={theme}>
+              <Button size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />} onClick={logout} className='logout__btn'>
+                Log out 
+              </Button>
+            </ThemeProvider>
+        </div>
+          
+        <div className='header'>
+        <h1 >Mealplanner</h1>
         </div>
         
-        <div className='header'>
-        <h1 >MealMate</h1>
-        </div>
-       
         <div className='navbar'>
           {/* Render the NAvBar component */}
           <NavBar />
         </div>
-        </div>
+      </div>
 
-        <div className='searchAboutField'>
+      <div className='searchAboutField'>
 
           <div className='searchField'>
           <div className='searchTextMain'>
@@ -248,7 +269,7 @@ function Profile() {
           <div className='aboutMeField'>
             <div className='aboutMeHeader'>
               <h5 className='headerAboutMe'>
-              About me
+              About me 
               </h5>
               <p className='textAboutMe' >
               {!loadingDefault && textAboutMe}
@@ -314,14 +335,7 @@ function Profile() {
         <div className='overlayHomePage'>
           <div className='carousel'>
           <AliceCarousel touchMoveDefaultEvents={true} 
-          mouseTracking 
-          renderNextButton={() => {
-            return   <Button   startIcon={<ForwardIcon  sx={{ color: '#E4EDDB' }} />}> </Button>
-          }}
-          
-          renderPrevButton={() => {
-            return  <Button  startIcon={<ForwardIcon  sx={{ transform:"rotate(180deg)", color: '#E4EDDB' }} />}> </Button>
-          }}>
+          mouseTracking >
             {carouselData.map((item, index) => (
               <div className="theInfoCarousel"> 
               <a target='_blank' href={item[3]}  className="listOfItemsCarousel" key={index}>
@@ -357,3 +371,5 @@ function Profile() {
 }
 
 export default Profile;
+
+
