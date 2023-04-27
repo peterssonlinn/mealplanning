@@ -26,6 +26,10 @@ import TextField from '@mui/material/TextField';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ForwardIcon from '@mui/icons-material/Forward';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate} from 'react-router-dom';
+import {auth, db, logout, fetchFriendList} from "../firebase";
+import {query, collection, getDocs, where} from "firebase/firestore"
 
 function Friends() {
     const [searchFor, setSearchFor] = useState('');
@@ -45,7 +49,77 @@ function Friends() {
     const [selectedFriend, setSelectedFriend] = useState('');
     const refToAutoComplete = useRef(null);
 
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [user, error] = useAuthState(auth);
+  const [isLoading, setIsLoading] = useState(true);
+  const [name, setName] = useState("");
+  const navigate = useNavigate();
 
+
+  const fetchUserName = async () => {
+    try {
+      setLoggedIn(true);
+      const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
+      
+      const doc = await getDocs(q);
+      const data = doc.docs[0].data();
+     // alert(data.uid);
+      setName(data.name);
+    }catch(err) {
+      console.error(err);
+      alert("An error occured while fetching user data");
+    }
+  };
+
+  const fetchFriendsToUser = async () =>{
+
+    if(!loggedIn && !user){
+      return
+    }
+
+    try{
+      setLoggedIn(true);
+      console.log('user id', user.uid);
+
+      let temop = fetchFriendList(user.uid);
+      console.log('temp', temop);
+      
+    }catch (err){
+      console.error(err);
+      alert("An error occured while fetching user data");
+
+    }
+
+
+    //query efter alla friends to a user, 
+   // const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
+    // const doc = await getDocs(q);
+    // const data = doc.docs[0].data();
+    // check if collection exists 
+    //setFriendsToUser(data.friends);
+
+
+  };
+
+  const removeFriendInCollection = async (friend) =>{
+    // check that that friend actually exists before removal!  
+    // email uniq!
+
+  };
+
+  const addFriendInCollection = async (friend) =>{
+    // check that the friend exists
+    
+
+  };
+  useEffect(() => {
+    if (!user) return navigate ("/");
+    if(user) {
+      setIsLoading(false);
+      fetchUserName();
+      fetchFriendsToUser();
+    }
+  }, [user]);
 
     let [orginalData, setOrginalData] = useState([]);
 
@@ -67,6 +141,8 @@ function Friends() {
         let index = friendsToUser.indexOf(selectedFriend);
         if (index > -1) {
           friendsToUser.splice(index, 1);
+          // remove from collection in database!
+          removeFriendInCollection(selectedFriend);
          
           setFriendsToUser(friendsToUser);
         }
@@ -77,10 +153,12 @@ function Friends() {
     }
     const btnAddFriend = () =>{
       if(selectedFriend && !friendsToUser.includes(selectedFriend)){
-        friendsToUser.push(selectedFriend);
+        // add to collection in database and 
+        addFriendInCollection(selectedFriend);
+
+        friendsToUser.push(selectedFriend)
         setFriendsToUser(friendsToUser);
-      
-    
+
       }
       
       
@@ -100,14 +178,7 @@ function Friends() {
       }
     };
 
-    useEffect(() => {
-      let friends = []
-      friends.push('benny');
-      friends.push("anna");
-     
-      setFriendsToUser(friends);
-    }, []);
-
+    
     
     const btnSearchUser = (event) => {
       
@@ -208,11 +279,11 @@ function Friends() {
      
       <div className='topHome'> 
       <div className='loginButton'>
-        <ThemeProvider theme={theme}>
-            <Button size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />}>
-              Sign In
-            </Button>
-          </ThemeProvider>
+      <ThemeProvider theme={theme}>
+              <Button size ='15px' color="primary" variant="contained" startIcon={<AccountCircle />} onClick={logout} className='logout__btn'>
+                Log out 
+              </Button>
+            </ThemeProvider>
         </div>
         
         <div className='header'>

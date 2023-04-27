@@ -5,7 +5,7 @@ import { initializeApp } from "firebase/app";
 import {GoogleAuthProvider, getAuth, signInWithPopup, 
    signInWithEmailAndPassword, createUserWithEmailAndPassword, 
    sendPasswordResetEmail, signOut,} from "firebase/auth";
-import {getFirestore, query, getDocs, collection, where, addDoc,} from "firebase/firestore";
+import {getFirestore, query, getDocs, collection, where, addDoc,collectionGroup} from "firebase/firestore";
 
 
  // TODO: Add SDKs for Firebase products that you want to use
@@ -45,6 +45,8 @@ const signInWithGoogle = async () => {
       alert(err.message);
    }
 };
+
+
 const logInWithEmailAndPassword = async (email, password) => {
    try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -82,6 +84,38 @@ const logout = () => {
    signOut(auth);
 };
 
+const fetchFriendList = async(userId) =>{
+   const q = query(collection(db, "users"), where("uid", "==", userId));
+   const doc = await getDocs(q);
+   const data = doc.docs[0];
+
+   if (data.exists()){
+      console.log("inne i data.")
+      const userRef = collection(db, `users/${userId}/Friends`);
+      console.log("userRef", userRef);
+      const t = query(userRef); 
+      console.log("t",t) 
+   
+      getDocs(userRef).then((querySnapshot) => {
+      if (querySnapshot.exists && !querySnapshot.empty) {
+         console.log("inne i if");
+         // The Friends collection for this user exists and is not empty
+         // Do something with the query results
+      } else if (querySnapshot.exists && querySnapshot.empty) {
+         console.log("inne i elseif");
+         // The Friends collection for this user exists but is empty
+         // Do something else
+      } else {
+         console.log("inne i else");
+         // The Friends collection for this user does not exist
+         // Do something else, we want to create the friends collections for this user. 
+      }
+      }).catch((error) => {
+      // Handle any errors that occur when trying to access the Friends collection
+      }); 
+   }
+};
+
 export {
    auth, 
    db,
@@ -91,6 +125,7 @@ export {
    registerWithEmailAndPassword,
    sendPasswordReset, 
    logout,
+   fetchFriendList,
    
 };
  // Export firestore database

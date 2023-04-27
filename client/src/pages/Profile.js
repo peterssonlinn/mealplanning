@@ -269,7 +269,7 @@ function Profile() {
           <div className='aboutMeField'>
             <div className='aboutMeHeader'>
               <h5 className='headerAboutMe'>
-              About me 
+              About me {name}
               </h5>
               <p className='textAboutMe' >
               {!loadingDefault && textAboutMe}
