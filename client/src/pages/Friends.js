@@ -81,7 +81,7 @@ function Friends() {
       setLoggedIn(true);
       console.log('user id', user.uid);
 
-      let temop = fetchFriendList(user.uid);
+      let temop = fetchFriendList(user.uid,"hej");
       console.log('temp', temop);
       
     }catch (err){
