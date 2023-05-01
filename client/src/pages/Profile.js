@@ -24,7 +24,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
-import {auth, db, logout} from "../firebase";
+import {auth, db, logout, updateTextAboutUser, updateAvatarUser} from "../firebase";
 import {query, collection, getDocs, where} from "firebase/firestore"
 
 function Profile() {
@@ -52,15 +52,30 @@ function Profile() {
         const doc = await getDocs(q);
         const data = doc.docs[0].data();
         setName(data.name);
+
       }catch(err) {
         console.error(err);
         alert("An error occured while fetching user data");
       }
     };
+   
+    const fetchInfo = async () =>{
+      const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
+      const doc = await getDocs(q);
+      const data = doc.docs[0].data();
+    
+      setAboutMe(data.aboutText);
+      setAvatar(data.myAvatar);
+      setLoadingDefault(!loadingDefault)
+      
+
+    };
+
     useEffect(() => {
       if (loading) return;
       if (!user) return navigate ("/");
       fetchUserName();
+      fetchInfo();
     }, [user, loading]);
 
     let [orginalData, setOrginalData] = useState([]);
@@ -84,13 +99,7 @@ function Profile() {
     };
 
     
-   
-    useEffect(() => {
-      setAboutMe("I really like carrots");
-      setAvatar(avatarImage3);
-      setLoadingDefault(false);
-    }, []);
-
+  
     useEffect(() => {
       axios.get("/api/recipes/?search="+"egg")
         .then(response => {
@@ -102,14 +111,36 @@ function Profile() {
     }, []);
 
     
-
     const newTextButton = () => {
       if(newTextAboutMe) {
-        setAboutMe(newTextAboutMe);
-        setTextAboutMe("");
-        setUpdateTextView(!showUpdateText);
-        
+        try{
+          let newText = updateTextAboutUser(user.uid,newTextAboutMe).then((response) => {
+            setAboutMe(newTextAboutMe);
+            setTextAboutMe("");
+            setUpdateTextView(!showUpdateText);
+          })
+        }catch (err){
+          console.error(err);
+          alert("An error occured while setting user data");
+    
+        }
+
       }
+
+    }
+
+    const updateAvatarData = (avatar)=>{
+      try{
+        let newAvatar = updateAvatarUser(user.uid,avatar).then((response) => {
+
+          setAvatar(avatar);
+        })
+      }catch (err){
+        console.error(err);
+        alert("An error occured while setting user data");
+  
+      }
+
 
     }
     
@@ -119,17 +150,19 @@ function Profile() {
 
         let orgString = event.target.src;
         let checkAgainst = orgString.split("http://localhost:3000").pop();
+
+
         if(checkAgainst === avatarImage1){
-          setAvatar(avatarImage1);
+          updateAvatarData(avatarImage1)
         }
         else if(checkAgainst === avatarImage2){
-          setAvatar(avatarImage2);
+          updateAvatarData(avatarImage2)
         }
         else if(checkAgainst === avatarImage3){
-          setAvatar(avatarImage3);
+          updateAvatarData(avatarImage3)
         }
         else if(checkAgainst === avatarImage4){
-          setAvatar(avatarImage4);
+          updateAvatarData(avatarImage4)
         }
     }
       

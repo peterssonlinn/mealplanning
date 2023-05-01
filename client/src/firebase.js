@@ -5,7 +5,7 @@ import { initializeApp } from "firebase/app";
 import {GoogleAuthProvider, getAuth, signInWithPopup, 
    signInWithEmailAndPassword, createUserWithEmailAndPassword, 
    sendPasswordResetEmail, signOut,} from "firebase/auth";
-import {getFirestore, query, getDoc, getDocs,collection, where, addDoc,collectionGroup, setDoc, doc} from "firebase/firestore";
+import {getFirestore, query, getDoc, getDocs,collection, where, addDoc,collectionGroup, setDoc, doc, deleteDoc, updateDoc} from "firebase/firestore";
 
 
  // TODO: Add SDKs for Firebase products that you want to use
@@ -33,11 +33,13 @@ const signInWithGoogle = async () => {
       const q = query(collection(db, "users"), where("uid", "==", user.uid));
       const docs = await getDoc(q);
       if(docs.docs.length === 0) {
-         await addDoc(collection(db, "users"), {
+         await setDoc(doc(db, "users",user.uid), {
             uid: user.uid,
             name: user.displayName,
             authProvider: "google",
             email: user.email,
+            aboutText:"Welcome to my homepage",
+            myAvatar:"/static/media/1.bd53b28416bedd0a1128.jpeg",
          });
       }
    }catch(err) {
@@ -63,7 +65,9 @@ const registerWithEmailAndPassword = async (name, email, password) => {
          uid: user.uid,
          name,
          authProvider: "local",
-         email
+         email,
+         aboutText:"Welcome to my homepage",
+         myAvatar:"/static/media/1.bd53b28416bedd0a1128.jpeg",
       });
    }catch(err) {
          console.error(err);
@@ -84,78 +88,126 @@ const logout = () => {
    signOut(auth);
 };
 
-const fetchFriendList = async(userId, email) =>{
+const addFriendToList = async(userId, email) =>{
+   try {
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+   
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];
+      if(data.exists()){
+         
+         const friendExists = query(collection(db, "users"), where("email", "==", email));
+         const getDocsExists = await getDocs(friendExists);
+         const friendData = getDocsExists.docs[0];
+         if(friendData.exists()){
+
+            await setDoc(doc(db, "users", userId,'Friends',email), {
+                  email:email,
+               });
+             } 
+
+         }
+      }
+      catch (error) {
+         console.error('Error adding friend:', error);
+       }
+
+
+};
+
+const removeFriendFromList = async(userId, email) =>{
+   try {
+      
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];
+    
+      if(data.exists()){
+         const ref = doc(collection(db, "users", userId,'Friends'),email);
+         await deleteDoc(ref);
+      }
+   }
+   catch (error) {
+      console.error('Error adding friend:', error);
+      }
+
+};
+const fetchFriendList = async(userId) =>{
    const q = query(collection(db, "users"), where("uid", "==", userId));
+   
+   const getDocumentQ = await getDocs(q);
+   const data = getDocumentQ.docs[0];
+   const returnArray = [];
+  
+   if (data.exists()){
+      
+      const friendQuery = query(collection(db,"users",userId,"Friends"));
+
+      const getFriends = await getDocs(friendQuery);
+      getFriends.forEach((friend) => {
+
+         returnArray.push(friend.data())
+
+      });
+      return returnArray;
+      
+   }
+};
+
+
+const updateAvatarUser  = async (userId, avatar) =>{
+   const q = query(collection(db, "users"), where("uid", "==", userId));
+   
+   const getDocumentQ = await getDocs(q);
+   const data = getDocumentQ.docs[0];
+   const returnArray = [];
+  
+   if (data.exists()){
+      await updateDoc(doc(db, "users", userId), {
+         myAvatar:avatar,
+      });
+
+    } 
+
+
+};
+const updateTextAboutUser = async (userId, newText) =>{
+   const q = query(collection(db, "users"), where("uid", "==", userId));
+   
    const getDocumentQ = await getDocs(q);
    const data = getDocumentQ.docs[0];
   
    if (data.exists()){
-      // console.log("inne i data.")
-      // const userRef = collection(db, `users/NdbjCsfQIvCUmoBR9lI5/Friends`);
-      // console.log("userRef", userRef);
-      // const t = query(userRef); 
-      // console.log("t",t) 
-      // const test = doc(db, "users",userId);
-      // const docSnap = await getDoc(test);
+      await updateDoc(doc(db, "users", userId), {
+         aboutText:newText,
+      });
+    } 
 
-      // console.log(userRef.path)
-      // console.log(userRef.exists)
-      
-       try {
-         
-        
-        
-         await setDoc(doc(db, "users", userId,'Friends',email), {
-            
-            email:email,
-         });
-      
-         console.log('Friend added:' );
-       } catch (error) {
-         console.error('Error adding friend:', error);
-       }
 
-      
-      
-   
-      // getDocs(userRef).then((querySnapshot) => {
-      // if (querySnapshot.exists && !querySnapshot.empty) {
-      //    console.log("inne i if");
-      //    // The Friends collection for this user exists and is not empty
-      //    // Do something with the query results
-      // } else if (querySnapshot.exists && querySnapshot.empty) {
-      //    console.log("inne i elseif");
-      //    // The Friends collection for this user exists but is empty
-      //    // Do something else
-      // } else {
-      //    console.log("inne i else");    
-        
-      //    // The Friends collection for this user does not exist
-      //    // Do something else, we want to create the friends collections for this user. 
-         
-      //    // const test = getDoc(doc(db, 'users', "t8U09Zc60doRFwoihzSt"))
-      //    // console.log(test);
-      //    // console.log()
-         
-
-      // }
-      // }).catch((error) => {
-      // // Handle any errors that occur when trying to access the Friends collection
-      // }); 
-      // try {
-      //    const docRef = doc(db, "users", userId);
-      //    const colRef = collection(docRef, "Friends")
-      //    addDoc(colRef, {
-      //       name:email,
-            
-      //    });
-      //    console.log('Friend added:', colRef.id);
-      //  } catch (error) {
-      //    console.error('Error adding friend:', error);
-      //  }
-      
-   }
 };
+
+const getInfoOtherUser = async(userId, email) =>{
+   const q = query(collection(db, "users"), where("uid", "==", userId));
+   
+   const getDocumentQ = await getDocs(q);
+   const data = getDocumentQ.docs[0];
+   if (data.exists()){
+      const info =  query(collection(db, "users"), where("email", "==", email));
+      const infoDoc = await getDocs(info);
+     
+      const friendData = infoDoc.docs[0].data();
+      console.log(friendData)
+      const returnData = [];
+      returnData.push(friendData.name)
+      returnData.push(friendData.aboutText)
+      returnData.push(friendData.myAvatar)
+      console.log(returnData)
+      return returnData
+   }
+
+
+};
+
 
 export {
    auth, 
@@ -167,6 +219,11 @@ export {
    sendPasswordReset, 
    logout,
    fetchFriendList,
+   addFriendToList,
+   removeFriendFromList,
+   updateTextAboutUser,
+   updateAvatarUser,
+   getInfoOtherUser,
    
 };
  // Export firestore database

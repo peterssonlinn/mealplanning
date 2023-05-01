@@ -28,7 +28,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ForwardIcon from '@mui/icons-material/Forward';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
-import {auth, db, logout, fetchFriendList} from "../firebase";
+import {auth, db, logout, fetchFriendList, addFriendToList, removeFriendFromList, getInfoOtherUser} from "../firebase";
 import {query, collection, getDocs, where} from "firebase/firestore"
 
 function Friends() {
@@ -48,11 +48,13 @@ function Friends() {
     const [friendsToUser, setFriendsToUser] = useState([]);
     const [selectedFriend, setSelectedFriend] = useState('');
     const refToAutoComplete = useRef(null);
+    
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, error] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(true);
-  const [name, setName] = useState("");
+  const [friendName, setFriendName] = useState("");
+
   const navigate = useNavigate();
 
 
@@ -64,7 +66,7 @@ function Friends() {
       const doc = await getDocs(q);
       const data = doc.docs[0].data();
      // alert(data.uid);
-      setName(data.name);
+      //setName(data.name);
     }catch(err) {
       console.error(err);
       alert("An error occured while fetching user data");
@@ -78,40 +80,58 @@ function Friends() {
     }
 
     try{
-      setLoggedIn(true);
-      console.log('user id', user.uid);
-
-      let temop = fetchFriendList(user.uid,"hej");
-      console.log('temp', temop);
       
+      console.log('user id', user.uid);
+      let result = [];
+
+      let friendList = fetchFriendList(user.uid).then((response) => {
+        response.forEach((friend)=>{
+          if(friend.email){
+            result.push(friend.email)
+          }
+        })
+        if(result.length != 0){
+          setFriendsToUser(result)
+        }
+
+      })
     }catch (err){
       console.error(err);
       alert("An error occured while fetching user data");
 
     }
-
-
-    //query efter alla friends to a user, 
-   // const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
-    // const doc = await getDocs(q);
-    // const data = doc.docs[0].data();
-    // check if collection exists 
-    //setFriendsToUser(data.friends);
-
-
+    
   };
 
   const removeFriendInCollection = async (friend) =>{
-    // check that that friend actually exists before removal!  
-    // email uniq!
+    try{
+      let friendList = removeFriendFromList(user.uid,selectedFriend).then((response) => {
+        fetchFriendsToUser();
+      })
+    }catch (err){
+      console.error(err);
+      alert("An error occured while fetching user data");
+    }
 
   };
 
-  const addFriendInCollection = async (friend) =>{
-    // check that the friend exists
-    
+  const addFriendInCollection = async () =>{
+    try{
+      let friendList = addFriendToList(user.uid,selectedFriend).then((response) => {
+        fetchFriendsToUser();
+      })
+    }catch (err){
+      console.error(err);
+      alert("An error occured while fetching user data");
 
+    }
   };
+
+  const showFriend = async() => {
+      
+  }
+
+
   useEffect(() => {
     if (!user) return navigate ("/");
     if(user) {
@@ -141,7 +161,7 @@ function Friends() {
         let index = friendsToUser.indexOf(selectedFriend);
         if (index > -1) {
           friendsToUser.splice(index, 1);
-          // remove from collection in database!
+         
           removeFriendInCollection(selectedFriend);
          
           setFriendsToUser(friendsToUser);
@@ -153,16 +173,9 @@ function Friends() {
     }
     const btnAddFriend = () =>{
       if(selectedFriend && !friendsToUser.includes(selectedFriend)){
-        // add to collection in database and 
-        addFriendInCollection(selectedFriend);
-
-        friendsToUser.push(selectedFriend)
-        setFriendsToUser(friendsToUser);
-
+       
+        addFriendInCollection();
       }
-      
-      
-     
     };
 
     const isItemLiked = (url) => likedItems.includes(url);
@@ -181,15 +194,30 @@ function Friends() {
     
     
     const btnSearchUser = (event) => {
-      
-      console.log(selectedFriend);
 
+      
       //check the the searched user is valid and then set all information!
       if (selectedFriend){
-        setShowValidUser(!showValidUser);
-        setAboutUser("I really like carrots");
-        setAvatar(avatarImage2);
-        setLoadingDefault(false);
+        console.log(selectedFriend)
+        try{
+          let friendInfo = getInfoOtherUser(user.uid,selectedFriend).then((response) => {
+        
+            setShowValidUser(!showValidUser);
+            setFriendName(response[0]);
+            setAboutUser(response[1]);
+            setAvatar(response[2]);
+            setLoadingDefault(false);
+
+          })
+        }catch (err){
+          console.error(err);
+          alert("An error occured while fetching user data");
+    
+        }
+
+
+        
+       
 
         axios.get("/api/recipes/?search="+"fish")
         .then(response => {
@@ -394,7 +422,7 @@ function Friends() {
           <div className='aboutMeField'>
             <div className='aboutMeHeader'>
                 <h5 className='headerAboutMe'>
-                About 
+                About {friendName}
                 </h5>
                 <p className='textAboutMe' >
                 {!loadingDefault && textAboutUser}
