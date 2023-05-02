@@ -53,6 +53,8 @@ app.get('/api/recipes' , (req, res,next) => {
                 axios.get(url)
                 .then(response => {
                     if(response.data.hits.length){
+                        console.log(response.data)
+
 
                         for(let t in response.data.hits){
                             individualData = []

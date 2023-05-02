@@ -39,7 +39,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
-import {auth, db, logout} from "../firebase";
+import {auth, db, logout, fetchRecipeList, addRecpie, removeRecpie} from "../firebase";
 import {query, collection, getDocs, where} from "firebase/firestore"
 import "./Home.css"
 
@@ -58,6 +58,10 @@ function Home() {
   const [user, loading, error] = useAuthState(auth);
   const [name, setName] = useState("");
   const navigate = useNavigate();
+  const [likedItems, setLikedItems] = useState([]);
+  const isItemLiked = (url) => likedItems.includes(url);
+
+
 
 
   const fetchUserName = async () => {
@@ -72,10 +76,37 @@ function Home() {
       alert("An error occured while fetching user data");
     }
   };
+
+  const fetchLikedRecipes = async () =>{
+    try{
+      let prevLiked = []
+      let recpieList = fetchRecipeList(user.uid).then((response) =>{
+        
+        response.forEach((recipe) =>{
+          if(recipe.name){
+
+            prevLiked.push(recipe.name)
+          }
+        })
+        console.log(prevLiked)
+        console.log(isItemLiked)
+        if(prevLiked != 0){
+          setLikedItems(prevLiked);
+        }
+
+      });
+    }
+    catch(err) {
+      console.error(err);
+      alert("An error occured while fetching liked recipes data");
+    }
+
+  };
   useEffect(() => {
     if (loading) return;
     if (!user) return navigate ("/");
     fetchUserName();
+    fetchLikedRecipes();
   }, [user, loading]);
 
   const changeLogOut = async () => {
@@ -89,18 +120,23 @@ function Home() {
     }
   };
 
-  const isItemLiked = (url) => likedItems.includes(url);
 
-  const [likedItems, setLikedItems] = useState([]);
 
-  const handleLikedButton = (url) => {
-    //window.alert(url)
-
-    if (likedItems.includes(url)) {
-      setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== url));
+  const handleLikedButton = (name, url, img) => {
+    
+    if (likedItems.includes(name)) {
+      let remove = removeRecpie(user.uid, name, url, img).then((response) =>{
+        setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== name));
+        
+      });
+      
      
     } else {
-      setLikedItems((prevLikedItems) => [...prevLikedItems, url]);
+      let add = addRecpie(user.uid, name, url, img).then((response) =>{
+        setLikedItems((prevLikedItems) => [...prevLikedItems, name]);
+       
+      })
+      
     }
   };
 
@@ -261,8 +297,8 @@ function Home() {
                       
                       <Button onClick={(event) => { 
                       event.preventDefault() 
-                      handleLikedButton(item[3])
-                        }} size='15px' color="primary"  startIcon={isItemLiked(item[3]) ? <FavoriteIcon /> : <FavoriteBorderIcon />}>
+                      handleLikedButton(item[1],item[3], item[5])
+                        }} size='15px' color="primary"  startIcon={isItemLiked(item[1]) ? <FavoriteIcon /> : <FavoriteBorderIcon />}>
                       </Button>
                     </ThemeProvider>
                     <img className='imgRecipe' src={item[5]}/> 

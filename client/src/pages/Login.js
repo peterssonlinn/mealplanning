@@ -2,7 +2,7 @@ import "../App.css";
 import "./LogIn.css";
 import React, {useEffect, useState} from "react";
 import {Link, useNavigate } from "react-router-dom";
-import {auth, signInWithEmailAndPassword, signInWithGoogle} from "../firebase";
+import {auth, signInWithEmailAndPassword, signInWithGoogle, logInWithEmailAndPassword} from "../firebase";
 import { useAuthState} from "react-firebase-hooks/auth";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -65,7 +65,7 @@ function Login() {
                             placeholder="Password"
                         />
                         
-                        <button className="login__btn" onClick={() => signInWithEmailAndPassword(email, password)}>
+                        <button className="login__btn" onClick={() => logInWithEmailAndPassword(email, password)}>
                                 Login
                         </button>
                         

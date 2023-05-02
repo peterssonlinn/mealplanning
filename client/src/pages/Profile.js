@@ -24,7 +24,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
-import {auth, db, logout, updateTextAboutUser, updateAvatarUser} from "../firebase";
+import {auth, db, logout, updateTextAboutUser, updateAvatarUser, fetchRecipeList,removeRecpie, addRecpie} from "../firebase";
 import {query, collection, getDocs, where} from "firebase/firestore"
 import "./Profile.css";
 
@@ -72,11 +72,61 @@ function Profile() {
 
     };
 
+    const fetchLikedRecipes = async () =>{
+      try{
+        let prevLiked = []
+        let info = []
+       
+        let recpieList = fetchRecipeList(user.uid).then((response) =>{
+          
+          response.forEach((recipe) =>{
+            info.push(recipe)
+            
+            
+            if(recipe.name){
+              console.log('inne i ', recipe.name)
+              prevLiked.push(recipe.name)
+             // info.push(recipe.name)
+              
+            }
+           
+
+            
+            
+            
+            
+            
+          
+
+          })
+          
+          if(prevLiked != 0){
+
+
+            console.log('prevLiked', prevLiked)
+            setCarouselData(info) ;
+            console.log('prevLiked',likedItems);
+
+            setLikedItems(prevLiked);
+
+            setOrginalData(info);
+          }
+  
+        });
+      }
+      catch(err) {
+        console.error(err);
+        alert("An error occured while fetching liked recipes data");
+      }
+  
+    };
+
     useEffect(() => {
       if (loading) return;
       if (!user) return navigate ("/");
       fetchUserName();
       fetchInfo();
+      fetchLikedRecipes();
     }, [user, loading]);
 
     let [orginalData, setOrginalData] = useState([]);
@@ -85,31 +135,32 @@ function Profile() {
     const handleDragStart = (e) => e.preventDefault();
 
     const[loadingDefault, setLoadingDefault] = useState(true);
-    const isItemLiked = (url) => likedItems.includes(url);
+    const isItemLiked = (name) => likedItems.includes(name);
     const [likedItems, setLikedItems] = useState([]);
 
-    const handleLikedButton = (url) => {
-      window.alert(url)
-  
-      if (likedItems.includes(url)) {
-        setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== url));
+    const handleLikedButton = (name,url, img) => {
+      if (likedItems.includes(name)) {
+        let remove = removeRecpie(user.uid, name, url, img).then((response) =>{
+          console.log('innan, ', likedItems)
+          setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== name));
+          console.log('efter', likedItems)
+          
+        });
+        
        
       } else {
-        setLikedItems((prevLikedItems) => [...prevLikedItems, url]);
+        let add = addRecpie(user.uid, name, url, img).then((response) =>{
+          setLikedItems((prevLikedItems) => [...prevLikedItems, name]);
+         
+        })
+        
       }
+     
     };
 
     
   
-    useEffect(() => {
-      axios.get("/api/recipes/?search="+"egg")
-        .then(response => {
-          setCarouselData(response.data) ;
-          setOrginalData(response.data);
-        })
-        .catch(error => console.error(error));
-
-    }, []);
+    
 
     
     const newTextButton = () => {
@@ -371,9 +422,10 @@ function Profile() {
           <AliceCarousel touchMoveDefaultEvents={true} 
           mouseTracking >
             {carouselData.map((item, index) => (
+              
               <div className="theInfoCarousel"> 
-              <a target='_blank' href={item[3]}  className="listOfItemsCarousel" key={index}>
-              <h5 className="headingInfoCarousel">{item[1]}</h5>
+              <a target='_blank' href={item['url']}  className="listOfItemsCarousel" key={index}>
+              <h5 className="headingInfoCarousel">{item['name']}</h5>
               </a>
              
                   <small className='small'>{item[6]}</small>
@@ -382,11 +434,11 @@ function Profile() {
                     
                     <Button onClick={(event) => { 
                     event.preventDefault() 
-                    handleLikedButton(item[3])
-                      }} size='15px' color="primary"  startIcon={isItemLiked(item[3]) ? <FavoriteBorderIcon />  : <FavoriteIcon />}>
+                    handleLikedButton(item['name'],item['url', item['img']])
+                      }} size='15px' color="primary"  startIcon={isItemLiked(item[0]) ? <FavoriteBorderIcon />  : <FavoriteIcon />}>
                     </Button>
                   </ThemeProvider>
-                  <img className='imgRecipeCarousel' src={item[5]}/> 
+                  <img className='imgRecipeCarousel' src={item['img']}/> 
                  
                </div>
               ))}

@@ -51,10 +51,14 @@ const signInWithGoogle = async () => {
 
 const logInWithEmailAndPassword = async (email, password) => {
    try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email, password).then((usercred) =>{
+        // window.alert("user is signed in ", usercred.user)
+      });
+      
    } catch(err){
       console.error(err);
-      alert(err.message);
+
+      //window.alert(err.message);
    }
 };
 const registerWithEmailAndPassword = async (name, email, password) => {
@@ -154,6 +158,70 @@ const fetchFriendList = async(userId) =>{
    }
 };
 
+const fetchRecipeList = async(userId) => {
+   const q = query(collection(db, "users"), where("uid", "==", userId));
+
+   const getDocumentQ = await getDocs(q);
+   const data = getDocumentQ.docs[0];
+   const returnArray = [];
+
+   if (data.exists()){
+      const recipeQuery = query(collection(db, "users",userId,"Recipe"));
+
+      const getRecipe = await getDocs(recipeQuery);
+      getRecipe.forEach((recipe) => {
+
+         returnArray.push(recipe.data())
+
+      });
+      return returnArray;
+      
+   }
+};
+
+const removeRecpie = async(userId, name, url, img) => {
+   try {
+      
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];
+    
+      if(data.exists()){
+         console.log('data exists', name)
+         const ref = doc(collection(db, "users", userId,'Recipe'),name);
+         console.log(ref)
+
+         await deleteDoc(ref);
+      }
+   }
+   catch (error) {
+      console.error('Error removign recipe:', error);
+      }
+}
+const addRecpie = async(userId, name, url, img) => {
+   try{
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];  
+
+      if(data.exists()){
+         console.log('innan setDoc', name, url, img)
+         await setDoc(doc(db, "users", userId, 'Recipe',name),{
+            name : name, 
+            url : url, 
+            img : img,
+         });
+      }
+
+   }
+   catch (error){
+      console.error('error adding recipe', error)
+
+   }
+
+};
+
 
 const updateAvatarUser  = async (userId, avatar) =>{
    const q = query(collection(db, "users"), where("uid", "==", userId));
@@ -224,6 +292,9 @@ export {
    updateTextAboutUser,
    updateAvatarUser,
    getInfoOtherUser,
+   fetchRecipeList,
+   addRecpie,
+   removeRecpie,
    
 };
  // Export firestore database
