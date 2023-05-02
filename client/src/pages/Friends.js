@@ -30,6 +30,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
 import {auth, db, logout, fetchFriendList, addFriendToList, removeFriendFromList, getInfoOtherUser} from "../firebase";
 import {query, collection, getDocs, where} from "firebase/firestore"
+import "./Friends.css"
 
 function Friends() {
     const [searchFor, setSearchFor] = useState('');
@@ -126,11 +127,6 @@ function Friends() {
 
     }
   };
-
-  const showFriend = async() => {
-      
-  }
-
 
   useEffect(() => {
     if (!user) return navigate ("/");

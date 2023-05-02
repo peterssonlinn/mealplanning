@@ -33,6 +33,8 @@ import { useNavigate} from 'react-router-dom';
 import {auth, db, logout} from "../firebase";
 import {query, collection, getDocs, where} from "firebase/firestore"
 import TestCal from './TestCal';
+import CalendarCom from './CalendarCom';
+import "./CalendarCom.css";
 
 
 
@@ -146,7 +148,7 @@ function Calender() {
       </div>
       <div className='testCal'>
           {/* Render the calendar component */}
-          <TestCal />
+          <CalendarCom />
         </div>  
       </div>
     </div>

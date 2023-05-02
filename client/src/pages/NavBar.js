@@ -20,6 +20,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { logout } from '../firebase';
 
 
+
 function NavBar() {
 
 const [open, setOpen] = React.useState(false);

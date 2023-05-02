@@ -3,6 +3,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, Link } from "react-router-dom";
 import {auth, sendPasswordReset} from "../firebase";
 import "../App.css";
+import "./Reset.css";
 
 function Reset() {
     const [email, setEmail]= useState("");
@@ -21,7 +22,7 @@ function Reset() {
                     <div className='loginButton'>
                     </div>
                     <div className='header'>
-                        <h1 >Mealplanner</h1>
+                        <h1 >MealMate</h1>
                     </div>
                     <div className='navbar'>
                     </div>

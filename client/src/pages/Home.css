@@ -1,0 +1,35 @@
+/*Home*/
+.list-group{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-gap: 15px;
+    margin-left: 5%;  
+  }
+  
+  .fillEmptySearch{
+    background-color: #efeddb;
+    margin-left: 5%;
+    margin-right: 5%;
+    align-items:'center';
+    justify-content: center;
+    flex:auto;
+    text-align: center;
+  }
+  
+  .allInfo{
+    margin-top: 1%;
+  }
+  
+  .listOfItems{
+    color: inherit;
+    flex:auto;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .headingInfo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+  }

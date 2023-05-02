@@ -3,6 +3,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import {Link, useNavigate} from "react-router-dom";
 import { auth, registerWithEmailAndPassword, signInWithGoogle} from "../firebase";
 import "../App.css";
+import "./Register.css";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -25,7 +26,7 @@ function Register() {
               <div className='loginButton'>
               </div>
               <div className='header'>
-                  <h1 >Mealplanner</h1>
+                  <h1 >MealMate</h1>
               </div>
               <div className='navbar'>
               </div>

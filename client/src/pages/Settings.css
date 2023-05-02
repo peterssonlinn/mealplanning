@@ -1,0 +1,24 @@
+
+/*SETTings*/
+.textForm{
+    margin-right: 10px;
+  }
+  
+  .btnSettings{
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 20px;
+    padding: 2%;
+  
+  }
+  
+  .submitForm{
+    display: flex;
+    align-items: center;
+  }
+  
+  .textSettings{
+    color: white;
+    padding-left: 5%;
+    padding-right: 5%;
+  }

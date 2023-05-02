@@ -1,0 +1,31 @@
+/*Friends*/
+.overlaySearchUser{
+    max-width: 160vh; 
+    align-items: center;
+    align-content: center;
+    padding: 1%;
+    justify-content: center !important;
+    flex-direction: column;
+    margin: auto;
+    background-color: #307672;
+    padding-top: 2%;
+    padding-bottom: 2%;
+  }
+  .inputSearchFriends{
+    width: 70%;
+    float: left;
+    padding: 2px;
+    margin: auto;
+    height: 25px;  
+  }
+  .submitFormFriends{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  
+  }
+  
+  .textFormFriends{
+    margin-left: 2%;
+    color: white;
+  }

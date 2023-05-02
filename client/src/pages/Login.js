@@ -1,4 +1,5 @@
 import "../App.css";
+import "./LogIn.css";
 import React, {useEffect, useState} from "react";
 import {Link, useNavigate } from "react-router-dom";
 import {auth, signInWithEmailAndPassword, signInWithGoogle} from "../firebase";
@@ -41,7 +42,7 @@ function Login() {
                     </div>
                     <div className='header'>
                         <Link to="/">
-                        <h1>Mealplanner</h1>
+                        <h1>MealMate</h1>
                         </Link>
                     </div>
                     <div className='navbar'>

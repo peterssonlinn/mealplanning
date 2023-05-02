@@ -2,12 +2,9 @@
 .App {
   font-size: calc(10px + 2vmin);
   font-family: 'Times New Roman', Times, serif;
-  height: fit-content;
-  
+  height: fit-content; 
   width: 100vw;
   margin: 0;
-  
-  
 }
 
 .topHome{
@@ -16,7 +13,6 @@
   gap: 10px;
   align-content: flex-start;
   flex-direction: column;
- 
 }
 .loginButton{
   margin: auto;
@@ -24,14 +20,18 @@
 }
 .navbar{
   margin: auto;
-  
 }
 .header{
   margin: auto;
   color: #1A3C40;
 }
+
+.backgroundApp{
+  min-height: 100vh;
+  background: #E4EDDB; 
+}
+
 .overlayHomePage{
-  
   max-width: 160vh; 
   align-items: center;
   align-content: center;
@@ -41,15 +41,6 @@
   margin: auto;
   background-color: #307672;
   padding-bottom: 0.5%;
-}
-.backgroundApp{
-  min-height: 100vh;
-  /*width: 100vw;
-*/
-  background: #E4EDDB;
-  
-
-  
 }
 
 .searchField{
@@ -64,8 +55,6 @@
   flex: 1;
   width: 90%;
   margin: auto;
-
-  
 }
 
 .autoFillWithContent{
@@ -114,32 +103,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
 }
 
 .listOfItemsCarousel{
-  color: inherit;
-  
-
+  color: inherit;  
 }
 
-.overlaySearchUser{
-  max-width: 160vh; 
-  align-items: center;
-  align-content: center;
-  padding: 1%;
-  justify-content: center !important;
-  flex-direction: column;
-  margin: auto;
-  background-color: #307672;
-  padding-top: 2%;
-  padding-bottom: 2%;
- 
-  
-  
- 
-
-}
 .theInfoCarousel{
   display: flex;
   flex-direction: column;
@@ -148,47 +117,9 @@
   text-align: center;
   height: 100%;
   background-color: #E4EDDB;
-  
   border-radius: 2%;
-
 }
-.submitForm{
-  display: flex;
-  align-items: center;
-}
-
-.inputSearchFriends{
-  width: 70%;
-  float: left;
- 
-  padding: 2px;
-  margin: auto;
- 
- 
-  
-  height: 25px;  
-}
-.submitFormFriends{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-}
-.textForm{
-  margin-right: 10px;
-}
-
-.textFormFriends{
-  margin-left: 2%;
-  color: white;
-}
-.btnSettings{
-  display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 20px;
-  padding: 2%;
-
-}
+/*Shared css between different pages*/
 
 .fillerParagrah::before{
   content: "";
@@ -197,20 +128,11 @@
   margin-bottom: 10px;
 }
 
-.textSettings{
-  color: white;
-  padding-left: 5%;
-  padding-right: 5%;
-}
-
-
-
 .carousel{
   justify-content: center;
   align-content: flex-start;
   align-items:'center';
-  margin: auto;
-  
+  margin: auto;  
 }
 
 .recipesImages{
@@ -221,108 +143,14 @@
   padding-left: 25%;
 }
 
-
 .header{
- color:gray;
-  
+ color:gray; 
 }
 
-
-.registerBtn{
-  width: 35%;
-}
-
-.login-btn {
-  width: 35%;
-  margin-right: 2%;
-}
-
-
-
-
-.show{
-  display: block;
-  transition: 800ms;
-  opacity: 1;
-  background-color: #E4EDDB;
-  border-color: #144D53;
-  border-style: solid;
-  position: fixed;
-  top: 200px;
-  left: 530px;
-  width: 300px;
-  padding-bottom: 1%;
-  padding-top: 1%;
-
-}
-.formLogin {
-  margin-left: 70px;
-  margin-top: -30px;
-}
-
-.show.active{
-  opacity: 0;
-  transform: translateY(100px) scale(0) rotateY(180deg);
-}
-
-.loginBox {
-  width: 70%;
-}
-
-.dehazeClass{
- 
- display: flex !important;
- justify-content: right !important;
- float: right;
-
-}
-
-.headerRegister{
- 
-  color:gray;
-}
- 
-.registerForm{
-  position: fixed;
-  top: 200px;
-  left: 530px;
-  width: 200px;
-  border-color: #144D53;
-  border-style: solid;
-  padding-bottom: 1%;
-  padding-top: 1%;
-  padding-left: 4%;
-}
-
-.overlayAboutMe{
-  max-width: 160vh; 
-  align-items: center;
-  align-content: center;
-  padding: 0.5%;
-  justify-content: center !important;
-  flex-direction: column;
-  margin: auto;
-  background-color: #307672;
-  margin-bottom: 1%;
-
-}
-
-
-
-
-.boxDropdown{
-  background-color: white;
-  border-color: #144D53;
-  z-index: 9999;
-  top: 100%;
-  left: 0;
-  position: absolute;
-}
 .imgRecipe{
   border-radius: 2%;
-  
-
 }
+
 .searchAboutField{
   display: grid;
   grid-template-columns: repeat(2,minmax(0,1fr));
@@ -346,59 +174,25 @@
   gap: 2px;
   align-content: flex-start;
   flex-direction: column;
-
-  
 }
-
-.changeAvatar{
-  margin: auto;
-  padding: 3%;
-}
-
-.editText{
-  margin: auto;
-
-}
-
-.searchAboutFieldAboutMe{}
 
 .avatar{
   margin: auto;
   display: flex;
-  flex-direction: column;
-
-  
+  flex-direction: column; 
 }
+
 .headerAboutMe{
   margin: 6%;
   padding-bottom: 2%;
- 
 }
 .textAboutMe{
   margin: 2%;
   padding-bottom: 2%;
 }
-
 .aboutMeHeader{
   color: #E4EDDB;
   margin-left: 5%;  
-}
-
-.list-group{
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  grid-gap: 15px;
-  margin-left: 5%;
-  
- 
-   
-}
-
-.searchTextBtn{
-  justify-content: center !important;
-  align-items:'center';
-
- 
 }
 
 .alice-carousel__dots-item.__active{
@@ -416,21 +210,97 @@
   background-color: #1A3C40;
 }
 
+.small{
+  margin: 0;
+}
+
+/*NavBar*/
+.dehazeClass{
+  display: flex !important;
+  justify-content: right !important;
+  float: right;
+ }
+ 
+ .boxDropdown{
+   background-color: white;
+   border-color: #144D53;
+   z-index: 9999;
+   top: 100%;
+   left: 0;
+   position: absolute;
+ }
+
+/*
+.show{
+  display: block;
+  transition: 800ms;
+  opacity: 1;
+  background-color: #E4EDDB;
+  border-color: #144D53;
+  border-style: solid;
+  position: fixed;
+  top: 200px;
+  left: 530px;
+  width: 300px;
+  padding-bottom: 1%;
+  padding-top: 1%;
+}
+
+.formLogin {
+  margin-left: 70px;
+  margin-top: -30px;
+}
 
 
+.show.active{
+  opacity: 0;
+  transform: translateY(100px) scale(0) rotateY(180deg);
+}
 
+.loginBox {
+  width: 70%;
+}
 
+.headerRegister{
+  color:gray;
+}
 
-.search{
+.registerForm{
+  position: fixed;
+  top: 200px;
+  left: 530px;
+  width: 200px;
+  border-color: #144D53;
+  border-style: solid;
+  padding-bottom: 1%;
+  padding-top: 1%;
+  padding-left: 4%;
+}
+.overlayAboutMe{
+  max-width: 160vh; 
+  align-items: center;
+  align-content: center;
+  padding: 0.5%;
+  justify-content: center !important;
+  flex-direction: column;
+  margin: auto;
+  background-color: #307672;
+  margin-bottom: 1%;
+}
+.searchTextBtn{
+  justify-content: center !important;
+  align-items:'center';
+}
+/*.search{
   font-size: calc(40px + 2v);
   font-family:'Times New Roman', Times, serif;
   color: black;
   height: 29px;
   width: 200px;
   margin-right: 3px;
-  border: 1px groove black;
-  
+  border: 1px groove black; 
 }
+
 .info{
   position: absolute;
   justify-content: center !important;
@@ -442,46 +312,13 @@
   bottom: auto ;
   left: 0;
   right: 0;
- 
 }
 
-.fillEmptySearch{
-  background-color: #efeddb;
-  margin-left: 5%;
-  margin-right: 5%;
-  align-items:'center';
-  justify-content: center;
-  flex:auto;
-  text-align: center;
-
-}
-
-.allInfo{
-  margin-top: 1%;
-  
-}
-.listOfItems{
-  color: inherit;
-  flex:auto;
-  justify-content: center;
-  align-items: center;
-}
 .theInfo{
   display: flex;
   flex-direction: column;
   background-color: #efeddb;
 }
-
-.headingInfo{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-}
-.small{
-  margin: 0;
-}
-
 .favRecipies {
   float: left;
   border: 1px solid black;
@@ -491,183 +328,4 @@
   margin-left: 50px;
   text-align: center;
 }
-
-/*CALENDAR page*/
-#saved_recepies {
-  float: left;
-  z-index: 2;
-  top: 20px;
-  left: 20px;
-  width: 400px;
-  padding: 0 10px;
-  border: 1px solid #ccc;
-  background:  #D2E1D1;
-  overflow-y: scroll;
-  height: 580px;
-  color: rgb(48, 47, 47);
-  margin-left: 40px;
-}
-
-#saved_recepies .fc-event {
-  cursor: grab;
-  margin: 3px 0;
-  background-color: #307672;
-  color :rgb(48, 47, 47);
-  text-transform: capitalize;
-  text-align: left;
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  fallback: inherit;
-}
-
-#calendar {
-  width: 800px;
-  float: right;
-  margin-right: 40px;
-  background-color:#D2E1D1;
-  font-size: 20px !important;
-  color :rgb(48, 47, 47);
-}
-.list-container {
-  display: inline-flex;
-  flex-direction: row;
-  justify-content: center;
-}
-.list {
-  display: flex;
-  flex-direction: column;
-}
-
-.removeEvent {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    margin-right: 40px;
-    color: rgb(48, 47, 47);
-}
-
-/*LOGin firebase*/
-
-.login {
-  margin-top: 100px;
-  margin-left: 5px;
-  width: 100vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.login__container{
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  background-color: #E4EDDB;
-  padding: 30px;
-}
-.login__textBox {
-  padding: 10px;
-  font-size: 18px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  border: none;
-}
-.login__btn {
-  padding: 10px;
-  font-size: 18px;
-  margin-bottom: 10px;
-  border: none;
-  color: white;
-  background-color: #307672;
-  border-radius: 5px;
-}
-.login__google {
-  background-color: #144d53;
-}
-.login div {
-  margin-top: 7px;
-}
-
-/*REGISTER*/
-.register {
-  margin-top: 100px;
-  margin-left: 5px;
-  width: 100vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.register__container {
-  display:flex;
-  flex-direction: column;
-  text-align: center;
-  background-color: #E4EDDB;
-  padding: 30px;
-}
-.register__textBox {
-  padding: 10px;
-  font-size: 18px;
-  margin-left: 10px;
-  border-radius: 5px;
-  border: none;
-  margin-bottom: 10px;
-}
-.register__btn{
-  padding: 10px;
-  margin-left: 10px;
-  font-size: 18px;
-  margin-bottom: 10px;
-  border: none;
-  color: white;
-  background-color: #307672;
-  border-radius: 5px;
-}
-.register__google {
-  background-color: #144d53;
-}
-.register div {
-  margin-top: 7px;
-}
-
-/*RESET*/
-.reset {
-  margin-top: 100px;
-  margin-left: 5px;
-  width: 100vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.reset__container {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  background-color: #e4eddb;
-  padding: 30px;
-}
-
-.reset__textBox {
-  padding: 10px;
-  font-size: 18px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  border: none;
-  margin-bottom: 10px;
-}
-
-.reset__btn {
-  padding: 10px;
-  font-size: 18px;
-  margin-bottom: 10px;
-  border: none;
-  color: white;
-  background-color: #307672;
-  border-radius: 5px;
-}
-
-.reset div {
-  margin-top: 7px;
-}
+*/
