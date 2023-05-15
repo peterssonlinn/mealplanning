@@ -81,15 +81,12 @@ function Home() {
     try{
       let prevLiked = []
       let recpieList = fetchRecipeList(user.uid).then((response) =>{
-        
         response.forEach((recipe) =>{
           if(recipe.name){
-
             prevLiked.push(recipe.name)
           }
         })
-        console.log(prevLiked)
-        console.log(isItemLiked)
+        
         if(prevLiked != 0){
           setLikedItems(prevLiked);
         }
@@ -125,13 +122,17 @@ function Home() {
   const handleLikedButton = (name, url, img) => {
     
     if (likedItems.includes(name)) {
+      
       let remove = removeRecpie(user.uid, name, url, img).then((response) =>{
+        
         setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== name));
+        console.log(likedItems)
         
       });
       
      
     } else {
+     
       let add = addRecpie(user.uid, name, url, img).then((response) =>{
         setLikedItems((prevLikedItems) => [...prevLikedItems, name]);
        

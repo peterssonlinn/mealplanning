@@ -45,6 +45,13 @@ function Profile() {
     const [user, loading, error] = useAuthState(auth);
     const [name, setName] = useState("");
     const navigate = useNavigate();
+    const handleDragStart = (e) => e.preventDefault();
+
+    const[loadingDefault, setLoadingDefault] = useState(true);
+    const isItemLiked = (name) => likedItems.includes(name);
+    const [likedItems, setLikedItems] = useState([]);
+    let [orginalData, setOrginalData] = useState([]);
+
 
 
     const fetchUserName = async () => {
@@ -81,37 +88,24 @@ function Profile() {
           
           response.forEach((recipe) =>{
             info.push(recipe)
-            
-            
             if(recipe.name){
               console.log('inne i ', recipe.name)
               prevLiked.push(recipe.name)
              // info.push(recipe.name)
               
             }
-           
-
-            
-            
-            
-            
-            
-          
-
-          })
-          
+          });
           if(prevLiked != 0){
 
 
             console.log('prevLiked', prevLiked)
             setCarouselData(info) ;
-            console.log('prevLiked',likedItems);
-
+           
+  
             setLikedItems(prevLiked);
-
+            console.log('likedItems',likedItems);
             setOrginalData(info);
           }
-  
         });
       }
       catch(err) {
@@ -121,6 +115,10 @@ function Profile() {
   
     };
 
+    // useEffect(() => {
+    //   console.log('likedItems updated:', likedItems);
+    // }, [likedItems]);
+
     useEffect(() => {
       if (loading) return;
       if (!user) return navigate ("/");
@@ -129,26 +127,27 @@ function Profile() {
       fetchLikedRecipes();
     }, [user, loading]);
 
-    let [orginalData, setOrginalData] = useState([]);
 
 
-    const handleDragStart = (e) => e.preventDefault();
-
-    const[loadingDefault, setLoadingDefault] = useState(true);
-    const isItemLiked = (name) => likedItems.includes(name);
-    const [likedItems, setLikedItems] = useState([]);
+    
 
     const handleLikedButton = (name,url, img) => {
       if (likedItems.includes(name)) {
+        console.log("inne i if, likeditems is included in list")
+        console.log(name)
         let remove = removeRecpie(user.uid, name, url, img).then((response) =>{
           console.log('innan, ', likedItems)
-          setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== name));
+          
+
+          setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item != name));
           console.log('efter', likedItems)
+         
           
         });
         
        
       } else {
+        console.log("inne i else, likeditems is NOT! included in list")
         let add = addRecpie(user.uid, name, url, img).then((response) =>{
           setLikedItems((prevLikedItems) => [...prevLikedItems, name]);
          
@@ -435,7 +434,7 @@ function Profile() {
                     <Button onClick={(event) => { 
                     event.preventDefault() 
                     handleLikedButton(item['name'],item['url', item['img']])
-                      }} size='15px' color="primary"  startIcon={isItemLiked(item[0]) ? <FavoriteBorderIcon />  : <FavoriteIcon />}>
+                      }} size='15px' color="primary"  startIcon={isItemLiked(item['name']) ? <FavoriteIcon /> : <FavoriteBorderIcon />}>
                     </Button>
                   </ThemeProvider>
                   <img className='imgRecipeCarousel' src={item['img']}/> 

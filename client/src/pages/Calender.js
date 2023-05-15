@@ -44,7 +44,6 @@ import "./CalendarCom.css";
 function Calender() {
   
   const calendarRef = useRef(null);
-  const [open, setOpen] = React.useState(false);
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, error] = useAuthState(auth);

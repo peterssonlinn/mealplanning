@@ -157,9 +157,7 @@ function Friends() {
         let index = friendsToUser.indexOf(selectedFriend);
         if (index > -1) {
           friendsToUser.splice(index, 1);
-         
           removeFriendInCollection(selectedFriend);
-         
           setFriendsToUser(friendsToUser);
         }
       }
@@ -169,7 +167,6 @@ function Friends() {
     }
     const btnAddFriend = () =>{
       if(selectedFriend && !friendsToUser.includes(selectedFriend)){
-       
         addFriendInCollection();
       }
     };
@@ -190,11 +187,7 @@ function Friends() {
     
     
     const btnSearchUser = (event) => {
-
-      
-      //check the the searched user is valid and then set all information!
       if (selectedFriend){
-        console.log(selectedFriend)
         try{
           let friendInfo = getInfoOtherUser(user.uid,selectedFriend).then((response) => {
         
@@ -213,7 +206,6 @@ function Friends() {
 
 
         
-       
 
         axios.get("/api/recipes/?search="+"fish")
         .then(response => {
