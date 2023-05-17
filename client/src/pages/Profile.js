@@ -28,6 +28,8 @@ import {auth, db, logout, updateTextAboutUser, updateAvatarUser, fetchRecipeList
 import {query, collection, getDocs, where} from "firebase/firestore"
 import "./Profile.css";
 
+
+
 function Profile() {
     const [searchFor, setSearchFor] = useState('');
     const[showLogin, setShowLogin] = useState(false);
@@ -74,36 +76,84 @@ function Profile() {
     
       setAboutMe(data.aboutText);
       setAvatar(data.myAvatar);
-      setLoadingDefault(!loadingDefault)
+      setLoadingDefault(!loadingDefault);
       
 
     };
 
-    const fetchLikedRecipes = async () =>{
+    // const refreshImage =  (image) =>{
+    //   var res = axios.get(image)
+    //     .then(() => {
+    //       return true
+    //     })
+        
+    //     .catch(error =>{
+    //       // console.log('inne i catch', error);
+    //       return false
+
+    //     });
+
+    //     return res
+
+    // }
+
+    // const updateImage =  (recipe,link) =>{
+    //   var worked = axios.get("/api/recipes/?search="+recipe) 
+    //   .then((res) =>  {
+    //     console.log('res.data',res.data);
+    //     (res.data).forEach(async (rec) =>{
+    //       if(rec[3] === link){
+    //         let newLink = rec[5];
+    //         let update = await updateOldImage(user.uid, rec[1], newLink).then((response) =>{
+    //           console.log('update in database');
+    //         })
+    //       }
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     console.log('error i updateImage', error,recipe);
+        
+    //   })
+
+    // };
+
+    const fetchLikedRecipes =  () =>{
       try{
         let prevLiked = []
         let info = []
-       
-        let recpieList = fetchRecipeList(user.uid).then((response) =>{
-          
-          response.forEach((recipe) =>{
-            info.push(recipe)
+
+        let recipeList = fetchRecipeList(user.uid).then((response) =>{
+          response.forEach(async (recipe) =>{
+            // console.log(recipe.img)
+            // const shouldRefresh = await refreshImage(recipe.img);
+            // console.log('shouldRefresh', shouldRefresh)
+            // if (!shouldRefresh){
+            //   console.log("inside shouldRefresh");
+            //   console.log(recipe.url)
+            //   await updateImage(recipe.name,recipe.url);
+            //   await sleep(5000)
+            // }
+            info.push(recipe);
             if(recipe.name){
-              console.log('inne i ', recipe.name)
+              // console.log('inne i ', recipe.name)
               prevLiked.push(recipe.name)
              // info.push(recipe.name)
               
             }
           });
+          console.log(info)
+
+
           if(prevLiked != 0){
 
 
-            console.log('prevLiked', prevLiked)
+
+            // console.log('prevLiked', prevLiked)
             setCarouselData(info) ;
            
   
             setLikedItems(prevLiked);
-            console.log('likedItems',likedItems);
+            // console.log('likedItems',likedItems);
             setOrginalData(info);
           }
         });
@@ -133,21 +183,21 @@ function Profile() {
 
     const handleLikedButton = (name,url, img) => {
       if (likedItems.includes(name)) {
-        console.log("inne i if, likeditems is included in list")
+        // console.log("inne i if, likeditems is included in list")
         console.log(name)
         let remove = removeRecpie(user.uid, name, url, img).then((response) =>{
-          console.log('innan, ', likedItems)
+          // console.log('innan, ', likedItems)
           
 
           setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item != name));
-          console.log('efter', likedItems)
+          // console.log('efter', likedItems)
          
           
         });
         
        
       } else {
-        console.log("inne i else, likeditems is NOT! included in list")
+        // console.log("inne i else, likeditems is NOT! included in list")
         let add = addRecpie(user.uid, name, url, img).then((response) =>{
           setLikedItems((prevLikedItems) => [...prevLikedItems, name]);
          
@@ -157,11 +207,6 @@ function Profile() {
      
     };
 
-    
-  
-    
-
-    
     const newTextButton = () => {
       if(newTextAboutMe) {
         try{
@@ -248,14 +293,14 @@ function Profile() {
           }
 
         }
-        console.log(newData)
+        // console.log(newData)
         setCarouselData(newData)
 
   
       } 
       else{
         setSearchFor('')
-        console.log(orginalData)
+        // console.log(orginalData)
         setCarouselData(orginalData);
       }
     };
@@ -433,7 +478,7 @@ function Profile() {
                     
                     <Button onClick={(event) => { 
                     event.preventDefault() 
-                    handleLikedButton(item['name'],item['url', item['img']])
+                    handleLikedButton(item['name'],item['url'], item['img'])
                       }} size='15px' color="primary"  startIcon={isItemLiked(item['name']) ? <FavoriteIcon /> : <FavoriteBorderIcon />}>
                     </Button>
                   </ThemeProvider>

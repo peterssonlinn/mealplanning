@@ -28,7 +28,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ForwardIcon from '@mui/icons-material/Forward';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
-import {auth, db, logout, fetchFriendList, addFriendToList, removeFriendFromList, getInfoOtherUser} from "../firebase";
+import {auth, db, logout, fetchFriendList, addFriendToList, removeFriendFromList, getInfoOtherUser,fetchFriendsRecipe, fetchRecipeList, removeRecpie, addRecpie} from "../firebase";
 import {query, collection, getDocs, where} from "firebase/firestore"
 import "./Friends.css"
 
@@ -39,6 +39,7 @@ function Friends() {
     const [open, setOpen] = React.useState(false);
     const [items, setItems] = useState([]);
     const [errorText, setErrorText] = useState('');
+    const [ourLikedItem, setOurLiked] = useState([]);
    
     const [textAboutUser, setAboutUser] = useState();
     const [avatar, setAvatar] = useState('');
@@ -55,6 +56,8 @@ function Friends() {
   const [user, error] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(true);
   const [friendName, setFriendName] = useState("");
+  const isItemLiked = (name) => likedItems.includes(name);
+
 
   const navigate = useNavigate();
 
@@ -127,6 +130,28 @@ function Friends() {
 
     }
   };
+  const fetchRecipeListOwn = () =>{
+
+    try{
+      let temp = []
+      let recipeList = fetchRecipeList(user.uid).then((response) =>{
+          
+        response.forEach(async (recipe) =>{
+            temp.push(recipe.name);
+          });
+      
+      });
+     
+      setOurLiked(temp)
+      console.log(ourLikedItem)
+    }
+    catch (err){
+      console.error(err);
+      console.log(user.uid)
+      console.log("An error occured while fetching user's own recipe");
+
+    }
+  };
 
   useEffect(() => {
     if (!user) return navigate ("/");
@@ -134,6 +159,7 @@ function Friends() {
       setIsLoading(false);
       fetchUserName();
       fetchFriendsToUser();
+      fetchRecipeListOwn();
     }
   }, [user]);
 
@@ -171,31 +197,86 @@ function Friends() {
       }
     };
 
-    const isItemLiked = (url) => likedItems.includes(url);
 
-    const handleLikedButton = (url) => {
-      window.alert(url)
-  
-      if (likedItems.includes(url)) {
-        setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== url));
+    const handleLikedButton = (name,url, img) => {
+      if (likedItems.includes(name)) {
+       
+        console.log(name)
+        let remove = removeRecpie(user.uid, name, url, img).then((response) =>{
+         
+          setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item != name));
+          
+        });
+        
        
       } else {
-        setLikedItems((prevLikedItems) => [...prevLikedItems, url]);
+        // console.log("inne i else, likeditems is NOT! included in list")
+        let add = addRecpie(user.uid, name, url, img).then((response) =>{
+          setLikedItems((prevLikedItems) => [...prevLikedItems, name]);
+         
+        })
+        
       }
+     
     };
+
+    const getFriendsRecipe =  (email) =>{
+      try{
+        let ourLiked = []
+        let info = []
+       
+        let recipeList = fetchFriendsRecipe(user.uid,email).then((response) =>{
+          
+          response.forEach(async (recipe) =>{
+
+            console.log(recipe)
+            
+            info.push(recipe);
+            console.log(ourLikedItem)
+
+            if(ourLikedItem.includes(recipe.name)){
+              console.log('inne i if')
+             
+              ourLiked.push(recipe.name)
+            }
+          });
+        
+          if(info != 0){
+            setCarouselData(info) ;
+            setLikedItems(ourLiked);
+            setOrginalData(info);
+          }
+        });
+      }
+      catch(err) {
+        console.error(err);
+        alert("An error occured while fetching liked recipes data");
+      }
+  
+    };
+
 
     
     
     const btnSearchUser = (event) => {
       if (selectedFriend){
         try{
+          setFriendName('');
+          setAboutUser('');
+          getFriendsRecipe('');
+          setCarouselData([]);
+          fetchRecipeListOwn();
+
           let friendInfo = getInfoOtherUser(user.uid,selectedFriend).then((response) => {
-        
+         
             setShowValidUser(!showValidUser);
             setFriendName(response[0]);
             setAboutUser(response[1]);
             setAvatar(response[2]);
+            getFriendsRecipe(selectedFriend);
+            
             setLoadingDefault(false);
+
 
           })
         }catch (err){
@@ -203,16 +284,7 @@ function Friends() {
           alert("An error occured while fetching user data");
     
         }
-
-
-        
-
-        axios.get("/api/recipes/?search="+"fish")
-        .then(response => {
-          setCarouselData(response.data) ;
-          setOrginalData(response.data);
-        })
-        .catch(error => console.error(error));
+       
       }
       else{
         //no valid user show msg!
@@ -441,8 +513,8 @@ function Friends() {
           >
             {carouselData.map((item, index) => (
               <div className="theInfoCarousel"> 
-              <a target='_blank' href={item[3]}  className="listOfItemsCarousel" key={index}>
-              <h5 className="headingInfoCarousel">{item[1]}</h5>
+              <a target='_blank' href={item['url']}  className="listOfItemsCarousel" key={index}>
+              <h5 className="headingInfoCarousel">{item['name']}</h5>
               </a>
              
                   <small className='small'>{item[6]}</small>
@@ -450,8 +522,8 @@ function Friends() {
                   <ThemeProvider theme={theme}>
                     <Button onClick={(event) => { 
                     event.preventDefault() 
-                    handleLikedButton(item[3])
-                      }} size='15px' color="primary"  startIcon={isItemLiked(item[3]) ? <FavoriteBorderIcon />  : <FavoriteIcon />}>
+                    handleLikedButton(item['name'], item['url'], item['img'])
+                      }} size='15px' color="primary"  startIcon={isItemLiked(item['name']) ?  <FavoriteIcon /> : <FavoriteBorderIcon />}>
                     </Button>
                   </ThemeProvider>
                   <img className='imgRecipeCarousel' src={item[5]}/> 

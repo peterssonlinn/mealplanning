@@ -10,6 +10,8 @@ function CalendarCom() {
   const checkboxRef = useRef(null);
   const checkboxDelRef = useRef(null);
 
+  
+
   const events = [ 
     { id : 'a',
       title : 'Chicken stew',

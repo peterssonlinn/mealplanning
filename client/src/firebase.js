@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 
+//import { query } from "express";
 import { initializeApp } from "firebase/app";
 //import { getFirestore } from "firebase/firestore";
 import {GoogleAuthProvider, getAuth, signInWithPopup, 
@@ -91,6 +92,44 @@ const sendPasswordReset = async (email) => {
 const logout = () => {
    signOut(auth);
 };
+
+const fetchFriendsRecipe = async(userId, email) =>{
+   try {
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+   
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];
+      const returnArray = [];
+      if(data.exists()){
+         const friendExists = query(collection(db, "users"), where("email", "==", email));
+         const getDocsExists = await getDocs(friendExists);
+         const friendData = getDocsExists.docs[0].data();
+         const friendUid = friendData.uid;
+   
+         
+         if(friendUid){
+           
+            const recipeQuery = query(collection(db, "users",friendUid,"Recipe"));
+
+            const getRecipe = await getDocs(recipeQuery);
+            getRecipe.forEach((recipe) => {
+      
+               returnArray.push(recipe.data())
+      
+            });
+            
+            return returnArray
+         }
+
+      
+   }
+   }
+   catch (error) {
+      console.error('Error adding friend:', error);
+    }
+
+
+}
 
 const addFriendToList = async(userId, email) =>{
    try {
@@ -222,6 +261,30 @@ const addRecpie = async(userId, name, url, img) => {
 
 };
 
+// const updateOldImage = async(userId, name, link) =>{
+//    try{
+//       const q = query(collection(db, "users"), where("uid", "==", userId));
+
+//       const getDocumentQ = await getDocs(q);
+     
+
+//       const data = getDocumentQ.docs[0];  
+//       if(data.exists()){
+//          await updateDoc(doc(db, "users", userId, 'Recipe',name), {
+//             img:link,
+//          });
+         
+//          console.log('data exists, ref is this!!!')
+
+
+//       }
+//    }
+//    catch (error){
+//       console.error('error updating recipe', error)
+
+//    }
+// };
+
 
 const updateAvatarUser  = async (userId, avatar) =>{
    const q = query(collection(db, "users"), where("uid", "==", userId));
@@ -295,6 +358,9 @@ export {
    fetchRecipeList,
    addRecpie,
    removeRecpie,
+   fetchFriendsRecipe,
+   
+  
    
 };
  // Export firestore database
