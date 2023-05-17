@@ -58,7 +58,7 @@ app.get('/api/recipes' , (req, res,next) => {
 
                         for(let t in response.data.hits){
                             individualData = []
-                            console.log(response.data.hits[t]);
+                           // console.log(response.data.hits[t]['images']);
                             label = response.data.hits[t]['recipe']['label'];
                             ingredients = response.data.hits[t]['recipe']['ingredientLines'];
                             time = response.data.hits[t]['recipe']['totalTime'];
@@ -81,7 +81,7 @@ app.get('/api/recipes' , (req, res,next) => {
                            
                             
                         }
-                        console.log(returnData)
+                        //console.log(returnData)
                         
                         res.status(200).send(returnData);
                        
