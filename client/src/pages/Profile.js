@@ -141,19 +141,16 @@ function Profile() {
               
             }
           });
-          console.log(info)
 
 
           if(prevLiked != 0){
 
 
 
-            // console.log('prevLiked', prevLiked)
             setCarouselData(info) ;
            
   
             setLikedItems(prevLiked);
-            // console.log('likedItems',likedItems);
             setOrginalData(info);
           }
         });
@@ -184,20 +181,15 @@ function Profile() {
     const handleLikedButton = (name,url, img) => {
       if (likedItems.includes(name)) {
         // console.log("inne i if, likeditems is included in list")
-        console.log(name)
         let remove = removeRecpie(user.uid, name, url, img).then((response) =>{
-          // console.log('innan, ', likedItems)
           
 
           setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item != name));
-          // console.log('efter', likedItems)
-         
           
         });
         
        
       } else {
-        // console.log("inne i else, likeditems is NOT! included in list")
         let add = addRecpie(user.uid, name, url, img).then((response) =>{
           setLikedItems((prevLikedItems) => [...prevLikedItems, name]);
          
@@ -275,32 +267,20 @@ function Profile() {
       
     const handleClickSearch = () => {
       let search = searchFor.toLowerCase();
-      
       if(searchFor != ""){
-        let newData = []
-       
-        for(let element in carouselData){
-          
-          
-          let name = carouselData[element]; 
-          name = name[1];
-          
+        
+        let newData = [];
+        for(let element in carouselData){ 
+          let name = carouselData[element]['name']; 
           name = name.toLowerCase();
-          
           if(name.includes(search) ){
             newData.push( carouselData[element])
-          
           }
-
         }
-        // console.log(newData)
         setCarouselData(newData)
-
-  
       } 
       else{
         setSearchFor('')
-        // console.log(orginalData)
         setCarouselData(orginalData);
       }
     };
@@ -475,7 +455,6 @@ function Profile() {
                   <small className='small'>{item[6]}</small>
                   
                   <ThemeProvider theme={theme}>
-                    
                     <Button onClick={(event) => { 
                     event.preventDefault() 
                     handleLikedButton(item['name'],item['url'], item['img'])

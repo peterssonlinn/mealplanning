@@ -230,7 +230,7 @@
    position: absolute;
  }
 
-/*
+
 .show{
   display: block;
   transition: 800ms;
@@ -291,7 +291,7 @@
   justify-content: center !important;
   align-items:'center';
 }
-/*.search{
+.search{
   font-size: calc(40px + 2v);
   font-family:'Times New Roman', Times, serif;
   color: black;
@@ -328,4 +328,65 @@
   margin-left: 50px;
   text-align: center;
 }
-*/
+
+
+
+
+
+
+#saved_recepies {
+  float: left;
+  z-index: 2;
+  top: 20px;
+  left: 20px;
+  width: 400px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  background:  #D2E1D1;
+  overflow-y: scroll;
+  height: 580px;
+  color: rgb(48, 47, 47);
+  margin-left: 40px;
+}
+
+#saved_recepies .fc-event {
+  cursor: grab;
+  margin: 3px 0;
+  background-color: #307672;
+  color :rgb(48, 47, 47);
+  text-transform: capitalize;
+  text-align: left;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  fallback: inherit;
+}
+
+#calendar {
+  width: 800px;
+  float: right;
+  margin-left: 40px;
+  margin-right: 40px;
+  background-color:#D2E1D1;
+  font-size: 20px !important;
+  color :rgb(48, 47, 47);
+}
+.list-container {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.list {
+  display: flex;
+  flex-direction: row;
+}
+
+.removeEvent {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-right: 40px;
+    color: rgb(48, 47, 47);
+}

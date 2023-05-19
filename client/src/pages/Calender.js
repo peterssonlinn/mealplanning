@@ -4,52 +4,82 @@ import '../../src/App.css';
 import Button from '@mui/material/Button';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { indigo } from '@mui/material/colors';
-import DehazeIcon from '@mui/icons-material/Dehaze';
-import SearchIcon from '@mui/icons-material/Search';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Box from '@mui/material/Box';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import PersonIcon from '@mui/icons-material/Person';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import HomeIcon from '@mui/icons-material/Home';
 
-import Diversity1Icon from '@mui/icons-material/Diversity1';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import FullCalendar from '@fullcalendar/react'
-
-import NavBar from './NavBar';
-import { Interaction } from '@fullcalendar/core/internal';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import { useDrag, useDrop} from 'react-dnd';
-import { Calendar } from '@fullcalendar/core';
-import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import NavBar from './NavBar';
+import timeGridPlugin from '@fullcalendar/timegrid';
+//import interactionPlugin from '@fullcalendar/interaction';
+import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
-import {auth, db, logout} from "../firebase";
 import {query, collection, getDocs, where} from "firebase/firestore"
-import TestCal from './TestCal';
-import CalendarCom from './CalendarCom';
-import "./CalendarCom.css";
 
-
-
+import {auth, db, logout, fetchRecipeList} from "../firebase";
 
 
 
 function Calender() {
   
+  const checkboxRef = useRef(null);
+  const checkboxDelRef = useRef(null);
   const calendarRef = useRef(null);
-
+  const savedRecepiesRef = useRef(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, error] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(true);
   const [name, setName] = useState("");
   const navigate = useNavigate();
+  const [items, setItems] = useState([]);
+
+
+  const handleRemoveEvent= () => {
+    //window.alert("Clicked checkbox")
+    if (checkboxDelRef.current.checked){
+      //info.event.remove()
+      window.alert("filled")
+    }
+    //info.jsEvent.preventDefault();
+  }
+
+  const events = [ 
+    { id : 'a',
+      title : 'Chicken stew',
+    date: '2023-04-20T12:00:00'                
+  },{
+    id : 'b',
+    title: 'Korvstroganoff',
+    date: '2023-04-22T17:30:00',
+    url: 'https://www.ica.se/recept/korvstroganoff-med-ris-533512/'
+  }
+];
+
+
+
+  const fetchLikedRecipes =  () =>{
+    try{
+      let prevLiked = []
+      let info = []
+
+      let recipeList = fetchRecipeList(user.uid).then((response) =>{
+        response.forEach(async (recipe) =>{
+         
+          info.push(recipe);
+          if(recipe.name){
+            prevLiked.push(recipe.name);
+          }
+        });
+        setItems(prevLiked);
+      });
+      console.log("fetch from database fetchLiked");
+      console.log(items)
+    }
+    catch(err) {
+      console.error(err);
+      console.log("An error occured while fetching liked recipes data");
+    }
+
+  };
 
 
   const fetchUserName = async () => {
@@ -58,21 +88,54 @@ function Calender() {
       const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
       const doc = await getDocs(q);
       const data = doc.docs[0].data();
+      console.log("fetch user name call")
       setName(data.name);
     }catch(err) {
       console.error(err);
       alert("An error occured while fetching user data");
     }
   };
-  useEffect(() => {
+
+ 
+  const handleChangedEvent = (changedEvent) =>{
+    console.log(changedEvent.event.start.toISOString())
+    console.log(changedEvent.event.title)
+  }
+
+  
+
+  useEffect( () => {
     if (!user) return navigate ("/");
     if(user) {
       setIsLoading(false);
       fetchUserName();
+      fetchLikedRecipes();
+
+      //let savedRecepiesRef = useRef(null);
+      //const containerEl = savedRecepiesRef.current;
+      //console.log("container", containerEl)
+      //const calendarEl = calendarRef.current;
+      const checkbox = checkboxRef.current;
+      // let calendar = calendarRef.current.getApi();
+      
+      //if(savedRecepiesRef.current) {
+       const draggable = new Draggable(savedRecepiesRef.current, {
+         itemSelector: '.fc-event',
+         eventData: function(eventEl) {
+          
+          return {title : eventEl.innerText};
+         }
+       });
+      //}
+        return () => {
+          draggable.destroy();
+      //   //calendar.destroy();
+       };
     }
+   
   }, [user]);
 
-  if (isLoading || !name) {
+  if (isLoading &&  !name  && !savedRecepiesRef) {
     return <div>Loading...</div>;
   }
 
@@ -85,6 +148,15 @@ function Calender() {
       console.error(err);
       alert("An error occurred while logging out");
     }
+  };
+
+
+  const handleNewEvent = (newEvent) => {
+   // const eventData = JSON.parse(newEvent);
+   
+    
+    console.log(newEvent.draggedEl.innerText);
+    console.log(newEvent.dateStr)
   };
 
   const handleDateClick = (arg) => {
@@ -106,15 +178,7 @@ function Calender() {
     },
   });
 
-  function renderEventContent(eventInfo) {
-    return (
-      <>
-        <b>{eventInfo.timeText}</b>
-        <i>{eventInfo.event.title}</i>
-      </>
-    );
-  }
-
+  
   return (
     <div className='App'>
       <div className='backgroundApp'>
@@ -144,11 +208,62 @@ function Calender() {
           {/* Render the NAvBar component */}
           <NavBar />
         </div>
+
       </div>
-      <div className='testCal'>
-          {/* Render the calendar component */}
-          <CalendarCom />
-        </div>  
+
+
+      <div className='list'>
+        <div id='saved_recepies' ref={savedRecepiesRef} >
+        {items.map((item, index) => ( 
+          <div className="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-event={item}> 
+              <div key={index}  className="fc-event-main">{item}</div>
+          </div>
+        ))}
+             
+
+          </div>
+
+          <div id='calendar'>
+        <FullCalendar 
+          
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          firstDay={1}
+          height={500}
+          headerToolbar= {
+             {left: 'prev,next today',
+             center: 'title',
+             right: 'dayGridMonth,timeGridWeek,timeGridDay'
+           }}
+          editable={true}
+          droppable={true}
+          weekends={true}
+          eventBackgroundColor={'#307672'}
+          eventTimeFormat={
+              { hour: '2-digit',
+              minute: '2-digit',
+              hour12: false}}
+          timeZone={'UTC+2'}
+          locale={'en-SE'}
+          events={events}
+          
+          drop={handleNewEvent}
+          eventDrop={handleChangedEvent}
+
+        />
+          
+      </div>
+      
+      <div className='removeEvent'>
+      <p>
+          <input type='checkbox' id='event-remove'  ref={checkboxDelRef} onChange={handleRemoveEvent}/>
+          <label htmlFor='event-remove'>Remove from calendar?</label>
+        </p>
+      </div>
+          
+         
+      </div>
+      
+        
       </div>
     </div>
   );

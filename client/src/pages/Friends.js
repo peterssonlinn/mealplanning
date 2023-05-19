@@ -73,7 +73,7 @@ function Friends() {
       //setName(data.name);
     }catch(err) {
       console.error(err);
-      alert("An error occured while fetching user data");
+      console.log("An error occured while fetching user data");
     }
   };
 
@@ -84,8 +84,6 @@ function Friends() {
     }
 
     try{
-      
-      console.log('user id', user.uid);
       let result = [];
 
       let friendList = fetchFriendList(user.uid).then((response) => {
@@ -143,11 +141,11 @@ function Friends() {
       });
      
       setOurLiked(temp)
-      console.log(ourLikedItem)
+      
     }
     catch (err){
       console.error(err);
-      console.log(user.uid)
+      
       console.log("An error occured while fetching user's own recipe");
 
     }
@@ -201,7 +199,7 @@ function Friends() {
     const handleLikedButton = (name,url, img) => {
       if (likedItems.includes(name)) {
        
-        console.log(name)
+        
         let remove = removeRecpie(user.uid, name, url, img).then((response) =>{
          
           setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item != name));
@@ -210,7 +208,6 @@ function Friends() {
         
        
       } else {
-        // console.log("inne i else, likeditems is NOT! included in list")
         let add = addRecpie(user.uid, name, url, img).then((response) =>{
           setLikedItems((prevLikedItems) => [...prevLikedItems, name]);
          
@@ -229,13 +226,11 @@ function Friends() {
           
           response.forEach(async (recipe) =>{
 
-            console.log(recipe)
             
             info.push(recipe);
             console.log(ourLikedItem)
 
             if(ourLikedItem.includes(recipe.name)){
-              console.log('inne i if')
              
               ourLiked.push(recipe.name)
             }
@@ -309,14 +304,9 @@ function Friends() {
       let search = searchFor.toLowerCase();
       
       if(searchFor != ""){
-        let newData = []
-       
+        let newData = [];
         for(let element in carouselData){
-          
-          
-          let name = carouselData[element]; 
-          name = name[1];
-          
+          let name = carouselData[element]['name'];   
           name = name.toLowerCase();
           
           if(name.includes(search) ){
@@ -324,10 +314,7 @@ function Friends() {
           }
 
         }
-        
         setCarouselData(newData);
-
-  
       } 
       else{
         setSearchFor('');
@@ -526,7 +513,7 @@ function Friends() {
                       }} size='15px' color="primary"  startIcon={isItemLiked(item['name']) ?  <FavoriteIcon /> : <FavoriteBorderIcon />}>
                     </Button>
                   </ThemeProvider>
-                  <img className='imgRecipeCarousel' src={item[5]}/> 
+                  <img className='imgRecipeCarousel' src={item['img']}/> 
                  
                </div>
               ))}

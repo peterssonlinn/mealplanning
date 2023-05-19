@@ -6,19 +6,20 @@ import { initializeApp } from "firebase/app";
 import {GoogleAuthProvider, getAuth, signInWithPopup, 
    signInWithEmailAndPassword, createUserWithEmailAndPassword, 
    sendPasswordResetEmail, signOut,} from "firebase/auth";
-import {getFirestore, query, getDoc, getDocs,collection, where, addDoc,collectionGroup, setDoc, doc, deleteDoc, updateDoc} from "firebase/firestore";
+   import secret from './secret.json';
+   import {getFirestore, query, getDoc, getDocs,collection, where, addDoc,collectionGroup, setDoc, doc, deleteDoc, updateDoc} from "firebase/firestore";
 
-
+   
  // TODO: Add SDKs for Firebase products that you want to use
  // https://firebase.google.com/docs/web/setup#available-libraries
  // Your web app's Firebase configuration
  const firebaseConfig = {
-    apiKey: "AIzaSyDc6u1j9g7029XxKf5I7EF_jFPRt8i6WNA",
-    authDomain: "test-46b49.firebaseapp.com",
-    projectId: "test-46b49",
-    storageBucket: "test-46b49.appspot.com",
-    messagingSenderId: "903879469",
-    appId: "1:903879469:web:81cc3f9f3e36ff8fac91a4"
+   apiKey : secret.setup.apiKey,
+   authDomain : secret.setup.authDomain,
+   projectId : secret.setup.projectId,
+   storageBucket : secret.setup.storageBucket,
+   messagingSenderId : secret.setup.messagingSenderId,
+   appId :secret.setup.appId
  };
  // Initialize Firebase
  

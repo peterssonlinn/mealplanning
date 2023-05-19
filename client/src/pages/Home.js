@@ -284,8 +284,6 @@ function Home() {
 
           <div className='allInfo'>
             <div className="list-group">
-             
-              
               {items.map((item, index) => (
                  <div className="theInfoCarousel"> 
                 <a  target='_blank' href={item[3]}  className="listOfItems" key={index}>

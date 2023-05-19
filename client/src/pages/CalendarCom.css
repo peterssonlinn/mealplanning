@@ -1,9 +1,9 @@
-#saved_recepies {
+  #saved_recepies {
     float: left;
     z-index: 2;
     top: 20px;
     left: 20px;
-    width: 400px;
+    width: 200px;
     padding: 0 10px;
     border: 1px solid #ccc;
     background:  #D2E1D1;
@@ -12,8 +12,14 @@
     color: rgb(48, 47, 47);
     margin-left: 40px;
   }
+
+  /*
   
+  */
+
+
   #saved_recepies .fc-event {
+    
     cursor: grab;
     margin: 3px 0;
     background-color: #307672;
@@ -28,23 +34,42 @@
     fallback: inherit;
   }
   
-  #calendar {
+
+  /*
+  
+  */
+
+  .list-container {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+
+  }
+
+  /*
+  
+  */
+
+  .list {
+    display: flex;
+    flex-direction: column;
+  }
+ 
+  
+  
+  
+  
+  
+  /*#calendar {
     width: 800px;
     float: right;
     margin-right: 40px;
     background-color:#D2E1D1;
     font-size: 20px !important;
     color :rgb(48, 47, 47);
-  }
-  .list-container {
-    display: inline-flex;
-    flex-direction: row;
-    justify-content: center;
-  }
-  .list {
-    display: flex;
-    flex-direction: column;
-  }
+  }*/
+  
+  
   
   .removeEvent {
       position: absolute;
