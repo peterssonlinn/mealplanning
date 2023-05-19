@@ -45,7 +45,8 @@ function CalendarCom() {
       eventData: function(eventEl) {
         
         return {
-          title: eventEl.innerText
+          title: eventEl.innerText, 
+          
         };
       }
     });
@@ -91,7 +92,7 @@ function CalendarCom() {
       
     });
 
-    
+
     return () => {
       //draggable.destroy();
       //calendar.destroy();

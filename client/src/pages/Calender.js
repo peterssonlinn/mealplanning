@@ -31,6 +31,7 @@ function Calender() {
   const [name, setName] = useState("");
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
+  const [links, setLinks] = useState([]);
 
 
   const handleRemoveEvent= () => {
@@ -40,19 +41,21 @@ function Calender() {
       window.alert("filled")
     }
     //info.jsEvent.preventDefault();
-  }
+  };
 
-  const events = [ 
-    { id : 'a',
-      title : 'Chicken stew',
-    date: '2023-04-20T12:00:00'                
-  },{
-    id : 'b',
-    title: 'Korvstroganoff',
-    date: '2023-04-22T17:30:00',
-    url: 'https://www.ica.se/recept/korvstroganoff-med-ris-533512/'
+  const handleClickedEvent = (clickedEvent) =>{
+    const clicked = clickedEvent.event.title;
+    const index = items.findIndex( i => i.name == clicked);
+    if(index !== -1) {
+      const url = items[index]['url']
+      window.open(url)
   }
-];
+    
+  
+
+  };
+
+  
 
 
 
@@ -68,11 +71,12 @@ function Calender() {
           if(recipe.name){
             prevLiked.push(recipe.name);
           }
+
         });
-        setItems(prevLiked);
+        setItems(info);
       });
       console.log("fetch from database fetchLiked");
-      console.log(items)
+      console.log(info)
     }
     catch(err) {
       console.error(err);
@@ -100,6 +104,7 @@ function Calender() {
   const handleChangedEvent = (changedEvent) =>{
     console.log(changedEvent.event.start.toISOString())
     console.log(changedEvent.event.title)
+
   }
 
   
@@ -111,22 +116,21 @@ function Calender() {
       fetchUserName();
       fetchLikedRecipes();
 
-      //let savedRecepiesRef = useRef(null);
-      //const containerEl = savedRecepiesRef.current;
-      //console.log("container", containerEl)
-      //const calendarEl = calendarRef.current;
+     
       const checkbox = checkboxRef.current;
-      // let calendar = calendarRef.current.getApi();
       
-      //if(savedRecepiesRef.current) {
+    
        const draggable = new Draggable(savedRecepiesRef.current, {
          itemSelector: '.fc-event',
          eventData: function(eventEl) {
           
-          return {title : eventEl.innerText};
+          return {
+            title : eventEl.innerText,
+            infoEl : eventEl
+          };
          }
        });
-      //}
+     
         return () => {
           draggable.destroy();
       //   //calendar.destroy();
@@ -215,8 +219,11 @@ function Calender() {
       <div className='list'>
         <div id='saved_recepies' ref={savedRecepiesRef} >
         {items.map((item, index) => ( 
-          <div className="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-event={item}> 
-              <div key={index}  className="fc-event-main">{item}</div>
+          <div className="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event"  > 
+              <div key={index}  className="fc-event-main">
+                 {item['name']}
+              </div>
+            
           </div>
         ))}
              
@@ -244,10 +251,11 @@ function Calender() {
               hour12: false}}
           timeZone={'UTC+2'}
           locale={'en-SE'}
-          events={events}
+         
           
           drop={handleNewEvent}
           eventDrop={handleChangedEvent}
+          eventClick={handleClickedEvent}
 
         />
           
