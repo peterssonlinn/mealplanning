@@ -238,6 +238,32 @@ const removeRecpie = async(userId, name, url, img) => {
       console.error('Error removign recipe:', error);
       }
 }
+
+const addRecipeCalender = async(userId, id, title, url, date, startStr, endStr, allDay) =>{
+   try{
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];  
+      if(data.exists()){
+         await setDoc(doc(db, "users", userId, 'Calender', id),{
+            id : id, 
+            title : title, 
+            url : url,
+            date :date, 
+            startStr : startStr, 
+            endStr : endStr,
+            allDay : allDay,
+         });
+      }
+
+
+   }
+   catch (error){
+      console.error('error adding recipe to calender', error)
+
+   }
+
+}
 const addRecpie = async(userId, name, url, img) => {
    try{
       const q = query(collection(db, "users"), where("uid", "==", userId));
@@ -360,6 +386,7 @@ export {
    addRecpie,
    removeRecpie,
    fetchFriendsRecipe,
+   addRecipeCalender,
    
   
    

@@ -15,11 +15,13 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
 import {query, collection, getDocs, where} from "firebase/firestore"
 
-import {auth, db, logout, fetchRecipeList} from "../firebase";
+import {auth, db, logout, fetchRecipeList, addRecipeCalender} from "../firebase";
+import { v4 as uuidv4 } from "uuid";
 
 
 
 function Calender() {
+
   
   const checkboxRef = useRef(null);
   const checkboxDelRef = useRef(null);
@@ -153,14 +155,54 @@ function Calender() {
       alert("An error occurred while logging out");
     }
   };
+  const addRecipeToDatabase = (id, title, url, date, startStr, endStr, allDay) =>{
+    try{
+      let temp = addRecipeCalender(user.uid,id, title, url, date, startStr, endStr, allDay ).then((response) => {
+        console.log('added to database');
+      })
+    }catch (err){
+      console.error(err);
+      alert("An error occured while adding user data");
+
+    }
+  };
 
 
-  const handleNewEvent = (newEvent) => {
-   // const eventData = JSON.parse(newEvent);
-   
+
+
+  const handleNewEvent = async (newEvent) => {
+    const title = await newEvent.draggedEl.innerText;
+    const isAllDay =await  newEvent.allDay;
+    let date;
     
-    console.log(newEvent.draggedEl.innerText);
-    console.log(newEvent.dateStr)
+    if(isAllDay){
+      date = await newEvent.dateStr
+    }
+    else{
+      date = await newEvent.dateStr;
+      date =  await new Date(date);
+      date = await (date.getFullYear() + '-' +  (date.getUTCMonth()+1) + '-' + date.getUTCDate());
+    }
+    
+    const startDate = await newEvent.dateStr;
+    const endDate = await newEvent.date;
+    let url;
+    const index = await items.findIndex( i => i.name == title);
+    if(index !== -1) {
+      url = await items[index]['url']
+      console.log(url)
+   }
+   const id =await  uuidv4();
+   console.log(id);
+
+   console.log(typeof(id),typeof(title),typeof(isAllDay),typeof(date),typeof(startDate),typeof(endDate),typeof(url)       )
+   addRecipeToDatabase(id, title, url, date, startDate, endDate, isAllDay);
+
+   
+
+
+
+
   };
 
   const handleDateClick = (arg) => {
