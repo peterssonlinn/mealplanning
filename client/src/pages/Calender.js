@@ -15,7 +15,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
 import {query, collection, getDocs, where} from "firebase/firestore"
 
-import {auth, db, logout, fetchRecipeList, addRecipeCalender,fetchCalender} from "../firebase";
+import {auth, db, logout, fetchRecipeList, addRecipeCalender,fetchCalender,updateEvent} from "../firebase";
 import { v4 as uuidv4 } from "uuid";
 
 
@@ -111,13 +111,23 @@ function Calender() {
       for (const event of calendarList) {
         if (!event['allDay']) {
  	        let end = event['endStr'];
-          let startTime =event['startStr']
-          let time = end.toDate();
-          let isoDateTime = new Date(time.getTime() - (time.getTimezoneOffset() * 60000)).toISOString();
-          isoDateTime = isoDateTime.slice(0, -5);
-          event['endStr'] = isoDateTime;
+           let startTime =event['startStr']
+          if(end !== ""){
+            let time = end.toDate();
+            let isoDateTime = new Date(time.getTime() - (time.getTimezoneOffset() * 60000)).toISOString();
+            isoDateTime = isoDateTime.slice(0, -5);
+            event['endStr'] = isoDateTime;
+            event.end = isoDateTime;
+          }
+          else{
+            let startTime =event['startStr'];
+            event.end = startTime;
+
+
+          }
+
+
           event.start = startTime;
-          event.end = isoDateTime;
 
           allData.push(event);
         } else {
@@ -135,10 +145,39 @@ function Calender() {
 
  
   const handleChangedEvent = (changedEvent) =>{
-    console.log(changedEvent.event.start.toISOString())
-    console.log(changedEvent.event.title)
+    const isAllDay = changedEvent.event.allDay;
+    const id = changedEvent.event.id;
+    let startTime;
+    let endTime;
+    let date = (changedEvent.event.startStr).split('T');
+    date = date[0]
 
+    console.log(changedEvent.event)
+
+    // new starttime 
+    if(isAllDay){
+      startTime = changedEvent.event.startStr;
+      endTime = changedEvent.event.startStr;
+     
+
+      console.log('date',date)
+    }else{
+      startTime = changedEvent.event.startStr;
+      endTime = changedEvent.event.endStr;
+      
+
+    }
+    try{
+      let temp = updateEvent(user.uid,id, startTime, endTime, isAllDay,date).then((response) =>{
+        console.log('updated datenabase');
+      })
+    }catch (err){
+      console.error(err);
+      alert("An error occured while adding user data");
+
+    }
   }
+    
 
   
 
