@@ -15,7 +15,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
 import {query, collection, getDocs, where} from "firebase/firestore"
 
-import {auth, db, logout, fetchRecipeList, addRecipeCalender} from "../firebase";
+import {auth, db, logout, fetchRecipeList, addRecipeCalender,fetchCalender} from "../firebase";
 import { v4 as uuidv4 } from "uuid";
 
 
@@ -24,6 +24,8 @@ function Calender() {
 
   
   const checkboxRef = useRef(null);
+  const moment = require('moment');
+
   const checkboxDelRef = useRef(null);
   const calendarRef = useRef(null);
   const savedRecepiesRef = useRef(null);
@@ -34,6 +36,7 @@ function Calender() {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [links, setLinks] = useState([]);
+  const [events, setEvents] = useState([]);
 
 
   const handleRemoveEvent= () => {
@@ -52,9 +55,6 @@ function Calender() {
       const url = items[index]['url']
       window.open(url)
   }
-    
-  
-
   };
 
   
@@ -102,6 +102,37 @@ function Calender() {
     }
   };
 
+  const fetchOwnCalender = async () => {
+    try {
+      let allData = [];
+      let calendarList = await fetchCalender(user.uid);
+      console.log(calendarList)
+  
+      for (const event of calendarList) {
+        if (!event['allDay']) {
+ 	        let end = event['endStr'];
+          let startTime =event['startStr']
+          let time = end.toDate();
+          let isoDateTime = new Date(time.getTime() - (time.getTimezoneOffset() * 60000)).toISOString();
+          isoDateTime = isoDateTime.slice(0, -5);
+          event['endStr'] = isoDateTime;
+          event.start = startTime;
+          event.end = isoDateTime;
+
+          allData.push(event);
+        } else {
+          allData.push(event);
+        }
+      }
+  
+      setEvents(allData);
+    } catch (err) {
+      console.error(err);
+      console.log("An error occurred while fetching calendar");
+    }
+  }
+
+
  
   const handleChangedEvent = (changedEvent) =>{
     console.log(changedEvent.event.start.toISOString())
@@ -117,6 +148,7 @@ function Calender() {
       setIsLoading(false);
       fetchUserName();
       fetchLikedRecipes();
+      fetchOwnCalender();
 
      
       const checkbox = checkboxRef.current;
@@ -135,7 +167,7 @@ function Calender() {
      
         return () => {
           draggable.destroy();
-      //   //calendar.destroy();
+     
        };
     }
    
@@ -155,6 +187,8 @@ function Calender() {
       alert("An error occurred while logging out");
     }
   };
+
+
   const addRecipeToDatabase = (id, title, url, date, startStr, endStr, allDay) =>{
     try{
       let temp = addRecipeCalender(user.uid,id, title, url, date, startStr, endStr, allDay ).then((response) => {
@@ -171,39 +205,37 @@ function Calender() {
 
 
   const handleNewEvent = async (newEvent) => {
-    const title = await newEvent.draggedEl.innerText;
-    const isAllDay =await  newEvent.allDay;
+    const title = newEvent.draggedEl.innerText;
+    const isAllDay = newEvent.allDay;
     let date;
-    
-    if(isAllDay){
-      date = await newEvent.dateStr
+  
+    if (isAllDay) {
+      date = newEvent.dateStr;
+    } else {
+      date = newEvent.dateStr;
+      date = new Date(date);
+      date = date.getFullYear() + '-' + (date.getUTCMonth() + 1) + '-' + date.getUTCDate();
     }
-    else{
-      date = await newEvent.dateStr;
-      date =  await new Date(date);
-      date = await (date.getFullYear() + '-' +  (date.getUTCMonth()+1) + '-' + date.getUTCDate());
-    }
-    
-    const startDate = await newEvent.dateStr;
-    const endDate = await newEvent.date;
+  
+    let startDate = newEvent.dateStr;
+    console.log('startdate', startDate);
+    let endDate = newEvent.date;
+    console.log('endDate', endDate);
     let url;
-    const index = await items.findIndex( i => i.name == title);
-    if(index !== -1) {
-      url = await items[index]['url']
-      console.log(url)
-   }
-   const id =await  uuidv4();
-   console.log(id);
+    const index = items.findIndex((i) => i.name.toLowerCase() === title.toLowerCase());
 
-   console.log(typeof(id),typeof(title),typeof(isAllDay),typeof(date),typeof(startDate),typeof(endDate),typeof(url)       )
-   addRecipeToDatabase(id, title, url, date, startDate, endDate, isAllDay);
-
-   
-
-
-
-
+    console.log('index',index,title,items)
+    if (index !== -1) {
+      url = items[index].url;
+      console.log(url);
+    }
+    const id = uuidv4();
+    console.log(id);
+  
+    console.log(typeof id, typeof title, typeof isAllDay, typeof date, typeof startDate, typeof endDate, typeof url);
+    addRecipeToDatabase(id, title, url, date, startDate, endDate, isAllDay);
   };
+  
 
   const handleDateClick = (arg) => {
     alert(arg.dateStr);
@@ -293,6 +325,7 @@ function Calender() {
               hour12: false}}
           timeZone={'UTC+2'}
           locale={'en-SE'}
+          events={events}
          
           
           drop={handleNewEvent}

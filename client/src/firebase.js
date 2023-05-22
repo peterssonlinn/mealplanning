@@ -198,6 +198,27 @@ const fetchFriendList = async(userId) =>{
    }
 };
 
+const fetchCalender = async(userId) => {
+   const q = query(collection(db, "users"), where("uid", "==", userId));
+
+   const getDocumentQ = await getDocs(q);
+   const data = getDocumentQ.docs[0];
+   const returnArray = [];
+
+   if (data.exists()){
+      const calenderQuery = query(collection(db, "users",userId,"Calender"));
+
+      const getCalender = await getDocs(calenderQuery);
+      getCalender.forEach((day) => {
+
+         returnArray.push(day.data())
+
+      });
+      return returnArray;
+      
+   }
+};
+
 const fetchRecipeList = async(userId) => {
    const q = query(collection(db, "users"), where("uid", "==", userId));
 
@@ -387,6 +408,7 @@ export {
    removeRecpie,
    fetchFriendsRecipe,
    addRecipeCalender,
+   fetchCalender,
    
   
    
