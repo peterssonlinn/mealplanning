@@ -152,7 +152,9 @@ function Calender() {
     let date = (changedEvent.event.startStr).split('T');
     date = date[0]
 
-  
+    console.log(changedEvent.event)
+
+    // new starttime 
     if(isAllDay){
       startTime = changedEvent.event.startStr;
       endTime = changedEvent.event.startStr;
@@ -163,6 +165,7 @@ function Calender() {
       startTime = changedEvent.event.startStr;
       endTime = changedEvent.event.endStr;
       
+
     }
     try{
       let temp = updateEvent(user.uid,id, startTime, endTime, isAllDay,date).then((response) =>{
@@ -258,17 +261,15 @@ function Calender() {
     let endDate = newEvent.date;
     console.log('endDate', endDate);
     let url;
-    const index = items.findIndex((i) => i.name.trim().toLowerCase() === title.trim().toLowerCase());
+    const index = items.findIndex((i) => i.name.toLowerCase() === title.toLowerCase());
 
-    console.log('index',index,title,items);
-
+    console.log('index',index,title,items)
     if (index !== -1) {
       url = items[index].url;
       console.log(url);
     }
     const id = uuidv4();
     console.log(id);
-    console.log(url)
   
     console.log(typeof id, typeof title, typeof isAllDay, typeof date, typeof startDate, typeof endDate, typeof url);
     addRecipeToDatabase(id, title, url, date, startDate, endDate, isAllDay);

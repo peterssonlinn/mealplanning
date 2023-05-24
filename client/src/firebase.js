@@ -356,6 +356,7 @@ const updateEvent  = async (userId, id,startTime, endTime, allDay,date) =>{
    const getDocumentQ = await getDocs(q);
    const data = getDocumentQ.docs[0];
   
+  
    if (data.exists()){
       await updateDoc(doc(db, "users", userId,"Calender",id), {
          startStr:startTime,
