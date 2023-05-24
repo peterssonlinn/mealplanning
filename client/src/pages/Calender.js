@@ -261,7 +261,7 @@ function Calender() {
     let endDate = newEvent.date;
     console.log('endDate', endDate);
     let url;
-    const index = items.findIndex((i) => i.name.toLowerCase() === title.toLowerCase());
+    const index = items.findIndex((i) => i.name.trim().toLowerCase() === title.trim().toLowerCase());
 
     console.log('index',index,title,items)
     if (index !== -1) {
