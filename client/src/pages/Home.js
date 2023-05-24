@@ -40,7 +40,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
 import {auth, db, logout, fetchRecipeList, addRecpie, removeRecpie} from "../firebase";
-import {query, collection, getDocs, where} from "firebase/firestore"
+import {query,  getDocs, where, onSnapshot,collection} from "firebase/firestore"
 import "./Home.css"
 
 
@@ -104,6 +104,11 @@ function Home() {
     if (!user) return navigate ("/");
     fetchUserName();
     fetchLikedRecipes();
+
+    const refCollection = collection(db,"users", user.uid,"Recipe");
+    const update = onSnapshot(refCollection, (snapshot) => {
+      fetchLikedRecipes();
+    });
   }, [user, loading]);
 
   const changeLogOut = async () => {
@@ -143,11 +148,6 @@ function Home() {
 
 
 
- /* const btnLogIn = () =>{
-    setShowLogin((showLogin) => !showLogin);
-  }
-  */
- 
 
   const btnAutoFill = (event) =>{
     setSearchFor(searchFor + " " + event.target.textContent)

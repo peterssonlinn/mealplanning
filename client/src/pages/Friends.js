@@ -29,7 +29,7 @@ import ForwardIcon from '@mui/icons-material/Forward';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
 import {auth, db, logout, fetchFriendList, addFriendToList, removeFriendFromList, getInfoOtherUser,fetchFriendsRecipe, fetchRecipeList, removeRecpie, addRecpie} from "../firebase";
-import {query, collection, getDocs, where} from "firebase/firestore"
+import {query, collection, getDocs, where, onSnapshot} from "firebase/firestore"
 import "./Friends.css"
 
 function Friends() {
@@ -158,6 +158,23 @@ function Friends() {
       fetchUserName();
       fetchFriendsToUser();
       fetchRecipeListOwn();
+     
+
+      const refCollectionLiked = collection(db,"users", user?.uid,"Recipe");
+      const updateLiked = onSnapshot(refCollectionLiked, (snapshot) => {
+        fetchRecipeListOwn();
+       
+          btnSearchUser(selectedFriend);
+
+        
+       
+      });
+
+      const refCollectionFriends = collection(db,"users", user?.uid,"Friends");
+      const updateFriends = onSnapshot(refCollectionFriends, (snapshot) => {
+        fetchFriendsToUser();
+        
+      });
     }
   }, [user]);
 
@@ -261,19 +278,29 @@ function Friends() {
           getFriendsRecipe('');
           setCarouselData([]);
           fetchRecipeListOwn();
+          let friendInfo = getInfoOtherUser(user.uid, selectedFriend)
+          .then((response) => {
+            console.log('friendInfo', friendInfo);
 
-          let friendInfo = getInfoOtherUser(user.uid,selectedFriend).then((response) => {
-         
             setShowValidUser(!showValidUser);
             setFriendName(response[0]);
             setAboutUser(response[1]);
             setAvatar(response[2]);
             getFriendsRecipe(selectedFriend);
-            
+
             setLoadingDefault(false);
-
-
           })
+          .catch((error) => {
+            // Handle the error here
+            console.error('Error:', error);
+            // You can set appropriate error
+            
+            // You can set appropriate error state or display an error message to the user
+            setFriendName('');
+            setAboutUser('');
+            getFriendsRecipe('');
+            setAvatar('');
+          });
         }catch (err){
           console.error(err);
           alert("An error occured while fetching user data");
@@ -283,10 +310,10 @@ function Friends() {
       }
       else{
         //no valid user show msg!
-        if(showValidUser){
-          setShowValidUser(!showValidUser)
-        }
-       
+        setFriendName('');
+        setAboutUser('');
+        getFriendsRecipe('');
+        setAvatar('');
         
       }
     }; 
@@ -417,7 +444,7 @@ function Friends() {
           </form>
         </div>
 
-        {showValidUser &&
+      
         <div>
            
         
@@ -522,7 +549,7 @@ function Friends() {
         </div>
         </div>
 
-        }
+        
 
 
     </div>
