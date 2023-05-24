@@ -5,30 +5,7 @@ import Button from '@mui/material/Button';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
-/*import { indigo } from '@mui/material/colors';
-import DehazeIcon from '@mui/icons-material/Dehaze';
-
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Box from '@mui/material/Box';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import PersonIcon from '@mui/icons-material/Person';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import HomeIcon from '@mui/icons-material/Home';
-import Diversity1Icon from '@mui/icons-material/Diversity1';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';*/
 import axios from 'axios'
-/*import LoginButton from './LoginButton';
-import SignupButton from './SignupButton';
-import LogoutButton from './LogoutButton';
-import AuthButton from './AuthButton';
-import AuthNav from './AuthNav';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import DinnerDiningIcon from '@mui/icons-material/DinnerDining';*/
 import NavBar from './NavBar';
 import LunchDiningIcon from '@mui/icons-material/LunchDining';
 import EggIcon from '@mui/icons-material/Egg';
@@ -42,8 +19,6 @@ import { useNavigate} from 'react-router-dom';
 import {auth, db, logout, fetchRecipeList, addRecpie, removeRecpie} from "../firebase";
 import {query, collection, getDocs, where} from "firebase/firestore"
 import "./Home.css"
-
-
 
 function Home() {
 
@@ -79,19 +54,6 @@ function Home() {
 
   const fetchLikedRecipes = async () =>{
     try{
-      let prevLiked = []
-      let recpieList = fetchRecipeList(user.uid).then((response) =>{
-        response.forEach((recipe) =>{
-          if(recipe.name){
-            prevLiked.push(recipe.name)
-          }
-        })
-        
-        if(prevLiked != 0){
-          setLikedItems(prevLiked);
-        }
-
-      });
     }
     catch(err) {
       console.error(err);
@@ -119,24 +81,14 @@ function Home() {
 
 
 
-  const handleLikedButton = (name, url, img) => {
+  const handleLikedButton = (name) => {
     
     if (likedItems.includes(name)) {
       
-      let remove = removeRecpie(user.uid, name, url, img).then((response) =>{
-        
-        setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== name));
-        console.log(likedItems)
-        
-      });
       
      
     } else {
      
-      let add = addRecpie(user.uid, name, url, img).then((response) =>{
-        setLikedItems((prevLikedItems) => [...prevLikedItems, name]);
-       
-      })
       
     }
   };
@@ -185,7 +137,6 @@ function Home() {
     setSearchFor(event.target.value);
   };
 
-  const selectRef = React.useRef();
 
   
 
