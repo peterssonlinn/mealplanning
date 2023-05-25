@@ -15,7 +15,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
 import {query, collection, getDocs, where} from "firebase/firestore"
 
-import {auth, db, logout, fetchRecipeList, addRecipeCalender,fetchCalender,updateEvent} from "../firebase";
+import {auth, db, logout, fetchRecipeList, addRecipeCalender,fetchCalender,updateEvent, removeEventCal} from "../firebase";
 import { v4 as uuidv4 } from "uuid";
 
 
@@ -24,7 +24,7 @@ function Calender() {
 
   
   const checkboxRef = useRef(null);
-  const moment = require('moment');
+  //const moment = require('moment');
 
   const checkboxDelRef = useRef(null);
   const calendarRef = useRef(null);
@@ -37,28 +37,45 @@ function Calender() {
   const [items, setItems] = useState([]);
   const [links, setLinks] = useState([]);
   const [events, setEvents] = useState([]);
+  const [selectedRecpieCal, setSelectedRecpieCal] = useState('');
 
 
-  const handleRemoveEvent= () => {
+  /*const handleRemoveEvent= (clickedEvent) => {
+   
     //window.alert("Clicked checkbox")
     if (checkboxDelRef.current.checked){
       //info.event.remove()
+      clickedEvent.event.remove;
+    
       window.alert("filled")
     }
     //info.jsEvent.preventDefault();
-  };
+  };*/
 
   const handleClickedEvent = (clickedEvent) =>{
     const clicked = clickedEvent.event.title;
-    const index = items.findIndex( i => i.name == clicked);
-    if(index !== -1) {
-      const url = items[index]['url']
-      window.open(url)
-  }
+    const claId = clickedEvent.event.id;
+    console.log("claId", claId);
+    clickedEvent.jsEvent.preventDefault();
+    if (checkboxDelRef.current.checked){
+     
+      
+      removeRecpieFromDatabase(claId);
+      clickedEvent.event.remove();
+      
+      //return;
+    }else{
+      
+      //const index = items.findIndex((i) => i.name.trim().toLowerCase() === title.trim().toLowerCase());
+      const index = items.findIndex( i => i.name.trim().toLowerCase() == clicked.trim().toLowerCase());
+      if(index !== -1) {
+        const url = items[index]['url']
+        window.open(url,"_blank");
+    }
+    }
+   
+
   };
-
-  
-
 
 
   const fetchLikedRecipes =  () =>{
@@ -141,8 +158,6 @@ function Calender() {
       console.log("An error occurred while fetching calendar");
     }
   }
-
-
  
   const handleChangedEvent = (changedEvent) =>{
     const isAllDay = changedEvent.event.allDay;
@@ -240,6 +255,21 @@ function Calender() {
     }
   };
 
+  const removeRecpieFromDatabase = (claId) => {
+
+    try{
+      let recipeCalendar = removeEventCal(user.uid,claId).then((response) => {
+        console.log("helloehello")
+      })
+      
+    }catch (err){
+      console.error(err);
+      alert("An error occured while removing from calendar database");
+
+    }
+  };
+  
+
 
 
 
@@ -261,7 +291,8 @@ function Calender() {
     let endDate = newEvent.date;
     console.log('endDate', endDate);
     let url;
-    const index = items.findIndex((i) => i.name.toLowerCase() === title.toLowerCase());
+    const index = items.findIndex((i) => i.name.trim().toLowerCase() === title.trim().toLowerCase());
+
 
     console.log('index',index,title,items)
     if (index !== -1) {
@@ -377,7 +408,7 @@ function Calender() {
       
       <div className='removeEvent'>
       <p>
-          <input type='checkbox' id='event-remove'  ref={checkboxDelRef} onChange={handleRemoveEvent}/>
+          <input type='checkbox' id='event-remove'  ref={checkboxDelRef}/>
           <label htmlFor='event-remove'>Remove from calendar?</label>
         </p>
       </div>
