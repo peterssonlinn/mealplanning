@@ -25,7 +25,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
 import {auth, db, logout, updateTextAboutUser, updateAvatarUser, fetchRecipeList,removeRecpie, addRecpie} from "../firebase";
-import {query, collection, getDocs, where} from "firebase/firestore"
+import {query, collection, getDocs, where,onSnapshot, doc} from "firebase/firestore"
 import "./Profile.css";
 
 
@@ -172,6 +172,17 @@ function Profile() {
       fetchUserName();
       fetchInfo();
       fetchLikedRecipes();
+
+      const refCollectionLiked = collection(db,"users", user.uid,"Recipe");
+      const updateLiked = onSnapshot(refCollectionLiked, (snapshot) => {
+        fetchLikedRecipes();
+      });
+
+      const refCollectionUser = doc(db,"users", user?.uid);
+      const updateUser = onSnapshot(refCollectionUser, (snapshot) => {
+        fetchInfo();
+      });
+
     }, [user, loading]);
 
 
