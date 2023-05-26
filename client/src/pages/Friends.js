@@ -1,8 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
+
 import avatarImage1 from '../images/icons/1.jpeg';
 import avatarImage2 from '../images/icons/2.jpeg';
 import avatarImage3 from '../images/icons/3.jpeg';
 import avatarImage4 from '../images/icons/4.jpeg';
+import { Link, useNavigate } from 'react-router-dom';
+
 import '../../src/App.css';
 import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
@@ -27,36 +30,28 @@ import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ForwardIcon from '@mui/icons-material/Forward';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useNavigate} from 'react-router-dom';
 import {auth, db, logout, fetchFriendList, addFriendToList, removeFriendFromList, getInfoOtherUser,fetchFriendsRecipe, fetchRecipeList, removeRecpie, addRecpie} from "../firebase";
 import {query, collection, getDocs, where, onSnapshot} from "firebase/firestore"
 import "./Friends.css"
 
 function Friends() {
-    const [searchFor, setSearchFor] = useState('');
-    const[showLogin, setShowLogin] = useState(false);
-    const[userLogin , setUserInputs] = useState({});
-    const [open, setOpen] = React.useState(false);
-    const [items, setItems] = useState([]);
-    const [errorText, setErrorText] = useState('');
-    const [ourLikedItem, setOurLiked] = useState([]);
-   
-    const [textAboutUser, setAboutUser] = useState();
-    const [avatar, setAvatar] = useState('');
-    const [carouselData, setCarouselData] = useState([]);
-    const [showValidUser, setShowValidUser] = useState(false);
-    const[loadingDefault, setLoadingDefault] = useState(true);
-    const [likedItems, setLikedItems] = useState([]);
-    const [friendsToUser, setFriendsToUser] = useState([]);
-    const [selectedFriend, setSelectedFriend] = useState('');
-    const refToAutoComplete = useRef(null);
-    
-
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [user, error] = useAuthState(auth);
-  const [isLoading, setIsLoading] = useState(true);
+ 
+  const [searchFor, setSearchFor] = useState('');
+  const [usersLikedRecipe, setUsersLikedRecipe] = useState([]);
+  const [textAboutUser, setAboutUser] = useState();
+  const [avatar, setAvatar] = useState('');
+  const [carouselData, setCarouselData] = useState([]);
+  const [showValidUser, setShowValidUser] = useState(false);
+  const [friendsToUser, setFriendsToUser] = useState([]);
   const [friendName, setFriendName] = useState("");
-  const isItemLiked = (name) => likedItems.includes(name);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const handleDragStart = (e) => e.preventDefault();
+  const [selectedFriend, setSelectedFriend] = useState('');
+  let [orginalData, setOrginalData] = useState([]);
+  const refToAutoComplete = useRef(null);
+  const [user, error] = useAuthState(auth);
+
+  const isItemLiked = (name) => usersLikedRecipe.includes(name);
 
 
   const navigate = useNavigate();
@@ -69,20 +64,14 @@ function Friends() {
       
       const doc = await getDocs(q);
       const data = doc.docs[0].data();
-     // alert(data.uid);
-      //setName(data.name);
+    
     }catch(err) {
       console.error(err);
       console.log("An error occured while fetching user data");
     }
   };
 
-  const fetchFriendsToUser = async () =>{
-
-    if(!loggedIn && !user){
-      return
-    }
-
+  const fetchFriendsToUser =  () =>{
     try{
       let result = [];
 
@@ -102,12 +91,11 @@ function Friends() {
       alert("An error occured while fetching user data");
 
     }
-    
   };
 
-  const removeFriendInCollection = async (friend) =>{
+  const removeFriendInCollection = (friend) =>{
     try{
-      let friendList = removeFriendFromList(user.uid,selectedFriend).then((response) => {
+      let friendList = removeFriendFromList(user.uid,friend).then((response) => {
         fetchFriendsToUser();
       })
     }catch (err){
@@ -117,31 +105,28 @@ function Friends() {
 
   };
 
-  const addFriendInCollection = async () =>{
+  const addFriendInCollection = (friend) =>{
     try{
-      let friendList = addFriendToList(user.uid,selectedFriend).then((response) => {
+      let friendList = addFriendToList(user.uid,friend).then((response) => {
         fetchFriendsToUser();
       })
     }catch (err){
       console.error(err);
       alert("An error occured while fetching user data");
-
     }
   };
-  const fetchRecipeListOwn = () =>{
+
+  
+  const fetchRecipeListOwn = async () =>{
 
     try{
       let temp = []
-      let recipeList = fetchRecipeList(user.uid).then((response) =>{
-          
-        response.forEach(async (recipe) =>{
-            temp.push(recipe.name);
-          });
-      
+      let recipeList = await fetchRecipeList(user.uid)
+      recipeList.forEach((recipe) =>{
+        temp.push(recipe.name);
       });
-     
-      setOurLiked(temp)
       
+      setUsersLikedRecipe(temp);
     }
     catch (err){
       console.error(err);
@@ -154,20 +139,27 @@ function Friends() {
   useEffect(() => {
     if (!user) return navigate ("/");
     if(user) {
-      setIsLoading(false);
       fetchUserName();
       fetchFriendsToUser();
       fetchRecipeListOwn();
-     
-
+      
       const refCollectionLiked = collection(db,"users", user?.uid,"Recipe");
       const updateLiked = onSnapshot(refCollectionLiked, (snapshot) => {
-        fetchRecipeListOwn();
-       
-          btnSearchUser(selectedFriend);
+        
+        console.log("innne i updateLiked onSnapshot" );
+        console.log(selectedFriend)
+        
+        fetchRecipeListOwn().then(() => {
+          console.log("innan getFriends",selectedFriend )
+          getFriendsRecipe(selectedFriend)
+        });
 
+       
         
        
+        
+
+      //   // setShowValidUser(true);
       });
 
       const refCollectionFriends = collection(db,"users", user?.uid,"Friends");
@@ -178,55 +170,21 @@ function Friends() {
     }
   }, [user]);
 
-    let [orginalData, setOrginalData] = useState([]);
-
-
-
-    const handleDragStart = (e) => e.preventDefault();
-
-  
-
-    const handleChangeOption = (event, value) =>{
-      setSelectedFriend(value);
-     
-      
-    };
-
-   
-    const btnRemoveFriend = () =>{
-      if( selectedFriend && friendsToUser.includes(selectedFriend)){
-        let index = friendsToUser.indexOf(selectedFriend);
-        if (index > -1) {
-          friendsToUser.splice(index, 1);
-          removeFriendInCollection(selectedFriend);
-          setFriendsToUser(friendsToUser);
-        }
-      }
-
-     
-
-    }
-    const btnAddFriend = () =>{
-      if(selectedFriend && !friendsToUser.includes(selectedFriend)){
-        addFriendInCollection();
-      }
-    };
-
 
     const handleLikedButton = (name,url, img) => {
-      if (likedItems.includes(name)) {
+      if (usersLikedRecipe.includes(name)) {
        
-        
-        let remove = removeRecpie(user.uid, name, url, img).then((response) =>{
-         
-          setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item != name));
+        let remove = removeRecpie(user.uid, name, url, img).then((response) =>{  
+          fetchRecipeListOwn();
+        //setOurLiked((prevLikedItems) => prevLikedItems.filter((item) => item != name));
           
         });
         
        
       } else {
         let add = addRecpie(user.uid, name, url, img).then((response) =>{
-          setLikedItems((prevLikedItems) => [...prevLikedItems, name]);
+          fetchRecipeListOwn();
+        //setOurLiked((prevLikedItems) => [...prevLikedItems, name]);
          
         })
         
@@ -234,31 +192,28 @@ function Friends() {
      
     };
 
-    const getFriendsRecipe =  (email) =>{
+    
+
+    const getFriendsRecipe = async (otherUser) =>{
       try{
         let ourLiked = []
-        let info = []
-       
-        let recipeList = fetchFriendsRecipe(user.uid,email).then((response) =>{
-          
-          response.forEach(async (recipe) =>{
-
-            
+        const info = []
+        if(!otherUser){
+          return
+        }
+    
+        console.log('otherUser in getFriendsRecipe',otherUser)
+        let recipeList = await fetchFriendsRecipe(user.uid,otherUser);
+        
+        recipeList.forEach( (recipe) =>{
             info.push(recipe);
-            console.log(ourLikedItem)
-
-            if(ourLikedItem.includes(recipe.name)){
-             
-              ourLiked.push(recipe.name)
-            }
           });
         
           if(info != 0){
-            setCarouselData(info) ;
-            setLikedItems(ourLiked);
+            setCarouselData(info);
             setOrginalData(info);
           }
-        });
+       
       }
       catch(err) {
         console.error(err);
@@ -268,65 +223,47 @@ function Friends() {
     };
 
 
-    
+    const getInfoAboutSelected = (otherUser) =>{
+      let friendInfo = getInfoOtherUser(user.uid, otherUser).then((response) =>{
+        setFriendName(response[0]);
+        setAboutUser(response[1]);
+        setAvatar(response[2]);
+        return response
+      });
+
+      return friendInfo;
+
+    }
     
     const btnSearchUser = (event) => {
-      if (selectedFriend){
-        try{
-          setFriendName('');
-          setAboutUser('');
-          getFriendsRecipe('');
-          setCarouselData([]);
-          fetchRecipeListOwn();
-          let friendInfo = getInfoOtherUser(user.uid, selectedFriend)
-          .then((response) => {
-            console.log('friendInfo', friendInfo);
-
-            setShowValidUser(!showValidUser);
-            setFriendName(response[0]);
-            setAboutUser(response[1]);
-            setAvatar(response[2]);
-            getFriendsRecipe(selectedFriend);
-
-            setLoadingDefault(false);
-          })
-          .catch((error) => {
-            // Handle the error here
-            console.error('Error:', error);
-            // You can set appropriate error
-            
-            // You can set appropriate error state or display an error message to the user
-            setFriendName('');
-            setAboutUser('');
-            getFriendsRecipe('');
-            setAvatar('');
-          });
-        }catch (err){
-          console.error(err);
-          alert("An error occured while fetching user data");
-    
-        }
-       
+      
+      if(!selectedFriend){
+        return
       }
-      else{
-        //no valid user show msg!
-        setFriendName('');
-        setAboutUser('');
-        getFriendsRecipe('');
-        setAvatar('');
+
+      if(selectedFriend === user.email){
+        return  navigate('/profile');
+      }
+      try {
+        getInfoAboutSelected(selectedFriend).then(() => {
+          getFriendsRecipe(selectedFriend);
+        });
         
+
+
+        
+      } catch (error) {
+        console.log('error in btnSearchUser', error)
       }
+
+      console.log(selectedFriend);
+
+     
+      
     }; 
 
     
 
-    const btnAutoFill = (event) =>{
-      setSearchFor(searchFor + " " + event.target.textContent);
-      
-    }
-
-   
-      
     const handleClickSearch = () => {
       let search = searchFor.toLowerCase();
       
@@ -348,9 +285,30 @@ function Friends() {
         setCarouselData(orginalData);
       }
     };
-      
-   
 
+
+    const btnRemoveFriend = () =>{
+      if( selectedFriend && friendsToUser.includes(selectedFriend)){
+          removeFriendInCollection(selectedFriend);
+      }
+    }
+
+    const btnAddFriend = () =>{
+      if(selectedFriend && !friendsToUser.includes(selectedFriend)){
+        addFriendInCollection();
+      }
+    };
+
+    const handleChangeOption = (event, value) =>{
+      console.log('event',event);
+      console.log('value',value)
+      setSelectedFriend(value);
+    };
+      
+    const btnAutoFill = (event) =>{
+      setSearchFor(searchFor + " " + event.target.textContent);
+      
+    }
     const handleInputChange = (event) => {
       setSearchFor(event.target.value);
     };
@@ -372,6 +330,8 @@ function Friends() {
 
       },
     });
+
+
   return (
     
     <div className='App'>
@@ -444,12 +404,11 @@ function Friends() {
           </form>
         </div>
 
-      
+        
         <div>
            
-        
         <div className='searchAboutField'>
-
+       
           <div className='searchField'>
          
             <div className='searchTextMain'>
@@ -492,14 +451,14 @@ function Friends() {
           </div>
 
 
-
+          
           <div className='aboutMeField'>
             <div className='aboutMeHeader'>
                 <h5 className='headerAboutMe'>
                 About {friendName}
                 </h5>
                 <p className='textAboutMe' >
-                {!loadingDefault && textAboutUser}
+                {textAboutUser}
                 </p>
             </div>  
             
@@ -546,12 +505,15 @@ function Friends() {
               ))}
           </AliceCarousel>
           </div>
+       
         </div>
+        
         </div>
-
+        
+      
         
 
-
+       
     </div>
   </div>
   );
