@@ -26,7 +26,7 @@ function Calender() {
   const calendarRef = useRef(null);
   const savedRecepiesRef = useRef(null);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [user, error] = useAuthState(auth);
+  const [user, loading, error] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(true);
   const [name, setName] = useState("");
   const navigate = useNavigate();
@@ -168,7 +168,10 @@ function Calender() {
   
 
   useEffect( () => {
+    if (loading) return;
     if (!user) return navigate ("/");
+   
+
     if(user) {
       setIsLoading(false);
       fetchUserName();
@@ -204,7 +207,7 @@ function Calender() {
        };
     }
    
-  }, [user]);
+  }, [user,loading]);
 
   if (isLoading &&  !name  && !savedRecepiesRef) {
     return <div>Loading...</div>;

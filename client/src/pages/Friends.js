@@ -49,7 +49,7 @@ function Friends() {
   const [selectedFriend, setSelectedFriend] = useState('');
   let [orginalData, setOrginalData] = useState([]);
   const refToAutoComplete = useRef(null);
-  const [user, error] = useAuthState(auth);
+  const [user, loading, error] = useAuthState(auth);
 
   const isItemLiked = (name) => usersLikedRecipe.includes(name);
 
@@ -137,6 +137,7 @@ function Friends() {
   };
 
   useEffect(() => {
+    if (loading) return;
     if (!user) return navigate ("/");
     if(user) {
       fetchUserName();
@@ -163,7 +164,7 @@ function Friends() {
         
       });
     }
-  }, [user]);
+  }, [user, loading]);
 
 
     const handleLikedButton = (name,url, img) => {
