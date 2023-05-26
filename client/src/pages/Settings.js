@@ -9,9 +9,15 @@ import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import FolderSharedIcon from '@mui/icons-material/FolderShared';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
-import {auth, db, logout} from "../firebase";
+import {auth, db, logout,fetchInfoUser} from "../firebase";
+
 import {query, collection, getDocs, where} from "firebase/firestore"
+
+
+
+
 import "./Settings.css";
+import { JsonRequestError } from '@fullcalendar/core';
 
 
 function Settings() {
@@ -20,8 +26,8 @@ function Settings() {
   const [showAccessInformation, setShowAccessInformation] = useState(false);
   const [removeAccountQuestion, setAccountQuestion] = useState('');
   const [happensNextText, setHappensNextText] = useState('');
-  const [emailText, setEmailText] = useState('');
   const [happensNextAccess, setHappensNextAccess] = useState('');
+  const [informationUser, setInformationUser] = useState('');
 
   const [user, loading, error] = useAuthState(auth);
   const [name, setName] = useState("");
@@ -46,11 +52,6 @@ function Settings() {
   }, [user, loading]);
 
 
-
-  const btnLogIn = () =>{
-   window.alert("log in");
-  };
-
   const btnRemoveAccount = () =>{
     setHappensNextText("");
     setShowRemoveAccount(!showRemoveAccount);
@@ -59,31 +60,23 @@ function Settings() {
   const btnAccessInformation = () =>{
     setHappensNextAccess('');
     setShowAccessInformation(!showAccessInformation);
+
+    let newText = fetchInfoUser(user.uid).then((response) => {
+      let jsonPretty =(JSON.stringify(response,null,4))
+      setInformationUser(jsonPretty);
+    });
    };
 
   const handleChangeTetx = (event) => {
     setAccountQuestion(event.target.value);
-    
   };
 
-  const handleChangeEmailText = (event) => {
-    setEmailText(event.target.value);
-  }
-
+ 
   const handleSubmit = (e) =>{
     e.preventDefault();
   };
 
-  const sumbitAccessInformation = () =>{
-    // get email from database and check that it is correct or something
-    if(emailText != ""){
-      setHappensNextAccess("The information will be sent within the next 24 hours")
-    }
-    else{
-      setHappensNextAccess("email not valid")
-
-    }
-  }
+  
 
   const SubmitRemoveAccount = () => {
     let checkAgainst = "Remove account"
@@ -95,8 +88,6 @@ function Settings() {
 
     }
     
-  
-
 
   };
   
@@ -195,24 +186,11 @@ function Settings() {
               
                 <div>
                   <p>
-                   Access information 
+                   Information is gathered
+                   {informationUser}
                   </p>
                  
-                <form fullWidth onSubmit={handleSubmit}>
-                  <div className='submitForm'>
-                  <label  className='textForm'>
-                    Enter your email: 
-                  </label>
-
-                  
-                    <input  onChange={handleChangeEmailText} type='text'></input>
-                    <ThemeProvider theme={theme}>
-                    <Button onClick={sumbitAccessInformation} size ='15px' color="primary" variant="contained" startIcon={<CheckIcon />}>
-                     Submit
-                    </Button>
-                    </ThemeProvider>
-                    </div>
-                </form>
+                
                 <p>
                   {happensNextAccess}
                 </p>

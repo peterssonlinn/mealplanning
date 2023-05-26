@@ -162,9 +162,7 @@ function Profile() {
   
     };
 
-    // useEffect(() => {
-    //   console.log('likedItems updated:', likedItems);
-    // }, [likedItems]);
+
 
     useEffect(() => {
       if (loading) return;

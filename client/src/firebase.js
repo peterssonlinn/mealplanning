@@ -260,6 +260,7 @@ const removeRecpie = async(userId, name, url, img) => {
       }
 }
 
+
 const addRecipeCalender = async(userId, id, title, url, date, startStr, endStr, allDay) =>{
    try{
       const q = query(collection(db, "users"), where("uid", "==", userId));
@@ -407,6 +408,88 @@ const updateTextAboutUser = async (userId, newText) =>{
 
 };
 
+const fetchInfoUser = async(userId) =>{
+   try {
+
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+   
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];
+   
+      if (data.exists()){
+         
+
+         const data = getDocumentQ.docs[0].data();
+         let userInfo = []
+         userInfo.push("User email:");   
+         userInfo.push(data.email);
+         userInfo.push("User about field:");   
+         userInfo.push(data.aboutText);
+         userInfo.push("User avatar:");   
+         userInfo.push(data.myAvatar);
+         userInfo.push("User name:");   
+         userInfo.push(data.name);
+         
+         let recipeArray = [] 
+         const recipeSnapshot = await getDocs(collection(db, 'users', userId, 'Recipe'));
+         recipeSnapshot.forEach((recipeDoc) => {
+         const recipeId = recipeDoc.id;
+         const recipeData = recipeDoc.data();
+         recipeArray.push("Recipe name:");   
+         recipeArray.push(recipeData.name);   
+         recipeArray.push("Recipe url:");   
+         recipeArray.push(recipeData.url);   
+         });
+
+         let friendArray = [];
+         const friendsSnapshot = await getDocs(collection(db, 'users', userId, 'Friends'));
+         friendsSnapshot.forEach((friendDoc) => {
+        
+         const friendData = friendDoc.data();
+         friendArray.push("Friend email:");   
+         friendArray.push(friendData.email)
+         });
+
+         let calenderArray = [];
+         const calendarSnapshot = await getDocs(collection(db, 'users', userId, 'Calender'));
+         calendarSnapshot.forEach((calendarDoc) => {
+         
+         const calendarData = calendarDoc.data();
+         calenderArray.push("Event title:");   
+         calenderArray.push(calendarData.title);
+         calenderArray.push("Event url:");   
+         calenderArray.push(calendarData.url);
+         calenderArray.push("Event allDay:");   
+         calenderArray.push(calendarData.allDay);
+         calenderArray.push("Event date:");   
+         calenderArray.push(calendarData.date); 
+         calenderArray.push("Event start date:");   
+         calenderArray.push(calendarData.startStr);
+         calenderArray.push("Event end date:");   
+         calenderArray.push(calendarData.endStr);
+         
+         });
+         
+         let returnObject = {
+            user : userInfo,
+            friends: friendArray,
+            recipes: recipeArray,
+            calender:calenderArray
+
+         }
+
+         //console.log(JSON.stringify(returnObject))
+
+         return returnObject;
+      } 
+      
+   } catch (error) {
+      console.log(error)
+      
+   }
+   
+}
+
 const getInfoOtherUser = async(userId, email) =>{
    const q = query(collection(db, "users"), where("uid", "==", userId));
    
@@ -425,7 +508,6 @@ const getInfoOtherUser = async(userId, email) =>{
       console.log(returnData)
       return returnData
    }
-
 
 };
 
@@ -453,6 +535,7 @@ export {
    fetchCalender,
    updateEvent,
    removeEventCal,
+   fetchInfoUser,
    
   
    
