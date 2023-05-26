@@ -350,6 +350,29 @@ const updateAvatarUser  = async (userId, avatar) =>{
 
 };
 
+const removeEventCal = async (userId, id) => {
+   try {
+      
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];
+    
+      if(data.exists()){
+         console.log('data exists in remmove event calendar ')
+         console.log("id", id)
+         const ref = doc(collection(db, "users", userId,'Calender'),id);
+         console.log("ref", ref)
+
+         await deleteDoc(ref);
+         console.log("deleted from database")
+      }
+   }
+   catch (error) {
+      console.error('Error removign recipe:', error);
+      }
+
+}
+
 const updateEvent  = async (userId, id,startTime, endTime, allDay,date) =>{
    const q = query(collection(db, "users"), where("uid", "==", userId));
    
@@ -429,6 +452,7 @@ export {
    addRecipeCalender,
    fetchCalender,
    updateEvent,
+   removeEventCal,
    
   
    
