@@ -13,7 +13,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
-import {query, collection, getDocs, where} from "firebase/firestore"
+import {query, collection, getDocs, where,onSnapshot} from "firebase/firestore"
 
 import {auth, db, logout, fetchRecipeList, addRecipeCalender,fetchCalender,updateEvent, removeEventCal} from "../firebase";
 import { v4 as uuidv4 } from "uuid";
@@ -21,11 +21,7 @@ import { v4 as uuidv4 } from "uuid";
 
 
 function Calender() {
-
-  
   const checkboxRef = useRef(null);
-  //const moment = require('moment');
-
   const checkboxDelRef = useRef(null);
   const calendarRef = useRef(null);
   const savedRecepiesRef = useRef(null);
@@ -39,34 +35,15 @@ function Calender() {
   const [events, setEvents] = useState([]);
   const [selectedRecpieCal, setSelectedRecpieCal] = useState('');
 
-
-  /*const handleRemoveEvent= (clickedEvent) => {
-   
-    //window.alert("Clicked checkbox")
-    if (checkboxDelRef.current.checked){
-      //info.event.remove()
-      clickedEvent.event.remove;
-    
-      window.alert("filled")
-    }
-    //info.jsEvent.preventDefault();
-  };*/
-
   const handleClickedEvent = (clickedEvent) =>{
     const clicked = clickedEvent.event.title;
     const claId = clickedEvent.event.id;
-    console.log("claId", claId);
     clickedEvent.jsEvent.preventDefault();
     if (checkboxDelRef.current.checked){
-     
-      
       removeRecpieFromDatabase(claId);
       clickedEvent.event.remove();
-      
-      //return;
     }else{
       
-      //const index = items.findIndex((i) => i.name.trim().toLowerCase() === title.trim().toLowerCase());
       const index = items.findIndex( i => i.name.trim().toLowerCase() == clicked.trim().toLowerCase());
       if(index !== -1) {
         const url = items[index]['url']
@@ -94,8 +71,7 @@ function Calender() {
         });
         setItems(info);
       });
-      console.log("fetch from database fetchLiked");
-      console.log(info)
+
     }
     catch(err) {
       console.error(err);
@@ -111,7 +87,6 @@ function Calender() {
       const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
       const doc = await getDocs(q);
       const data = doc.docs[0].data();
-      console.log("fetch user name call")
       setName(data.name);
     }catch(err) {
       console.error(err);
@@ -123,7 +98,6 @@ function Calender() {
     try {
       let allData = [];
       let calendarList = await fetchCalender(user.uid);
-      console.log(calendarList)
   
       for (const event of calendarList) {
         if (!event['allDay']) {
@@ -167,7 +141,6 @@ function Calender() {
     let date = (changedEvent.event.startStr).split('T');
     date = date[0]
 
-    console.log(changedEvent.event)
 
     // new starttime 
     if(isAllDay){
@@ -175,7 +148,6 @@ function Calender() {
       endTime = changedEvent.event.startStr;
      
 
-      console.log('date',date)
     }else{
       startTime = changedEvent.event.startStr;
       endTime = changedEvent.event.endStr;
@@ -184,7 +156,6 @@ function Calender() {
     }
     try{
       let temp = updateEvent(user.uid,id, startTime, endTime, isAllDay,date).then((response) =>{
-        console.log('updated datenabase');
       })
     }catch (err){
       console.error(err);
@@ -206,6 +177,14 @@ function Calender() {
 
      
       const checkbox = checkboxRef.current;
+
+      const refCollectionCalender = collection(db,"users", user?.uid,"Calender");
+      const updateCalender = onSnapshot(refCollectionCalender, (snapshot) => {
+        
+        fetchOwnCalender();
+        
+      });
+    
       
     
        const draggable = new Draggable(savedRecepiesRef.current, {
@@ -246,7 +225,6 @@ function Calender() {
   const addRecipeToDatabase = (id, title, url, date, startStr, endStr, allDay) =>{
     try{
       let temp = addRecipeCalender(user.uid,id, title, url, date, startStr, endStr, allDay ).then((response) => {
-        console.log('added to database');
       })
     }catch (err){
       console.error(err);
@@ -259,7 +237,6 @@ function Calender() {
 
     try{
       let recipeCalendar = removeEventCal(user.uid,claId).then((response) => {
-        console.log("helloehello")
       })
       
     }catch (err){
@@ -287,22 +264,18 @@ function Calender() {
     }
   
     let startDate = newEvent.dateStr;
-    console.log('startdate', startDate);
     let endDate = newEvent.date;
-    console.log('endDate', endDate);
     let url;
     const index = items.findIndex((i) => i.name.trim().toLowerCase() === title.trim().toLowerCase());
 
 
-    console.log('index',index,title,items)
     if (index !== -1) {
       url = items[index].url;
-      console.log(url);
+      
     }
     const id = uuidv4();
-    console.log(id);
+    
   
-    console.log(typeof id, typeof title, typeof isAllDay, typeof date, typeof startDate, typeof endDate, typeof url);
     addRecipeToDatabase(id, title, url, date, startDate, endDate, isAllDay);
   };
   

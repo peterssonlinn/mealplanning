@@ -155,12 +155,7 @@ function Friends() {
         });
 
        
-        
-       
-        
-
-      //   // setShowValidUser(true);
-      });
+    });
 
       const refCollectionFriends = collection(db,"users", user?.uid,"Friends");
       const updateFriends = onSnapshot(refCollectionFriends, (snapshot) => {
@@ -176,7 +171,6 @@ function Friends() {
        
         let remove = removeRecpie(user.uid, name, url, img).then((response) =>{  
           fetchRecipeListOwn();
-        //setOurLiked((prevLikedItems) => prevLikedItems.filter((item) => item != name));
           
         });
         
@@ -184,7 +178,6 @@ function Friends() {
       } else {
         let add = addRecpie(user.uid, name, url, img).then((response) =>{
           fetchRecipeListOwn();
-        //setOurLiked((prevLikedItems) => [...prevLikedItems, name]);
          
         })
         
