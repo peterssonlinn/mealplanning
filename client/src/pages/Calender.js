@@ -188,8 +188,7 @@ function Calender() {
         
       });
     
-      
-    
+  
        const draggable = new Draggable(savedRecepiesRef.current, {
          itemSelector: '.fc-event',
          eventData: function(eventEl) {
