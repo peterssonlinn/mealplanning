@@ -511,6 +511,25 @@ const getInfoOtherUser = async(userId, email) =>{
 
 };
 
+const removeUser = async () => {
+   const user = auth.currentUser;
+ 
+   try {
+     
+     const userRef = doc(db, 'users', user.uid);
+      // Delete user's authentication credentials
+     await user.delete();
+
+     // Delete user's Firestore data
+     await deleteDoc(userRef);
+ 
+    
+     console.log("Account deleted");
+   } catch (error) {
+     console.error("Error deleting user account:", error);
+   }
+ };
+
 
 export {
    auth, 
@@ -536,6 +555,7 @@ export {
    updateEvent,
    removeEventCal,
    fetchInfoUser,
+   removeUser,
    
   
    

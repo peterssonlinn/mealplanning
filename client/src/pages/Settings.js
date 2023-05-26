@@ -9,7 +9,7 @@ import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import FolderSharedIcon from '@mui/icons-material/FolderShared';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
-import {auth, db, logout,fetchInfoUser} from "../firebase";
+import {auth, db, logout,fetchInfoUser, removeUser} from "../firebase";
 
 import {query, collection, getDocs, where} from "firebase/firestore"
 
@@ -32,6 +32,7 @@ function Settings() {
   const [user, loading, error] = useAuthState(auth);
   const [name, setName] = useState("");
   const navigate = useNavigate();
+  const [loggedIn, setLoggedIn] = useState(false);
 
 
   const fetchUserName = async () => {
@@ -76,12 +77,13 @@ function Settings() {
     e.preventDefault();
   };
 
-  
-
   const SubmitRemoveAccount = () => {
     let checkAgainst = "Remove account"
     if(removeAccountQuestion ==checkAgainst){
-      setHappensNextText("Your account will be removed in the next 24 hours")
+      removeUser();
+      logout();
+      
+      //setHappensNextText("Your account will be removed in the next 24 hours")
       
     }else{
       setHappensNextText("The account will not be removed")
