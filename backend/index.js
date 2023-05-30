@@ -7,6 +7,7 @@ const app = express();
 const { requiresAuth } = require('express-openid-connect');
 const axios = require('axios'); // node
 const path = require('path');
+const secret = require('./secret.json')
 
 //https://auth0.com/blog/complete-guide-to-nodejs-express-user-authentication/ <--- tutorial 
 
@@ -48,8 +49,7 @@ app.get('/api/recipes' , (req, res,next) => {
            
             if(search != undefined){
                
-                let url = "https://api.edamam.com/api/recipes/v2?type=public&q="+search+"&app_id=388e1e79&app_key=%2033bf2f3c0efef80e1df276c6ef485756"
-             
+                let url = "https://api.edamam.com/api/recipes/v2?type=public&q="+search+"&app_id="+secret.app_id+"&app_key="+secret.app_key
                 axios.get(url)
                 .then(response => {
                     if(response.data.hits.length){
