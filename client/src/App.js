@@ -15,9 +15,6 @@ import Reset from './pages/Reset';
 import React, { useState } from 'react';
 
 
-
-
-
 function App() {
   return (
    

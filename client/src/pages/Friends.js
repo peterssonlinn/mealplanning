@@ -50,6 +50,7 @@ function Friends() {
   let [orginalData, setOrginalData] = useState([]);
   const refToAutoComplete = useRef(null);
   const [user, loading, error] = useAuthState(auth);
+  const [view, setView] = useState(false)
 
   const isItemLiked = (name) => usersLikedRecipe.includes(name);
 
@@ -219,6 +220,10 @@ function Friends() {
 
     const getInfoAboutSelected = (otherUser) =>{
       let friendInfo = getInfoOtherUser(user.uid, otherUser).then((response) =>{
+       
+        if((response[0] && response[1])){
+          setView(true)
+        }
         setFriendName(response[0]);
         setAboutUser(response[1]);
         setAvatar(response[2]);
@@ -398,9 +403,8 @@ function Friends() {
           </form>
         </div>
 
-        
-        <div>
-           
+        {!view ? null : 
+        <div>     
         <div className='searchAboutField'>
        
           <div className='searchField'>
@@ -501,12 +505,14 @@ function Friends() {
           </div>
        
         </div>
+      
         
         </div>
+        }
         
       
         
-
+                    
        
     </div>
   </div>
