@@ -35,3 +35,8 @@
   .login div {
     margin-top: 7px;
   }
+
+  .error-message{
+    color: red;
+    margin-bottom: 10px;
+  }

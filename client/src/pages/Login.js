@@ -2,23 +2,33 @@ import "../App.css";
 import "./LogIn.css";
 import React, {useEffect, useState} from "react";
 import {Link, useNavigate } from "react-router-dom";
-import {auth, signInWithEmailAndPassword, signInWithGoogle, logInWithEmailAndPassword} from "../firebase";
+import {auth, signInWithGoogle, logInWithEmailAndPassword} from "../firebase";
 import { useAuthState} from "react-firebase-hooks/auth";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function Login() {
     const [email, setEmai] = useState(""); 
     const [password, setPassword] = useState("");
-    const [user, loading, error] = useAuthState(auth);
+    const [user, loading, errorTuple] = useAuthState(auth);
+    const [error, setError] = useState(null);
+  
     const navigate = useNavigate();
+
     useEffect(() => {
         if(loading) {
             return;
         }
         if (user) navigate("/");
-
     }, [user, loading]);
 
+    const handleLogin = async () => {
+        try {
+          await logInWithEmailAndPassword(email, password);
+        } catch (error) {
+          console.log("Error:", error.message);
+          setError(error.message);
+        }
+      };
     const theme = createTheme({
         palette: {
           primary: {
@@ -48,6 +58,7 @@ function Login() {
                     <div className='navbar'>
                     </div>
                 </div>
+                
                 <div className="login">
                     <div className="login__container">
                         <input
@@ -64,8 +75,8 @@ function Login() {
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Password"
                         />
-                        
-                        <button className="login__btn" onClick={() => logInWithEmailAndPassword(email, password)}>
+                          {error && <div className="error-message">{"Wrong password or email"}</div>}
+                        <button className="login__btn" onClick={handleLogin}>
                                 Login
                         </button>
                         
@@ -77,9 +88,11 @@ function Login() {
                         </div>
                         <div>
                             Don't have an account? <Link to="/register">Register</Link>
-                        </div>
+                        </div>  
                     </div>
+
                 </div>
+
             </div>
     </div>
     );

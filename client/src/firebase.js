@@ -53,16 +53,12 @@ const signInWithGoogle = async () => {
 
 const logInWithEmailAndPassword = async (email, password) => {
    try {
-      await signInWithEmailAndPassword(auth, email, password).then((usercred) =>{
-        // window.alert("user is signed in ", usercred.user)
-      });
-      
-   } catch(err){
-      console.error(err);
-
-      //window.alert(err.message);
+     const usercred = await signInWithEmailAndPassword(auth, email, password);
+     console.log("user is signed in", usercred.user);
+   } catch (err) {
+     throw err; // Throw the error to be caught in handleLogin
    }
-};
+ };
 const registerWithEmailAndPassword = async (name, email, password) => {
    try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
