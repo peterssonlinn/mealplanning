@@ -11,3 +11,5 @@ And the user will also be able to search for other users and get inspiration fro
 ## Technical
 
 We will do the client-side in React and the server-side in Node.js and Express.js. We will use a public database for recipes, [Edmam](https://developer.edamam.com/edamam-recipe-api).
+
+Link to presentations: https://liuonline-my.sharepoint.com/:f:/g/personal/linpe485_student_liu_se/Eh66wx4HesdCqAaon8wAC0sBlwZt2MEqV1q2IuHhlMzPKA?e=ee7aJ2  
