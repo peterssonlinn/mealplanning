@@ -621,11 +621,11 @@ const getInfoOtherUser = async(userId, email) =>{
  * @throws {Error} If there is an error deleting the user or their document.
  */
 const removeUser = async () => {
-   const user = auth.currentUser;
    try {
-     const userRef = doc(db, 'users', user.uid);
-     await user.delete();
-     await deleteDoc(userRef);
+      const user = auth.currentUser;
+      const userRef = doc(db, 'users', user.uid);
+      await user.delete();
+      await deleteDoc(userRef);
    } catch (error) {
       throw error; 
    }

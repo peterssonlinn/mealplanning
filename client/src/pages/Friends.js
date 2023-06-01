@@ -195,7 +195,6 @@ function Friends() {
     */
   const getInfoAboutSelected = (otherUser) =>{
     let friendInfo = getInfoOtherUser(user.uid, otherUser).then((response) =>{
-      
       if((response[0] && response[1])){
         setView(true)
       }
@@ -262,7 +261,7 @@ function Friends() {
 
   const btnAddFriend = () =>{
     if(selectedFriend && !friendsToUser.includes(selectedFriend)){
-      addFriendInCollection();
+      addFriendInCollection(selectedFriend);
     }
   };
 
