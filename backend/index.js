@@ -20,7 +20,6 @@ app.get('/api/recipes' , (req, res) => {
             return res.status(400).json({data:"empty search"});
         }
         else{
-            
             let url = "https://api.edamam.com/api/recipes/v2?type=public&q="+req.query.search+"&app_id="+secret.app_id+"&app_key="+secret.app_key;
             axios.get(url).then(response => {
                 if(response.data.hits.length === 0 ){
