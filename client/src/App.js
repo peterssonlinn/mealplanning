@@ -1,8 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ReactDOM } from 'react-dom';
 import Home from './pages/Home';
-import SignIn from './pages/SignIn';
 import Register from './pages/Register';
 import Calender from './pages/Calender';
 import Friends from './pages/Friends';
@@ -10,11 +8,13 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Reset from './pages/Reset';
+import React from 'react';
 
 
-import React, { useState } from 'react';
-
-
+/**
+ * The main component of the application that renders the different routes.
+ * @returns The rendered routes of the application.
+ */
 function App() {
   return (
    

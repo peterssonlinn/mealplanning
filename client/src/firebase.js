@@ -1,18 +1,9 @@
-// Import the functions you need from the SDKs you need
 
-//import { query } from "express";
 import { initializeApp } from "firebase/app";
-//import { getFirestore } from "firebase/firestore";
-import {GoogleAuthProvider, getAuth, signInWithPopup, 
-   signInWithEmailAndPassword, createUserWithEmailAndPassword, 
-   sendPasswordResetEmail, signOut,} from "firebase/auth";
-   import secret from './secret.json';
-   import {getFirestore, query, getDoc, getDocs,collection, where, addDoc,collectionGroup, setDoc, doc, deleteDoc, updateDoc} from "firebase/firestore";
+import {GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut,} from "firebase/auth";
+import secret from './secret.json';
+import {getFirestore, query, getDoc, getDocs,collection, where, setDoc, doc, deleteDoc, updateDoc} from "firebase/firestore";
 
-   
- // TODO: Add SDKs for Firebase products that you want to use
- // https://firebase.google.com/docs/web/setup#available-libraries
- // Your web app's Firebase configuration
  const firebaseConfig = {
    apiKey : secret.setup.apiKey,
    authDomain : secret.setup.authDomain,
@@ -21,13 +12,23 @@ import {GoogleAuthProvider, getAuth, signInWithPopup,
    messagingSenderId : secret.setup.messagingSenderId,
    appId :secret.setup.appId
  };
- // Initialize Firebase
- 
- const app = initializeApp(firebaseConfig);
- const auth = getAuth(app);
- const db = getFirestore(app);
 
+/**
+ * Initializes a Firebase app with the given configuration object, and sets up
+ * authentication, Firestore, and a Google authentication provider.
+ * @param {Object} firebaseConfig - The configuration object for the Firebase app.
+ */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
+
+/**
+ * Signs in a user with their Google account and creates a new user document in the
+ * Firestore database if one does not already exist.
+ * @returns None
+ * @throws An error if there is an issue with signing in or creating a new user document.
+ */
 const signInWithGoogle = async () => {
    try {
       const res = await signInWithPopup(auth, googleProvider);
@@ -45,20 +46,35 @@ const signInWithGoogle = async () => {
          });
       }
    }catch(err) {
-      console.error(err);
-      alert(err.message);
+      throw err; 
    }
 };
 
 
+/**
+ * Logs in a user with the given email and password using Firebase authentication.
+ * @param {string} email - The email of the user to log in.
+ * @param {string} password - The password of the user to log in.
+ * @returns None
+ * @throws An error if the login fails.
+ */
 const logInWithEmailAndPassword = async (email, password) => {
    try {
      const usercred = await signInWithEmailAndPassword(auth, email, password);
-     console.log("user is signed in", usercred.user);
    } catch (err) {
-     throw err; // Throw the error to be caught in handleLogin
+     throw err; 
    }
  };
+
+
+/**
+ * Registers a new user with the given name, email, and password.
+ * @param {string} name - The name of the user.
+ * @param {string} email - The email of the user.
+ * @param {string} password - The password of the user.
+ * @returns None
+ * @throws An error if the registration fails.
+ */
 const registerWithEmailAndPassword = async (name, email, password) => {
    try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
@@ -72,28 +88,44 @@ const registerWithEmailAndPassword = async (name, email, password) => {
          myAvatar:"/static/media/1.bd53b28416bedd0a1128.jpeg",
       });
    }catch(err) {
-         console.error(err);
-         alert(err.message);
+      throw err; 
       }
    };
 
+/**
+ * Sends a password reset email to the given email address.
+ * @param {string} email - The email address to send the password reset email to.
+ * @returns None
+ * @throws An error if there was an issue sending the password reset email.
+ */
 const sendPasswordReset = async (email) => {
    try {
       await sendPasswordResetEmail(auth, email);
       alert("Link for password reset have been sent!");
    }catch(err){
-      console.error(err);
-      alert(err.message);
+      throw err; 
    }
 };
+
+
+/**
+ * Logs the user out of the current session.
+ * @returns None
+ */
 const logout = () => {
    signOut(auth);
 };
 
+/**
+ * Fetches the recipes of a friend given their email and user ID.
+ * @param {string} userId - The user ID of the current user.
+ * @param {string} email - The email of the friend whose recipes are being fetched.
+ * @returns {Array} An array of recipe objects belonging to the friend.
+ * @throws {Error} If there is an error fetching the data.
+ */
 const fetchFriendsRecipe = async(userId, email) =>{
    try {
       const q = query(collection(db, "users"), where("uid", "==", userId));
-   
       const getDocumentQ = await getDocs(q);
       const data = getDocumentQ.docs[0];
       const returnArray = [];
@@ -102,36 +134,31 @@ const fetchFriendsRecipe = async(userId, email) =>{
          const getDocsExists = await getDocs(friendExists);
          const friendData = getDocsExists.docs[0].data();
          const friendUid = friendData.uid;
-   
-         
          if(friendUid){
-           
             const recipeQuery = query(collection(db, "users",friendUid,"Recipe"));
-
             const getRecipe = await getDocs(recipeQuery);
             getRecipe.forEach((recipe) => {
-      
                returnArray.push(recipe.data())
-      
             });
-            
             return returnArray
          }
-
-      
    }
    }
    catch (error) {
-      console.error('Error adding friend:', error);
+      throw error; 
     }
-
-
 }
 
+/**
+ * Adds a friend to the user's friend list in the Firestore database.
+ * @param {string} userId - The ID of the user to add the friend to.
+ * @param {string} email - The email of the friend to add.
+ * @returns None
+ * @throws {Error} If there is an error accessing the Firestore database.
+ */
 const addFriendToList = async(userId, email) =>{
    try {
       const q = query(collection(db, "users"), where("uid", "==", userId));
-   
       const getDocumentQ = await getDocs(q);
       const data = getDocumentQ.docs[0];
       if(data.exists()){
@@ -145,78 +172,101 @@ const addFriendToList = async(userId, email) =>{
                   email:email,
                });
              } 
-
          }
       }
       catch (error) {
-         console.error('Error adding friend:', error);
+         throw error; 
        }
-
-
 };
 
+/**
+ * Removes a friend from the user's friend list in the database.
+ * @param {string} userId - The ID of the user whose friend list is being modified.
+ * @param {string} email - The email of the friend to be removed.
+ * @returns None
+ * @throws {Error} If there is an error accessing the database.
+ */
 const removeFriendFromList = async(userId, email) =>{
    try {
-      
       const q = query(collection(db, "users"), where("uid", "==", userId));
       const getDocumentQ = await getDocs(q);
       const data = getDocumentQ.docs[0];
-    
       if(data.exists()){
          const ref = doc(collection(db, "users", userId,'Friends'),email);
          await deleteDoc(ref);
       }
    }
    catch (error) {
-      console.error('Error adding friend:', error);
+      throw error; 
+      }
+};
+
+/**
+ * Fetches the friend list for a given user ID from the Firestore database.
+ * @param {string} userId - The ID of the user whose friend list is being fetched.
+ * @returns {Array} An array of friend objects for the given user ID.
+ * @throws {Error} If there is an error accessing the database.
+ */
+const fetchFriendList = async(userId) =>{
+   try{
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];
+      const returnArray = [];
+     
+      if (data.exists()){
+         const friendQuery = query(collection(db,"users",userId,"Friends"));
+         const getFriends = await getDocs(friendQuery);
+         getFriends.forEach((friend) => {
+            returnArray.push(friend.data())
+         });
+         return returnArray;
       }
 
-};
-const fetchFriendList = async(userId) =>{
-   const q = query(collection(db, "users"), where("uid", "==", userId));
-   
-   const getDocumentQ = await getDocs(q);
-   const data = getDocumentQ.docs[0];
-   const returnArray = [];
-  
-   if (data.exists()){
-      
-      const friendQuery = query(collection(db,"users",userId,"Friends"));
-
-      const getFriends = await getDocs(friendQuery);
-      getFriends.forEach((friend) => {
-
-         returnArray.push(friend.data())
-
-      });
-      return returnArray;
-      
    }
+   catch (error) {
+      throw error; 
+      }
+  
 };
 
+/**
+ * Fetches the calendar data for the given user ID from the Firestore database.
+ * @param {string} userId - The ID of the user whose calendar data is being fetched.
+ * @returns {Array} An array of calendar data objects for the user.
+ * @throws {Error} If there is an error accessing the database.
+ */
 const fetchCalender = async(userId) => {
-   const q = query(collection(db, "users"), where("uid", "==", userId));
-
+   try {
+      const q = query(collection(db, "users"), where("uid", "==", userId));
    const getDocumentQ = await getDocs(q);
    const data = getDocumentQ.docs[0];
    const returnArray = [];
 
    if (data.exists()){
       const calenderQuery = query(collection(db, "users",userId,"Calender"));
-
       const getCalender = await getDocs(calenderQuery);
       getCalender.forEach((day) => {
-
          returnArray.push(day.data())
-
       });
       return returnArray;
-      
    }
+      
+   } catch (error) {
+      throw error; 
+   }
+   
 };
 
+/**
+ * Fetches the list of recipes for the given user ID from the Firestore database.
+ * @param {string} userId - The ID of the user whose recipe list is being fetched.
+ * @returns {Array} An array of recipe objects for the given user ID.
+ * @throws {Error} If there is an error fetching the recipe list.
+ */
 const fetchRecipeList = async(userId) => {
-   const q = query(collection(db, "users"), where("uid", "==", userId));
+   try {
+      const q = query(collection(db, "users"), where("uid", "==", userId));
 
    const getDocumentQ = await getDocs(q);
    const data = getDocumentQ.docs[0];
@@ -232,31 +282,49 @@ const fetchRecipeList = async(userId) => {
 
       });
       return returnArray;
+   } 
+   } catch (error) {
+      throw error; 
       
    }
 };
 
-const removeRecpie = async(userId, name, url, img) => {
+/**
+ * Removes a recipe from the user's collection in Firestore.
+ * @param {string} userId - The ID of the user whose recipe is being removed.
+ * @param {string} name - The name of the recipe being removed.
+ * @returns None
+ * @throws {Error} If there is an error accessing or deleting the recipe document.
+ */
+const removeRecpie = async(userId, name) => {
    try {
-      
       const q = query(collection(db, "users"), where("uid", "==", userId));
       const getDocumentQ = await getDocs(q);
       const data = getDocumentQ.docs[0];
-    
       if(data.exists()){
-         console.log('data exists', name)
          const ref = doc(collection(db, "users", userId,'Recipe'),name);
-         console.log(ref)
-
          await deleteDoc(ref);
       }
    }
    catch (error) {
-      console.error('Error removign recipe:', error);
+      throw error; 
       }
 }
 
 
+/**
+ * Adds a recipe to the user's calendar.
+ * @param {string} userId - The ID of the user.
+ * @param {string} id - The ID of the recipe.
+ * @param {string} title - The title of the recipe.
+ * @param {string} url - The URL of the recipe.
+ * @param {Date} date - The date of the recipe.
+ * @param {string} startStr - The start time of the recipe.
+ * @param {string} endStr - The end time of the recipe.
+ * @param {boolean} allDay - Whether the recipe is an all-day event.
+ * @returns None
+ * @throws Throws an error if there is an issue accessing the database
+ */
 const addRecipeCalender = async(userId, id, title, url, date, startStr, endStr, allDay) =>{
    try{
       const q = query(collection(db, "users"), where("uid", "==", userId));
@@ -273,148 +341,158 @@ const addRecipeCalender = async(userId, id, title, url, date, startStr, endStr, 
             allDay : allDay,
          });
       }
-
-
    }
-   catch (error){
-      console.error('error adding recipe to calender', error)
-
-   }
+   catch (error) {
+      throw error; 
+      }
 
 }
+/**
+ * Adds a recipe to the user's collection in the Firestore database.
+ * @param {string} userId - the ID of the user to add the recipe to
+ * @param {string} name - the name of the recipe
+ * @param {string} url - the URL of the recipe
+ * @param {string} img - the URL of the image associated with the recipe
+ * @returns None
+ * @throws {Error} if there is an error accessing the database
+ */
 const addRecpie = async(userId, name, url, img) => {
    try{
       const q = query(collection(db, "users"), where("uid", "==", userId));
-
       const getDocumentQ = await getDocs(q);
       const data = getDocumentQ.docs[0];  
 
       if(data.exists()){
-         console.log('innan setDoc', name, url, img)
          await setDoc(doc(db, "users", userId, 'Recipe',name),{
             name : name, 
             url : url, 
             img : img,
          });
       }
-
-   }
-   catch (error){
-      console.error('error adding recipe', error)
-
-   }
-
-};
-
-// const updateOldImage = async(userId, name, link) =>{
-//    try{
-//       const q = query(collection(db, "users"), where("uid", "==", userId));
-
-//       const getDocumentQ = await getDocs(q);
-     
-
-//       const data = getDocumentQ.docs[0];  
-//       if(data.exists()){
-//          await updateDoc(doc(db, "users", userId, 'Recipe',name), {
-//             img:link,
-//          });
-         
-//          console.log('data exists, ref is this!!!')
-
-
-//       }
-//    }
-//    catch (error){
-//       console.error('error updating recipe', error)
-
-//    }
-// };
-
-
-const updateAvatarUser  = async (userId, avatar) =>{
-   const q = query(collection(db, "users"), where("uid", "==", userId));
-   
-   const getDocumentQ = await getDocs(q);
-   const data = getDocumentQ.docs[0];
-  
-   if (data.exists()){
-      await updateDoc(doc(db, "users", userId), {
-         myAvatar:avatar,
-      });
-
-    } 
-
-
-};
-
-const removeEventCal = async (userId, id) => {
-   try {
-      
-      const q = query(collection(db, "users"), where("uid", "==", userId));
-      const getDocumentQ = await getDocs(q);
-      const data = getDocumentQ.docs[0];
-    
-      if(data.exists()){
-         console.log('data exists in remmove event calendar ')
-         console.log("id", id)
-         const ref = doc(collection(db, "users", userId,'Calender'),id);
-         console.log("ref", ref)
-
-         await deleteDoc(ref);
-         console.log("deleted from database")
-      }
    }
    catch (error) {
-      console.error('Error removign recipe:', error);
+      throw error; 
       }
 
-}
-
-const updateEvent  = async (userId, id,startTime, endTime, allDay,date) =>{
-   const q = query(collection(db, "users"), where("uid", "==", userId));
-   
-   const getDocumentQ = await getDocs(q);
-   const data = getDocumentQ.docs[0];
-  
-  
-   if (data.exists()){
-      await updateDoc(doc(db, "users", userId,"Calender",id), {
-         startStr:startTime,
-         endStr:endTime,
-         allDay:allDay,
-         date:date,
-      });
-
-    } 
-
-
-};
-const updateTextAboutUser = async (userId, newText) =>{
-   const q = query(collection(db, "users"), where("uid", "==", userId));
-   
-   const getDocumentQ = await getDocs(q);
-   const data = getDocumentQ.docs[0];
-  
-   if (data.exists()){
-      await updateDoc(doc(db, "users", userId), {
-         aboutText:newText,
-      });
-    } 
-
-
 };
 
-const fetchInfoUser = async(userId) =>{
+/**
+ * Updates the avatar of a user in the Firestore database.
+ * @param {string} userId - The ID of the user whose avatar is being updated.
+ * @param {string} avatar - The new avatar URL to be saved in the database.
+ * @returns None
+ * @throws {Error} If there is an error updating the document in the database.
+ */
+const updateAvatarUser  = async (userId, avatar) =>{
    try {
-
       const q = query(collection(db, "users"), where("uid", "==", userId));
-   
       const getDocumentQ = await getDocs(q);
       const data = getDocumentQ.docs[0];
    
       if (data.exists()){
-         
+         await updateDoc(doc(db, "users", userId), {
+            myAvatar:avatar,
+         });
+      } 
+      } catch (error) {
+         throw error; 
+      }
+};
 
+/**
+ * Removes an event from the user's calendar in the database.
+ * @param {string} userId - the ID of the user whose calendar the event is being removed from
+ * @param {string} id - the ID of the event to be removed
+ * @returns None
+ * @throws Throws an error if there is an issue accessing the database.
+ */
+const removeEventCal = async (userId, id) => {
+   try {
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];
+   
+      if(data.exists()){
+         const ref = doc(collection(db, "users", userId,'Calender'),id);
+         await deleteDoc(ref);
+      }
+   }
+   catch (error) {
+      throw error; 
+      }
+
+}
+
+/**
+ * Updates an event in the user's calendar with the given start and end times, all day status, and date.
+ * @param {string} userId - the ID of the user whose calendar is being updated
+ * @param {string} id - the ID of the event to update
+ * @param {string} startTime - the start time of the event in string format
+ * @param {string} endTime - the end time of the event in string format
+ * @param {boolean} allDay - whether or not the event is an all day event
+ * @param {string} date - the date of the event in string format
+ * @returns None
+ * @throws Throws an error if the user does not exist
+ */
+const updateEvent  = async (userId, id,startTime, endTime, allDay,date) =>{
+   try {
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];
+     
+      if (data.exists()){
+         await updateDoc(doc(db, "users", userId,"Calender",id), {
+            startStr:startTime,
+            endStr:endTime,
+            allDay:allDay,
+            date:date,
+         });
+       } 
+      
+   } catch (error) {
+      throw error; 
+   }
+
+};
+
+/**
+ * Updates the aboutText field of a user document in the Firestore database.
+ * @param {string} userId - The ID of the user document to update.
+ * @param {string} newText - The new text to set as the user's aboutText.
+ * @returns None
+ * @throws {Error} If there is an error updating the document.
+ */
+const updateTextAboutUser = async (userId, newText) =>{
+   try {
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];
+     
+      if (data.exists()){
+         await updateDoc(doc(db, "users", userId), {
+            aboutText:newText,
+         });
+       } 
+      
+   } catch (error) {
+      throw error;   
+   }
+};
+
+/**
+ * Fetches user information from the Firestore database for the given user ID.
+ * @param {string} userId - The ID of the user to fetch information for.
+ * @returns An object containing the user's information, friends, recipes, and calendar events.
+ * @throws An error if there is an issue fetching the data from the database.
+ */
+const fetchInfoUser = async(userId) =>{
+   try {
+
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];
+   
+      if (data.exists()){
          const data = getDocumentQ.docs[0].data();
          let userInfo = []
          userInfo.push("User email:");   
@@ -440,7 +518,6 @@ const fetchInfoUser = async(userId) =>{
          let friendArray = [];
          const friendsSnapshot = await getDocs(collection(db, 'users', userId, 'Friends'));
          friendsSnapshot.forEach((friendDoc) => {
-        
          const friendData = friendDoc.data();
          friendArray.push("Friend email:");   
          friendArray.push(friendData.email)
@@ -473,56 +550,59 @@ const fetchInfoUser = async(userId) =>{
             calender:calenderArray
 
          }
-
-         //console.log(JSON.stringify(returnObject))
-
          return returnObject;
       } 
-      
    } catch (error) {
-      console.log(error)
+      throw error; 
       
    }
    
 }
 
+/**
+ * Retrieves information about another user from the Firestore database.
+ * @param {string} userId - the user ID of the current user
+ * @param {string} email - the email address of the user to retrieve information about
+ * @returns {Promise<Array>} - an array containing the name, about text, and avatar of the user
+ * @throws {Error} - if there is an error retrieving the information from the database
+ */
 const getInfoOtherUser = async(userId, email) =>{
-   const q = query(collection(db, "users"), where("uid", "==", userId));
+   try {
+      const q = query(collection(db, "users"), where("uid", "==", userId));
    
-   const getDocumentQ = await getDocs(q);
-   const data = getDocumentQ.docs[0];
-   if (data.exists()){
-      const info =  query(collection(db, "users"), where("email", "==", email));
-      const infoDoc = await getDocs(info);
-     
-      const friendData = infoDoc.docs[0].data();
-      console.log(friendData)
-      const returnData = [];
-      returnData.push(friendData.name)
-      returnData.push(friendData.aboutText)
-      returnData.push(friendData.myAvatar)
-      console.log(returnData)
-      return returnData
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];
+      if (data.exists()){
+         const info =  query(collection(db, "users"), where("email", "==", email));
+         const infoDoc = await getDocs(info);
+        
+         const friendData = infoDoc.docs[0].data();
+         const returnData = [];
+         returnData.push(friendData.name)
+         returnData.push(friendData.aboutText)
+         returnData.push(friendData.myAvatar)
+         return returnData
+      }
+   } catch (error) {
+      throw error; 
    }
+  
 
 };
 
+/**
+ * Removes the current authenticated user from the database and deletes their user document.
+ * @returns None
+ * @throws {Error} If there is an error deleting the user or their document.
+ */
 const removeUser = async () => {
    const user = auth.currentUser;
- 
    try {
-     
      const userRef = doc(db, 'users', user.uid);
-      // Delete user's authentication credentials
      await user.delete();
-
-     // Delete user's Firestore data
      await deleteDoc(userRef);
- 
-    
-     console.log("Account deleted");
    } catch (error) {
-     console.error("Error deleting user account:", error);
+      throw error; 
    }
  };
 
@@ -552,10 +632,4 @@ export {
    removeEventCal,
    fetchInfoUser,
    removeUser,
-   
-  
-   
 };
- // Export firestore database
- // It will be imported into your react app whenever it is needed
- //export const db = getFirestore(app);

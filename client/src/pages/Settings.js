@@ -10,48 +10,29 @@ import FolderSharedIcon from '@mui/icons-material/FolderShared';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
 import {auth, db, logout,fetchInfoUser, removeUser} from "../firebase";
-
-import {query, collection, getDocs, where} from "firebase/firestore"
-
-
-
-
 import "./Settings.css";
-import { JsonRequestError } from '@fullcalendar/core';
 
 
+
+/**
+ * A functional component that renders the settings page.
+ */
 function Settings() {
 
   const [showRemoveAccount, setShowRemoveAccount] = useState(false);
   const [showAccessInformation, setShowAccessInformation] = useState(false);
   const [removeAccountQuestion, setAccountQuestion] = useState('');
   const [happensNextText, setHappensNextText] = useState('');
-  const [happensNextAccess, setHappensNextAccess] = useState('');
   const [informationUser, setInformationUser] = useState('');
-
   const [user, loading, error] = useAuthState(auth);
-  const [name, setName] = useState("");
   const navigate = useNavigate();
-  const [loggedIn, setLoggedIn] = useState(false);
+  
 
-
-  const fetchUserName = async () => {
-    try {
-      const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
-      const doc = await getDocs(q);
-      const data = doc.docs[0].data();
-      setName(data.name);
-    }catch(err) {
-      console.error(err);
-      alert("An error occured while fetching user data");
-    }
-  };
   useEffect(() => {
     if (loading) return;
     if (!user) return navigate ("/");
-    fetchUserName();
+   
   }, [user, loading]);
-
 
   const btnRemoveAccount = () =>{
     setHappensNextText("");
@@ -59,9 +40,7 @@ function Settings() {
    };
 
   const btnAccessInformation = () =>{
-    setHappensNextAccess('');
     setShowAccessInformation(!showAccessInformation);
-
     let newText = fetchInfoUser(user.uid).then((response) => {
       let jsonPretty =(JSON.stringify(response,null,4))
       setInformationUser(jsonPretty);
@@ -72,40 +51,36 @@ function Settings() {
     setAccountQuestion(event.target.value);
   };
 
- 
   const handleSubmit = (e) =>{
     e.preventDefault();
   };
 
+  /**
+   * Submits the request to remove the user's account if the removeAccountQuestion matches
+   * the expected value. Otherwise, sets the happensNextText to indicate that the account
+   * will not be removed.
+   */
   const SubmitRemoveAccount = () => {
     let checkAgainst = "Remove account"
     if(removeAccountQuestion ==checkAgainst){
       removeUser();
       logout();
-      
-      //setHappensNextText("Your account will be removed in the next 24 hours")
-      
+            
     }else{
       setHappensNextText("The account will not be removed")
 
     }
-    
-
   };
   
   
   const theme = createTheme({
     palette: {
       primary: {
-        // Purple and green play nicely together.
         main: '#307672',
       },
       secondary: {
-        // This is green.A700 as hex.
         main: '#1a3c40',
       },
-      
-
     },
   });
 
@@ -191,14 +166,7 @@ function Settings() {
                    Information is gathered
                    {informationUser}
                   </p>
-                 
-                
-                <p>
-                  {happensNextAccess}
-                </p>
-
                 </div>
-
                 }
               </div>
             

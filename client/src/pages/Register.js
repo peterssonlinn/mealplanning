@@ -5,16 +5,22 @@ import { auth, registerWithEmailAndPassword, signInWithGoogle} from "../firebase
 import "../App.css";
 import "./Register.css";
 
+/**
+ * A functional component that renders the register page.
+ * For when the user wants to register either with google or local.
+ */
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
+
   const register = () => {
     if(!name) alert("Please enter name");
     registerWithEmailAndPassword(name, email,password);
   };
+
   useEffect(() => {
     if(loading) return;
     if(user) navigate("/profile");

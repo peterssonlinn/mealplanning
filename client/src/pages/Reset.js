@@ -5,6 +5,10 @@ import {auth, sendPasswordReset} from "../firebase";
 import "../App.css";
 import "./Reset.css";
 
+/**
+ * A functional component that renders the reset page.
+ * For when the user wants to reset its password. 
+ */
 function Reset() {
     const [email, setEmail]= useState("");
     const [user, loading, error] = useAuthState(auth);
