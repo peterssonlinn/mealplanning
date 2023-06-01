@@ -4,14 +4,12 @@ import React, {useEffect, useState} from "react";
 import {Link, useNavigate } from "react-router-dom";
 import {auth, signInWithGoogle, logInWithEmailAndPassword} from "../firebase";
 import { useAuthState} from "react-firebase-hooks/auth";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function Login() {
     const [email, setEmai] = useState(""); 
     const [password, setPassword] = useState("");
-    const [user, loading, errorTuple] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
     const [error, setError] = useState(null);
-  
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -21,6 +19,12 @@ function Login() {
         if (user) navigate("/");
     }, [user, loading]);
 
+    /**
+     * Attempts to log in the user with the provided email and password.
+     * If successful, the user will be logged in and redirected to the home page.
+     * If unsuccessful, an error message will be logged to the console and displayed to the user.
+     * @returns None
+     */
     const handleLogin = async () => {
         try {
           await logInWithEmailAndPassword(email, password);
@@ -29,20 +33,6 @@ function Login() {
           setError(error.message);
         }
       };
-    const theme = createTheme({
-        palette: {
-          primary: {
-            // Purple and green play nicely together.
-            main: '#307672',
-          },
-          secondary: {
-            // This is green.A700 as hex.
-            main: '#1a3c40',
-          },
-          
-    
-        },
-      });
 
     return (
         <div className='App'>

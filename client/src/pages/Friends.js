@@ -41,7 +41,6 @@ function Friends() {
   const [textAboutUser, setAboutUser] = useState();
   const [avatar, setAvatar] = useState('');
   const [carouselData, setCarouselData] = useState([]);
-  const [showValidUser, setShowValidUser] = useState(false);
   const [friendsToUser, setFriendsToUser] = useState([]);
   const [friendName, setFriendName] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
@@ -51,27 +50,41 @@ function Friends() {
   const refToAutoComplete = useRef(null);
   const [user, loading, error] = useAuthState(auth);
   const [view, setView] = useState(false)
-
   const isItemLiked = (name) => usersLikedRecipe.includes(name);
-
-
   const navigate = useNavigate();
 
-
-  const fetchUserName = async () => {
-    try {
+  useEffect(() => {
+    if (loading) return;
+    if (!user) return navigate ("/");
+    if(user) {
       setLoggedIn(true);
-      const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
+      fetchFriendsToUser();
+      fetchRecipeListOwn();
       
-      const doc = await getDocs(q);
-      const data = doc.docs[0].data();
-    
-    }catch(err) {
-      console.error(err);
-      console.log("An error occured while fetching user data");
-    }
-  };
+      const refCollectionLiked = collection(db,"users", user?.uid,"Recipe");
+      const updateLiked = onSnapshot(refCollectionLiked, (snapshot) => {
+        
+        fetchRecipeListOwn().then(() => {
+          getFriendsRecipe(selectedFriend)
+        }); 
+    });
 
+      const refCollectionFriends = collection(db,"users", user?.uid,"Friends");
+      const updateFriends = onSnapshot(refCollectionFriends, (snapshot) => {
+        fetchFriendsToUser();
+        
+      });
+    }
+  }, [user, loading]);
+
+
+
+
+  /**
+   * Fetches the list of friends associated with the current user and sets the state of the component
+   * with the list of friends' email addresses.
+   * @returns None
+   */
   const fetchFriendsToUser =  () =>{
     try{
       let result = [];
@@ -89,8 +102,6 @@ function Friends() {
       })
     }catch (err){
       console.error(err);
-      alert("An error occured while fetching user data");
-
     }
   };
 
@@ -101,7 +112,6 @@ function Friends() {
       })
     }catch (err){
       console.error(err);
-      alert("An error occured while fetching user data");
     }
 
   };
@@ -113,11 +123,15 @@ function Friends() {
       })
     }catch (err){
       console.error(err);
-      alert("An error occured while fetching user data");
     }
   };
 
   
+  /**
+   * Fetches the list of recipes that the current user has liked and sets the state of the component
+   * to reflect this list.
+   * @returns None
+   */
   const fetchRecipeListOwn = async () =>{
 
     try{
@@ -137,198 +151,158 @@ function Friends() {
     }
   };
 
-  useEffect(() => {
-    if (loading) return;
-    if (!user) return navigate ("/");
-    if(user) {
-      fetchUserName();
-      fetchFriendsToUser();
-      fetchRecipeListOwn();
+
+  /**
+   * Handles the click event of the "like" button for a recipe. If the recipe is already
+   * liked by the user, it will be removed from their list of liked recipes. Otherwise, it
+   * will be added to their list of liked recipes.
+   */
+  const handleLikedButton = (name,url, img) => {
+    if (usersLikedRecipe.includes(name)) {
       
-      const refCollectionLiked = collection(db,"users", user?.uid,"Recipe");
-      const updateLiked = onSnapshot(refCollectionLiked, (snapshot) => {
-        
-        console.log("innne i updateLiked onSnapshot" );
-        console.log(selectedFriend)
-        
-        fetchRecipeListOwn().then(() => {
-          console.log("innan getFriends",selectedFriend )
-          getFriendsRecipe(selectedFriend)
-        });
-
-       
-    });
-
-      const refCollectionFriends = collection(db,"users", user?.uid,"Friends");
-      const updateFriends = onSnapshot(refCollectionFriends, (snapshot) => {
-        fetchFriendsToUser();
-        
+      let remove = removeRecpie(user.uid, name, url, img).then((response) =>{  
+        fetchRecipeListOwn();  
       });
-    }
-  }, [user, loading]);
-
-
-    const handleLikedButton = (name,url, img) => {
-      if (usersLikedRecipe.includes(name)) {
-       
-        let remove = removeRecpie(user.uid, name, url, img).then((response) =>{  
-          fetchRecipeListOwn();
-          
-        });
-        
-       
-      } else {
-        let add = addRecpie(user.uid, name, url, img).then((response) =>{
-          fetchRecipeListOwn();
-         
-        })
-        
-      }
-     
-    };
-
-    
-
-    const getFriendsRecipe = async (otherUser) =>{
-      try{
-        let ourLiked = []
-        const info = []
-        if(!otherUser){
-          return
-        }
-    
-        console.log('otherUser in getFriendsRecipe',otherUser)
-        let recipeList = await fetchFriendsRecipe(user.uid,otherUser);
-        
-        recipeList.forEach( (recipe) =>{
-            info.push(recipe);
-          });
-        
-          if(info != 0){
-            setCarouselData(info);
-            setOrginalData(info);
-          }
-       
-      }
-      catch(err) {
-        console.error(err);
-        alert("An error occured while fetching liked recipes data");
-      }
-  
-    };
-
-
-    const getInfoAboutSelected = (otherUser) =>{
-      let friendInfo = getInfoOtherUser(user.uid, otherUser).then((response) =>{
-       
-        if((response[0] && response[1])){
-          setView(true)
-        }
-        setFriendName(response[0]);
-        setAboutUser(response[1]);
-        setAvatar(response[2]);
-        return response
-      });
-
-      return friendInfo;
-
-    }
-    
-    const btnSearchUser = (event) => {
       
-      if(!selectedFriend){
+    } else {
+      let add = addRecpie(user.uid, name, url, img).then((response) =>{
+        fetchRecipeListOwn();  
+      });
+      
+    }
+  };
+
+  const getFriendsRecipe = async (otherUser) =>{
+    try{
+      const info = []
+      if(!otherUser){
         return
       }
 
-      if(selectedFriend === user.email){
-        return  navigate('/profile');
-      }
-      try {
-        getInfoAboutSelected(selectedFriend).then(() => {
-          getFriendsRecipe(selectedFriend);
-        });
-        
-
-
-        
-      } catch (error) {
-        console.log('error in btnSearchUser', error)
-      }
-
-      console.log(selectedFriend);
-
-     
+      let recipeList = await fetchFriendsRecipe(user.uid,otherUser);
       
-    }; 
+      recipeList.forEach( (recipe) =>{
+          info.push(recipe);
+        });
+      
+        if(info != 0){
+          setCarouselData(info);
+          setOrginalData(info);
+        }
+    }
+    catch(err) {
+      console.error(err);
+    }
+  };
+
+  /**
+    * Retrieves information about the selected user and sets the corresponding state variables.
+    * @param {string} otherUser - the ID of the selected user
+    * @returns A promise that resolves to an array containing the friend's name, about section, and avatar.
+    */
+  const getInfoAboutSelected = (otherUser) =>{
+    let friendInfo = getInfoOtherUser(user.uid, otherUser).then((response) =>{
+      
+      if((response[0] && response[1])){
+        setView(true)
+      }
+      setFriendName(response[0]);
+      setAboutUser(response[1]);
+      setAvatar(response[2]);
+      return response
+    });
+    return friendInfo;
+  }
+  
+  const btnSearchUser = (event) => {
+    
+    if(!selectedFriend){
+      return
+    }
+
+    if(selectedFriend === user.email){
+      return  navigate('/profile');
+    }
+    try {
+      getInfoAboutSelected(selectedFriend).then(() => {
+        getFriendsRecipe(selectedFriend);
+      });
+        
+    } catch (error) {
+      console.log('error in btnSearchUser', error)
+    }
+  }; 
 
     
-
-    const handleClickSearch = () => {
-      let search = searchFor.toLowerCase();
-      
-      if(searchFor != ""){
-        let newData = [];
-        for(let element in carouselData){
-          let name = carouselData[element]['name'];   
-          name = name.toLowerCase();
-          
-          if(name.includes(search) ){
-            newData.push( carouselData[element]);
-          }
-
-        }
-        setCarouselData(newData);
-      } 
-      else{
-        setSearchFor('');
-        setCarouselData(orginalData);
-      }
-    };
-
-
-    const btnRemoveFriend = () =>{
-      if( selectedFriend && friendsToUser.includes(selectedFriend)){
-          removeFriendInCollection(selectedFriend);
-      }
-    }
-
-    const btnAddFriend = () =>{
-      if(selectedFriend && !friendsToUser.includes(selectedFriend)){
-        addFriendInCollection();
-      }
-    };
-
-    const handleChangeOption = (event, value) =>{
-      console.log('event',event);
-      console.log('value',value)
-      setSelectedFriend(value);
-    };
-      
-    const btnAutoFill = (event) =>{
-      setSearchFor(searchFor + " " + event.target.textContent);
-      
-    }
-    const handleInputChange = (event) => {
-      setSearchFor(event.target.value);
-    };
-    const handleSubmit = (e) =>{
-      e.preventDefault();
-    };
-
-    const theme = createTheme({
-      palette: {
-        primary: {
-          // Purple and green play nicely together.
-          main: '#307672',
-        },
-        secondary: {
-          // This is green.A700 as hex.
-          main: '#1a3c40',
-        },
+  /**
+   * Handles the search functionality for the carousel data. Filters the carousel data based on the search input.
+   * @returns None
+   */
+  const handleClickSearch = () => {
+    let search = searchFor.toLowerCase();
+    
+    if(searchFor != ""){
+      let newData = [];
+      for(let element in carouselData){
+        let name = carouselData[element]['name'];   
+        name = name.toLowerCase();
         
+        if(name.includes(search) ){
+          newData.push( carouselData[element]);
+        }
 
+      }
+      setCarouselData(newData);
+    } 
+    else{
+      setSearchFor('');
+      setCarouselData(orginalData);
+    }
+  };
+
+
+  const btnRemoveFriend = () =>{
+    if( selectedFriend && friendsToUser.includes(selectedFriend)){
+        removeFriendInCollection(selectedFriend);
+    }
+  }
+
+  const btnAddFriend = () =>{
+    if(selectedFriend && !friendsToUser.includes(selectedFriend)){
+      addFriendInCollection();
+    }
+  };
+
+  const handleChangeOption = (event, value) =>{
+    setSelectedFriend(value);
+  };
+    
+  const btnAutoFill = (event) =>{
+    setSearchFor(searchFor + " " + event.target.textContent);
+  }
+
+  const handleInputChange = (event) => {
+    setSearchFor(event.target.value);
+  };
+
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+  };
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        // Purple and green play nicely together.
+        main: '#307672',
       },
-    });
+      secondary: {
+        // This is green.A700 as hex.
+        main: '#1a3c40',
+      },
+      
+
+    },
+  });
 
 
   return (
@@ -447,8 +421,6 @@ function Friends() {
             </div>   
 
           </div>
-
-
           
           <div className='aboutMeField'>
             <div className='aboutMeHeader'>

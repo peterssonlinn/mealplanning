@@ -10,7 +10,6 @@ import Button from '@mui/material/Button';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
-import axios from 'axios'
 import NavBar from './NavBar';
 import LunchDiningIcon from '@mui/icons-material/LunchDining';
 import EggIcon from '@mui/icons-material/Egg';
@@ -24,20 +23,14 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
-import {auth, db, logout, updateTextAboutUser, updateAvatarUser, fetchRecipeList,removeRecpie, addRecpie} from "../firebase";
-import {query, collection, getDocs, where,onSnapshot, doc} from "firebase/firestore"
+import {auth, db, logout, updateTextAboutUser, updateAvatarUser, fetchRecipeList,removeRecpie, addRecpie, fetchInfoUserProfile} from "../firebase";
+import {collection,onSnapshot, doc} from "firebase/firestore"
 import "./Profile.css";
 
 
 
 function Profile() {
     const [searchFor, setSearchFor] = useState('');
-    const[showLogin, setShowLogin] = useState(false);
-    const[userLogin , setUserInputs] = useState({});
-    const [open, setOpen] = React.useState(false);
-    const [items, setItems] = useState([]);
-    const [errorText, setErrorText] = useState('');
-    const [headerInfoSearch, setHeaderInfoSearch] = useState('');
     const [showUpdateText, setUpdateTextView] = useState(false);
     const [showChangeAvatar, setChangeAvatar] = useState(false);
     const [textAboutMe, setAboutMe] = useState();
@@ -45,137 +38,34 @@ function Profile() {
     const [avatar, setAvatar] = useState('');
     const [carouselData, setCarouselData] = useState([]);
     const [user, loading, error] = useAuthState(auth);
-    const [name, setName] = useState("");
+    const [UserName, setUserName] = useState("");
     const navigate = useNavigate();
     const handleDragStart = (e) => e.preventDefault();
-
     const[loadingDefault, setLoadingDefault] = useState(true);
     const isItemLiked = (name) => likedItems.includes(name);
     const [likedItems, setLikedItems] = useState([]);
     let [orginalData, setOrginalData] = useState([]);
 
-
-
-    const fetchUserName = async () => {
-      try {
-        const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
-        const doc = await getDocs(q);
-        const data = doc.docs[0].data();
-        setName(data.name);
-
-      }catch(err) {
-        console.error(err);
-        alert("An error occured while fetching user data");
-      }
-    };
-   
-    const fetchInfo = async () =>{
-      const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
-      const doc = await getDocs(q);
-      const data = doc.docs[0].data();
-    
-      setAboutMe(data.aboutText);
-      setAvatar(data.myAvatar);
-      setLoadingDefault(!loadingDefault);
-      
-
-    };
-
-    // const refreshImage =  (image) =>{
-    //   var res = axios.get(image)
-    //     .then(() => {
-    //       return true
-    //     })
-        
-    //     .catch(error =>{
-    //       // console.log('inne i catch', error);
-    //       return false
-
-    //     });
-
-    //     return res
-
-    // }
-
-    // const updateImage =  (recipe,link) =>{
-    //   var worked = axios.get("/api/recipes/?search="+recipe) 
-    //   .then((res) =>  {
-    //     console.log('res.data',res.data);
-    //     (res.data).forEach(async (rec) =>{
-    //       if(rec[3] === link){
-    //         let newLink = rec[5];
-    //         let update = await updateOldImage(user.uid, rec[1], newLink).then((response) =>{
-    //           console.log('update in database');
-    //         })
-    //       }
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     console.log('error i updateImage', error,recipe);
-        
-    //   })
-
-    // };
-
-    const fetchLikedRecipes =  () =>{
-      try{
-        let prevLiked = []
-        let info = []
-
-        let recipeList = fetchRecipeList(user.uid).then((response) =>{
-          response.forEach(async (recipe) =>{
-            // console.log(recipe.img)
-            // const shouldRefresh = await refreshImage(recipe.img);
-            // console.log('shouldRefresh', shouldRefresh)
-            // if (!shouldRefresh){
-            //   console.log("inside shouldRefresh");
-            //   console.log(recipe.url)
-            //   await updateImage(recipe.name,recipe.url);
-            //   await sleep(5000)
-            // }
-            info.push(recipe);
-            if(recipe.name){
-              // console.log('inne i ', recipe.name)
-              prevLiked.push(recipe.name)
-             // info.push(recipe.name)
-              
-            }
-          });
-
-
-          if(prevLiked != 0){
-
-
-
-            setCarouselData(info) ;
-           
-  
-            setLikedItems(prevLiked);
-            setOrginalData(info);
-          }
-        });
-      }
-      catch(err) {
-        console.error(err);
-        alert("An error occured while fetching liked recipes data");
-      }
-  
-    };
-
-
-
     useEffect(() => {
       if (loading) return;
       if (!user) return navigate ("/");
-      fetchUserName();
       fetchInfo();
       fetchLikedRecipes();
 
+      /**
+       * Creates a reference to the "Recipe" collection in the Firestore database for the current user and
+       * sets up a listener for changes to the collection. When changes are detected, the function
+       * fetchLikedRecipes() is called to update the list of liked recipes.
+       */
       const refCollectionLiked = collection(db,"users", user.uid,"Recipe");
       const updateLiked = onSnapshot(refCollectionLiked, (snapshot) => {
         fetchLikedRecipes();
       });
 
+      /**
+       * Sets up a listener for changes to the user document in the Firestore database.
+       * When changes are detected, the fetchInfo function is called to update the user's information.
+       */
       const refCollectionUser = doc(db,"users", user?.uid);
       const updateUser = onSnapshot(refCollectionUser, (snapshot) => {
         fetchInfo();
@@ -184,20 +74,51 @@ function Profile() {
     }, [user, loading]);
 
 
+    const fetchInfo = async () =>{
+      let userInfo = fetchInfoUserProfile(user.uid).then((response) =>{
+        setUserName(response.name);
+        setAboutMe(response.aboutText);
+        setAvatar(response.myAvatar);
+      });
+      setLoadingDefault(!loadingDefault);
+    };
+
+    const fetchLikedRecipes =  () =>{
+      try{
+        let prevLiked = []
+        let info = []
+
+        let recipeList = fetchRecipeList(user.uid).then((response) =>{
+          response.forEach(async (recipe) =>{
+        
+            info.push(recipe);
+            if(recipe.name){
+              prevLiked.push(recipe.name);
+            }
+          });
+
+          if(prevLiked != 0){
+            setCarouselData(info) ;
+            setLikedItems(prevLiked);
+            setOrginalData(info);
+          }
+        });
+      }
+      catch(err) {
+        console.error(err);
+      }
+  
+    };
 
     
 
     const handleLikedButton = (name,url, img) => {
       if (likedItems.includes(name)) {
-        // console.log("inne i if, likeditems is included in list")
         let remove = removeRecpie(user.uid, name, url, img).then((response) =>{
-          
-
           setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item != name));
           
         });
         
-       
       } else {
         let add = addRecpie(user.uid, name, url, img).then((response) =>{
           setLikedItems((prevLikedItems) => [...prevLikedItems, name]);
@@ -217,28 +138,20 @@ function Profile() {
             setUpdateTextView(!showUpdateText);
           })
         }catch (err){
-          console.error(err);
-          alert("An error occured while setting user data");
-    
+          console.error(err);    
         }
-
       }
-
     }
 
+   
     const updateAvatarData = (avatar)=>{
       try{
         let newAvatar = updateAvatarUser(user.uid,avatar).then((response) => {
-
           setAvatar(avatar);
         })
       }catch (err){
-        console.error(err);
-        alert("An error occured while setting user data");
-  
+        console.error(err);  
       }
-
-
     }
     
     const btnChooseAvatar = (event) => {
@@ -247,7 +160,6 @@ function Profile() {
 
         let orgString = event.target.src;
         let checkAgainst = orgString.split("http://localhost:3000").pop();
-
 
         if(checkAgainst === avatarImage1){
           updateAvatarData(avatarImage1)
@@ -305,11 +217,9 @@ function Profile() {
     const theme = createTheme({
       palette: {
         primary: {
-          // Purple and green play nicely together.
           main: '#307672',
         },
         secondary: {
-          // This is green.A700 as hex.
           main: '#1a3c40',
         },
         
@@ -366,6 +276,7 @@ function Profile() {
             <Button onClick={btnAutoFill} size ='15px' color="primary" variant="contained" startIcon={<LunchDiningIcon />}>
               Burger
             </Button>
+
             <Button onClick={btnAutoFill} size ='15px' color="primary" variant="contained" startIcon={<BakeryDiningIcon />}>
               Croissant
             </Button>
@@ -387,7 +298,7 @@ function Profile() {
           <div className='aboutMeField'>
             <div className='aboutMeHeader'>
               <h5 className='headerAboutMe'>
-              About me {name}
+              About me {UserName}
               </h5>
               <p className='textAboutMe' >
               {!loadingDefault && textAboutMe}

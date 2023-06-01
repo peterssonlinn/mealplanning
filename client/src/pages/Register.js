@@ -16,15 +16,19 @@ function Register() {
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if(loading) return;
+    if(user) navigate("/profile");
+  }, [user, loading]);
+
   const register = () => {
     if(!name) alert("Please enter name");
     registerWithEmailAndPassword(name, email,password);
   };
 
-  useEffect(() => {
-    if(loading) return;
-    if(user) navigate("/profile");
-  }, [user, loading]);
+
+
+
   return (
     <div className='App'>
       <div className='backgroundApp'> 

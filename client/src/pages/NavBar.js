@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
-import React, {useState} from 'react';
+import React from 'react';
 import '../../src/App.css';
 import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { indigo } from '@mui/material/colors';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -16,9 +15,6 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import HomeIcon from '@mui/icons-material/Home';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { logout } from '../firebase';
-
 
 
 function NavBar() {
@@ -33,7 +29,6 @@ const clickDropdown = () => {
     setOpen(false);
   };
 
-
   const theme = createTheme({
     palette: {
       primary: {
@@ -44,8 +39,6 @@ const clickDropdown = () => {
         // This is green.A700 as hex.
         main: '#1a3c40',
       },
-      
-
     },
   });
 

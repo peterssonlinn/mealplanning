@@ -556,8 +556,33 @@ const fetchInfoUser = async(userId) =>{
       throw error; 
       
    }
-   
 }
+
+/**
+ * Fetches user profile information from the Firestore database for the given user ID.
+ * @param {string} userId - The ID of the user whose profile information is being fetched.
+ * @returns {Promise<Object>} - A promise that resolves to an object containing the user's name, avatar, and about text.
+ * @throws {Error} - If there is an error fetching the user's profile information.
+ */
+const fetchInfoUserProfile =  async(userId) =>{
+   try {
+      const q = query(collection(db, "users"), where("uid", "==", userId));
+      const getDocumentQ = await getDocs(q);
+      const data = getDocumentQ.docs[0];
+      if (data.exists()){
+         const data = getDocumentQ.docs[0].data();
+         let returnObject = {
+            name : data.name,
+            myAvatar : data.myAvatar,
+            aboutText : data.aboutText,
+         }
+         return returnObject
+      }
+   } catch (error) {
+      throw error;  
+   }
+}
+
 
 /**
  * Retrieves information about another user from the Firestore database.
@@ -632,4 +657,5 @@ export {
    removeEventCal,
    fetchInfoUser,
    removeUser,
+   fetchInfoUserProfile,
 };

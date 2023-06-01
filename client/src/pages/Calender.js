@@ -23,7 +23,6 @@ import { v4 as uuidv4 } from "uuid";
 function Calender() {
   const checkboxRef = useRef(null);
   const checkboxDelRef = useRef(null);
-  const calendarRef = useRef(null);
   const savedRecepiesRef = useRef(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, loading, error] = useAuthState(auth);
@@ -31,10 +30,65 @@ function Calender() {
   const [name, setName] = useState("");
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
-  const [links, setLinks] = useState([]);
   const [events, setEvents] = useState([]);
-  const [selectedRecpieCal, setSelectedRecpieCal] = useState('');
 
+
+/**
+   * useEffect hook that runs when the component mounts and when the user or loading state changes.
+   * If the user is not logged in, it will navigate to the home page. Otherwise, it will fetch the user's
+   * name, liked recipes, and own calendar. It will also set up a listener for changes to the user's calendar
+   * and create a draggable object for saved recipes.
+   * @returns None
+   */
+useEffect( () => {
+  if (loading) return;
+  if (!user) return navigate ("/");
+ 
+
+  if(user) {
+    setIsLoading(false);
+    setLoggedIn(true);
+    fetchLikedRecipes();
+    fetchOwnCalender();
+
+   
+    const checkbox = checkboxRef.current;
+
+    const refCollectionCalender = collection(db,"users", user?.uid,"Calender");
+    const updateCalender = onSnapshot(refCollectionCalender, (snapshot) => {
+      
+      fetchOwnCalender();
+      
+    });
+  
+
+     const draggable = new Draggable(savedRecepiesRef.current, {
+       itemSelector: '.fc-event',
+       eventData: function(eventEl) {
+        
+        return {
+          title : eventEl.innerText,
+          infoEl : eventEl
+        };
+       }
+     });
+   
+      return () => {
+        draggable.destroy();
+   
+     };
+  }
+ 
+}, [user,loading]);
+
+
+  /**
+   * Handles the click event on a calendar event. If the delete checkbox is checked, the recipe
+   * is removed from the database and the event is removed from the calendar. Otherwise, the URL
+   * associated with the recipe is opened in a new tab.
+   * @param {Object} clickedEvent - the event object that was clicked
+   * @returns None
+   */
   const handleClickedEvent = (clickedEvent) =>{
     const clicked = clickedEvent.event.title;
     const claId = clickedEvent.event.id;
@@ -55,6 +109,10 @@ function Calender() {
   };
 
 
+  /**
+   * Fetches the list of liked recipes for the current user and sets the state with the response.
+   * @returns None
+   */
   const fetchLikedRecipes =  () =>{
     try{
       let prevLiked = []
@@ -81,19 +139,10 @@ function Calender() {
   };
 
 
-  const fetchUserName = async () => {
-    try {
-      setLoggedIn(true);
-      const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
-      const doc = await getDocs(q);
-      const data = doc.docs[0].data();
-      setName(data.name);
-    }catch(err) {
-      console.error(err);
-      alert("An error occured while fetching user data");
-    }
-  };
-
+  /**
+   * Fetches the user's own calendar and formats the events to be displayed on the calendar.
+   * @returns None
+   */
   const fetchOwnCalender = async () => {
     try {
       let allData = [];
@@ -113,11 +162,7 @@ function Calender() {
           else{
             let startTime =event['startStr'];
             event.end = startTime;
-
-
           }
-
-
           event.start = startTime;
 
           allData.push(event);
@@ -133,6 +178,11 @@ function Calender() {
     }
   }
  
+  /**
+   * Handles the changed event and updates the event in the database.
+   * @param {Object} changedEvent - The changed event object.
+   * @returns None
+   */
   const handleChangedEvent = (changedEvent) =>{
     const isAllDay = changedEvent.event.allDay;
     const id = changedEvent.event.id;
@@ -141,19 +191,16 @@ function Calender() {
     let date = (changedEvent.event.startStr).split('T');
     date = date[0]
 
-
     // new starttime 
     if(isAllDay){
       startTime = changedEvent.event.startStr;
       endTime = changedEvent.event.startStr;
      
-
     }else{
       startTime = changedEvent.event.startStr;
       endTime = changedEvent.event.endStr;
-      
-
     }
+
     try{
       let temp = updateEvent(user.uid,id, startTime, endTime, isAllDay,date).then((response) =>{
       })
@@ -164,54 +211,14 @@ function Calender() {
     }
   }
     
-
-  
-
-  useEffect( () => {
-    if (loading) return;
-    if (!user) return navigate ("/");
-   
-
-    if(user) {
-      setIsLoading(false);
-      fetchUserName();
-      fetchLikedRecipes();
-      fetchOwnCalender();
-
-     
-      const checkbox = checkboxRef.current;
-
-      const refCollectionCalender = collection(db,"users", user?.uid,"Calender");
-      const updateCalender = onSnapshot(refCollectionCalender, (snapshot) => {
-        
-        fetchOwnCalender();
-        
-      });
-    
-  
-       const draggable = new Draggable(savedRecepiesRef.current, {
-         itemSelector: '.fc-event',
-         eventData: function(eventEl) {
-          
-          return {
-            title : eventEl.innerText,
-            infoEl : eventEl
-          };
-         }
-       });
-     
-        return () => {
-          draggable.destroy();
-     
-       };
-    }
-   
-  }, [user,loading]);
-
   if (isLoading &&  !name  && !savedRecepiesRef) {
     return <div>Loading...</div>;
   }
 
+  /**
+   * Logs the user out of the application and navigates to the calendar page.
+   * @returns None
+   */
   const changeLogOut = async () => {
     try {
       logout();
@@ -252,6 +259,12 @@ function Calender() {
 
 
 
+  /**
+   * Handles a new event created in the calendar by extracting the necessary information
+   * and adding it to the database.
+   * @param {Object} newEvent - the new event object created in the calendar
+   * @returns None
+   */
   const handleNewEvent = async (newEvent) => {
     const title = newEvent.draggedEl.innerText;
     const isAllDay = newEvent.allDay;

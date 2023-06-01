@@ -1,34 +1,11 @@
-import { Link, Route, withRouter} from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import React, {useState, useEffect} from 'react';
 import '../../src/App.css';
 import Button from '@mui/material/Button';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
-/*import { indigo } from '@mui/material/colors';
-import DehazeIcon from '@mui/icons-material/Dehaze';
-
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Box from '@mui/material/Box';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import PersonIcon from '@mui/icons-material/Person';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import HomeIcon from '@mui/icons-material/Home';
-import Diversity1Icon from '@mui/icons-material/Diversity1';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';*/
 import axios from 'axios'
-/*import LoginButton from './LoginButton';
-import SignupButton from './SignupButton';
-import LogoutButton from './LogoutButton';
-import AuthButton from './AuthButton';
-import AuthNav from './AuthNav';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import DinnerDiningIcon from '@mui/icons-material/DinnerDining';*/
 import NavBar from './NavBar';
 import LunchDiningIcon from '@mui/icons-material/LunchDining';
 import EggIcon from '@mui/icons-material/Egg';
@@ -40,7 +17,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
 import {auth, db, logout, fetchRecipeList, addRecpie, removeRecpie} from "../firebase";
-import {query,  getDocs, where, onSnapshot,collection} from "firebase/firestore"
+import {onSnapshot,collection} from "firebase/firestore"
 import "./Home.css"
 
 
@@ -48,34 +25,30 @@ import "./Home.css"
 function Home() {
 
   const [searchFor, setSearchFor] = useState('');
-  const[showLogin, setShowLogin] = useState(false);
-  const[userLogin , setUserInputs] = useState({});
-  const [open, setOpen] = React.useState(false);
   const [items, setItems] = useState([]);
   const [errorText, setErrorText] = useState('');
   const [headerInfoSearch, setHeaderInfoSearch] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, loading, error] = useAuthState(auth);
-  const [name, setName] = useState("");
   const navigate = useNavigate();
   const [likedItems, setLikedItems] = useState([]);
   const isItemLiked = (url) => likedItems.includes(url);
 
+  useEffect(() => {
+    if (loading) return;
+    if (!user) return navigate ("/");
+    setLoggedIn(true);
+    fetchLikedRecipes();
 
-
-
-  const fetchUserName = async () => {
-    try {
-      setLoggedIn(true);
-      const q = query(collection(db, "users"), where ("uid", "==", user?.uid));
-      const doc = await getDocs(q);
-      const data = doc.docs[0].data();
-      setName(data.name);
-    }catch(err) {
-      console.error(err);
-      alert("An error occured while fetching user data");
-    }
-  };
+    /**
+     * Sets up a listener for changes to the user's recipe collection in Firestore.
+     * When a change is detected, the fetchLikedRecipes function is called to update the UI.
+     */
+    const refCollection = collection(db,"users", user.uid,"Recipe");
+    const update = onSnapshot(refCollection, (snapshot) => {
+      fetchLikedRecipes();
+    });
+  }, [user, loading]);
 
   const fetchLikedRecipes = async () =>{
     try{
@@ -95,21 +68,10 @@ function Home() {
     }
     catch(err) {
       console.error(err);
-      alert("An error occured while fetching liked recipes data");
     }
 
   };
-  useEffect(() => {
-    if (loading) return;
-    if (!user) return navigate ("/");
-    fetchUserName();
-    fetchLikedRecipes();
 
-    const refCollection = collection(db,"users", user.uid,"Recipe");
-    const update = onSnapshot(refCollection, (snapshot) => {
-      fetchLikedRecipes();
-    });
-  }, [user, loading]);
 
   const changeLogOut = async () => {
     try {
@@ -118,26 +80,28 @@ function Home() {
       navigate("/");
     } catch (err) {
       console.error(err);
-      alert("An error occurred while logging out");
     }
   };
 
-
-
+  /**
+   * Handles the click event of the "like" button for a recipe. If the recipe is already
+   * liked, it will be removed from the user's liked recipes. If it is not already liked,
+   * it will be added to the user's liked recipes.
+   * @param {string} name - the name of the recipe
+   * @param {string} url - the URL of the recipe
+   * @param {string} img - the URL of the recipe's image
+   * @returns None
+   */
   const handleLikedButton = (name, url, img) => {
     
     if (likedItems.includes(name)) {
       
       let remove = removeRecpie(user.uid, name, url, img).then((response) =>{
         
-        setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== name));
-        console.log(likedItems)
-        
+        setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== name));        
       });
       
-     
     } else {
-     
       let add = addRecpie(user.uid, name, url, img).then((response) =>{
         setLikedItems((prevLikedItems) => [...prevLikedItems, name]);
        
@@ -146,14 +110,18 @@ function Home() {
     }
   };
 
-
-
-
   const btnAutoFill = (event) =>{
     setSearchFor(searchFor + " " + event.target.textContent)
     
   }
   
+  /**
+   * Handles the click event for the search button. Sends a GET request to the server
+   * to retrieve recipes that match the search query. If successful, updates the state
+   * with the search results and clears any error messages. If unsuccessful, logs the
+   * error and displays an error message to the user.
+   * @returns None
+   */
   const handleClickSearch = () => {
     if(searchFor != ""){
       setItems([]);
@@ -162,11 +130,8 @@ function Home() {
       .then((res) =>  {
         if (res.status === 200){
           setErrorText("");
-          console.log(res.data);
           setHeaderInfoSearch('result for: '+searchFor);
-          setItems(res.data);
-          //setData(res.data)
-          
+          setItems(res.data);   
         }
       })
       .catch((error) => {
@@ -174,20 +139,13 @@ function Home() {
         setErrorText("this did not work :(");
         setSearchFor("");
       })
-      
-  
-      
+        
     } 
   };
   
-
   const handleInputChange = (event) => {
     setSearchFor(event.target.value);
   };
-
-  const selectRef = React.useRef();
-
-  
 
   const theme = createTheme({
     palette: {
@@ -199,8 +157,6 @@ function Home() {
         // This is green.A700 as hex.
         main: '#1a3c40',
       },
-      
-
     },
   });
 
@@ -211,7 +167,6 @@ function Home() {
   
     <div className='backgroundApp'>
 
-     
       <div className='topHome'> 
       
       <div className='loginButton'>
