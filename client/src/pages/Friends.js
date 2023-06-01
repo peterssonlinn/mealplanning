@@ -1,10 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-
-import avatarImage1 from '../images/icons/1.jpeg';
-import avatarImage2 from '../images/icons/2.jpeg';
-import avatarImage3 from '../images/icons/3.jpeg';
-import avatarImage4 from '../images/icons/4.jpeg';
-import { Link, useNavigate } from 'react-router-dom';
+import {useNavigate } from 'react-router-dom';
 
 import '../../src/App.css';
 import AliceCarousel from 'react-alice-carousel';
@@ -13,7 +8,6 @@ import Button from '@mui/material/Button';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
-import axios from 'axios'
 import NavBar from './NavBar';
 import LunchDiningIcon from '@mui/icons-material/LunchDining';
 import EggIcon from '@mui/icons-material/Egg';
@@ -23,7 +17,6 @@ import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import Avatar from '@mui/material/Avatar';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import CheckIcon from '@mui/icons-material/Check';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
@@ -31,7 +24,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ForwardIcon from '@mui/icons-material/Forward';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {auth, db, logout, fetchFriendList, addFriendToList, removeFriendFromList, getInfoOtherUser,fetchFriendsRecipe, fetchRecipeList, removeRecpie, addRecpie} from "../firebase";
-import {query, collection, getDocs, where, onSnapshot} from "firebase/firestore"
+import {collection, onSnapshot} from "firebase/firestore"
 import "./Friends.css"
 
 function Friends() {

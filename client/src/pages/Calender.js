@@ -9,11 +9,10 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid';
 import NavBar from './NavBar';
 import timeGridPlugin from '@fullcalendar/timegrid';
-//import interactionPlugin from '@fullcalendar/interaction';
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
-import {query, collection, getDocs, where,onSnapshot} from "firebase/firestore"
+import { collection,onSnapshot} from "firebase/firestore"
 
 import {auth, db, logout, fetchRecipeList, addRecipeCalender,fetchCalender,updateEvent, removeEventCal} from "../firebase";
 import { v4 as uuidv4 } from "uuid";
@@ -133,7 +132,6 @@ useEffect( () => {
     }
     catch(err) {
       console.error(err);
-      console.log("An error occured while fetching liked recipes data");
     }
 
   };
@@ -174,7 +172,6 @@ useEffect( () => {
       setEvents(allData);
     } catch (err) {
       console.error(err);
-      console.log("An error occurred while fetching calendar");
     }
   }
  
@@ -206,7 +203,6 @@ useEffect( () => {
       })
     }catch (err){
       console.error(err);
-      alert("An error occured while adding user data");
 
     }
   }
@@ -226,7 +222,6 @@ useEffect( () => {
       navigate("/calender");
     } catch (err) {
       console.error(err);
-      alert("An error occurred while logging out");
     }
   };
 
@@ -237,7 +232,6 @@ useEffect( () => {
       })
     }catch (err){
       console.error(err);
-      alert("An error occured while adding user data");
 
     }
   };
@@ -250,15 +244,10 @@ useEffect( () => {
       
     }catch (err){
       console.error(err);
-      alert("An error occured while removing from calendar database");
 
     }
   };
   
-
-
-
-
   /**
    * Handles a new event created in the calendar by extracting the necessary information
    * and adding it to the database.
@@ -302,11 +291,9 @@ useEffect( () => {
   const theme = createTheme({
     palette: {
       primary: {
-        // Purple and green play nicely together.
         main: '#307672',
       },
       secondary: {
-        // This is green.A700 as hex.
         main: '#1a3c40',
       },
       
