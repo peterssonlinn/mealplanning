@@ -2,14 +2,17 @@
 
 ## Functional
 
-We are going to develop an application that helps the user to plan meals and search for recipes. Also adding it into a calender.
-The user, will have a profile where it will be possible to save liked recipes and plan its food in a calender.
-Users will be able to search for recepies from a public database.
-There will be a possibility for several users to access the same calender and add meals etc.
-And the user will also be able to search for other users and get inspiration from them.
+We have created a web application that helps the user to plan meals and search for recipes in a public database. The application has different pages, a profile where it will be possible for the user to see liked recipes. A calendar, where liked recipes can be added to a calendar for easy planning of what to eat and when. A friends page where the user can search on other users and see their liked recipes.
+The application is made with the goal to facilitate meal planning.
+
 
 ## Technical
 
-We will do the client-side in React and the server-side in Node.js and Express.js. We will use a public database for recipes, [Edmam](https://developer.edamam.com/edamam-recipe-api).
+
+The client-side of the application has been made in React with different components added together.
+The server-side connected to the recipe database is made in express.js. While the database and the rest of the backend is made using Firebase.
+
+
+We have used [Edmam](https://developer.edamam.com/edamam-recipe-api) for our Recipe search.
 
 Link to presentations: https://liuonline-my.sharepoint.com/:f:/g/personal/linpe485_student_liu_se/Eh66wx4HesdCqAaon8wAC0sBlwZt2MEqV1q2IuHhlMzPKA?e=ee7aJ2  
