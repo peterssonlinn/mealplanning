@@ -138,9 +138,6 @@ function Friends() {
     }
     catch (err){
       console.error(err);
-      
-      console.log("An error occured while fetching user's own recipe");
-
     }
   };
 
@@ -221,7 +218,7 @@ function Friends() {
       });
         
     } catch (error) {
-      console.log('error in btnSearchUser', error)
+      console.log(error)
     }
   }; 
 
@@ -284,11 +281,9 @@ function Friends() {
   const theme = createTheme({
     palette: {
       primary: {
-        // Purple and green play nicely together.
         main: '#307672',
       },
       secondary: {
-        // This is green.A700 as hex.
         main: '#1a3c40',
       },
       

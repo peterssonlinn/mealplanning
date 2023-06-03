@@ -29,7 +29,7 @@ function Login() {
         try {
           await logInWithEmailAndPassword(email, password);
         } catch (error) {
-          console.log("Error:", error.message);
+          console.log(error);
           setError(error.message);
         }
       };
@@ -80,9 +80,7 @@ function Login() {
                             Don't have an account? <Link to="/register">Register</Link>
                         </div>  
                     </div>
-
                 </div>
-
             </div>
     </div>
     );

@@ -32,11 +32,9 @@ const clickDropdown = () => {
   const theme = createTheme({
     palette: {
       primary: {
-        // Purple and green play nicely together.
         main: '#307672',
       },
       secondary: {
-        // This is green.A700 as hex.
         main: '#1a3c40',
       },
     },

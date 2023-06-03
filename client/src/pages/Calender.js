@@ -13,14 +13,12 @@ import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate} from 'react-router-dom';
 import { collection,onSnapshot} from "firebase/firestore"
-
 import {auth, db, logout, fetchRecipeList, addRecipeCalender,fetchCalender,updateEvent, removeEventCal} from "../firebase";
 import { v4 as uuidv4 } from "uuid";
 
 
 
 function Calender() {
-  const checkboxRef = useRef(null);
   const checkboxDelRef = useRef(null);
   const savedRecepiesRef = useRef(null);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -51,7 +49,6 @@ useEffect( () => {
     fetchOwnCalender();
 
    
-    const checkbox = checkboxRef.current;
 
     const refCollectionCalender = collection(db,"users", user?.uid,"Calender");
     const updateCalender = onSnapshot(refCollectionCalender, (snapshot) => {
@@ -387,11 +384,7 @@ useEffect( () => {
           <label htmlFor='event-remove'>Remove from calendar?</label>
         </p>
       </div>
-          
-         
       </div>
-      
-        
       </div>
     </div>
   );

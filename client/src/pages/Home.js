@@ -97,7 +97,6 @@ function Home() {
     if (likedItems.includes(name)) {
       
       let remove = removeRecpie(user.uid, name, url, img).then((response) =>{
-        
         setLikedItems((prevLikedItems) => prevLikedItems.filter((item) => item !== name));        
       });
       
@@ -150,11 +149,9 @@ function Home() {
   const theme = createTheme({
     palette: {
       primary: {
-        // Purple and green play nicely together.
         main: '#307672',
       },
       secondary: {
-        // This is green.A700 as hex.
         main: '#1a3c40',
       },
     },
@@ -164,9 +161,7 @@ function Home() {
   return (
     
     <div className='App'>
-  
     <div className='backgroundApp'>
-
       <div className='topHome'> 
       
       <div className='loginButton'>
@@ -198,7 +193,6 @@ function Home() {
 
         <div className='overlayHomePage'>
           <div className='searchTextMain'>
-          
           <div className='searchInput'>
           <input className='searchInput' type="text" value={searchFor} onChange={handleInputChange} />
           </div>
@@ -206,7 +200,6 @@ function Home() {
 
           <div className='buttonSearch'>
           <ThemeProvider theme={theme}>
-          
           <Button onClick={handleClickSearch} size='15px' color="primary" variant="contained" startIcon={<SearchIcon />} />
           </ThemeProvider>
           </div>
